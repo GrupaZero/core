@@ -40,7 +40,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Gzero\\Base\\ServiceProvider"
+                "Gzero\\Core\\ServiceProvider"
             ]
         }
     },

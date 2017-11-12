@@ -1,0 +1,26 @@
+actor_suffix: Tester
+namespace: Core
+paths:
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+coverage:
+    enabled: true
+    include:
+        - src/*
+    exclude:
+        - database/migrations/*
+        - config/config.php
+        - src/Gzero/Core/helpers.php
+        - src/Gzero/Core/laravel_helpers.php
+settings:
+    bootstrap: _bootstrap.php
+    lint: true
+    shuffle: true
+    colors: true
+    memory_limit: 1024M
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed

@@ -18,7 +18,6 @@ class CreateRoute extends Migration {
                 $table->increments('id');
                 $table->integer('routable_id')->unsigned()->nullable();
                 $table->string('routable_type')->nullable();
-                $table->boolean('is_active')->default(false);
                 $table->timestamps();
             }
         );
@@ -27,15 +26,15 @@ class CreateRoute extends Migration {
             'route_translations',
             function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('lang_code', 2);
+                $table->string('language_code', 2);
                 $table->integer('route_id')->unsigned();
-                $table->string('url')->index();
+                $table->string('path')->index();
                 $table->boolean('is_active')->default(false);
                 $table->timestamps();
                 $table->foreign('route_id')->references('id')->on('routes')->onDelete('CASCADE');
-                $table->foreign('lang_code')->references('code')->on('langs')->onDelete('CASCADE');
-                $table->unique(['lang_code', 'route_id']); // Only one translation in specific language
-                $table->unique(['lang_code', 'url']); // Unique url in specific language
+                $table->foreign('language_code')->references('code')->on('languages')->onDelete('CASCADE');
+                $table->unique(['language_code', 'route_id']); // Only one translation in specific language
+                $table->unique(['language_code', 'path']); // Unique path in specific language
             }
         );
     }

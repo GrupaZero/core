@@ -1,6 +1,6 @@
 <?php
 
-use Gzero\Entity\User;
+use Gzero\Core\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -19,7 +19,7 @@ class CreateUser extends Migration {
                 $table->increments('id');
                 $table->string('email')->unique();
                 $table->string('password');
-                $table->string('nick')->unique()->nullable();
+                $table->string('name')->unique()->nullable();
                 $table->string('first_name')->nullable();
                 $table->string('last_name')->nullable();
                 $table->boolean('is_admin')->default(false);
@@ -52,15 +52,15 @@ class CreateUser extends Migration {
         // Create user
         $user = User::create(
             [
-                'email'     => 'admin@gzero.pl',
-                'nick'  => 'Admin',
+                'email'      => 'admin@gzero.pl',
+                'name'       => 'Admin',
                 'first_name' => 'John',
                 'last_name'  => 'Doe',
-                'password'  => Hash::make('test')
+                'password'   => Hash::make('test')
             ]
         );
 
-        $user->is_admin = 1;
+        $user->is_admin = true;
         $user->save();
     }
 }

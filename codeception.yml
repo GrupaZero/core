@@ -13,8 +13,8 @@ coverage:
     exclude:
         - database/migrations/*
         - config/config.php
-        - src/Gzero/Base/helpers.php
-        - src/Gzero/Base/laravel_helpers.php
+        - src/Gzero/Core/helpers.php
+        - src/Gzero/Core/laravel_helpers.php
 settings:
     bootstrap: _bootstrap.php
     lint: true

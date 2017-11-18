@@ -1,7 +1,7 @@
 <?php namespace Gzero\Core\Repositories;
 
 use Gzero\Core\Models\Route;
-use Gzero\Core\Services\RepositoryException;
+use Gzero\Core\Models\RouteTranslation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Gzero\Core\Query\QueryBuilder;
@@ -76,25 +76,22 @@ class RouteReadRepository implements ReadRepository {
         );
     }
 
+    /**
+     * Function returns an unique path address from given path in specific language
+     *
+     * @param string $path         string path address to search for
+     * @param string $languageCode translation language code
+     *
+     * @return string an unique path address
+     */
+    public function buildUniquePath($path, $languageCode)
+    {
+        $count = RouteTranslation::query()
+            ->where('language_code', $languageCode)
+            ->whereRaw("path ~ '^$path($|-[0-9]+$)'")
+            ->count();
 
-    // @TODO Add this when and where needed
-    ///**
-    // * Function returns an unique url address from given url in specific language
-    // *
-    // * @param string $url      string url address to search for
-    // * @param string $langCode translation language
-    // *
-    // * @return string $url an unique url address
-    // */
-    //protected function buildUniqueUrl($url, $langCode)
-    //{
-    //    // search for duplicated url
-    //    $count = $this->newQuery()
-    //        ->table('route_translations')
-    //        ->where('language_code', $langCode)
-    //        ->whereRaw("path ~ '^$url($|-[0-9]+$)'")
-    //        ->count();
-    //    return ($count) ? $url . '-' . $count : $url;
-    //}
+        return ($count) ? $path . '-' . $count : $path;
+    }
 
 }

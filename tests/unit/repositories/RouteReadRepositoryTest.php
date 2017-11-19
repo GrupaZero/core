@@ -112,22 +112,5 @@ class RouteReadRepositoryTest extends Unit {
         $this->assertEquals('1-example-slug', $result[3]->translations[0]->path);
         $this->assertEquals('0-example-slug', $result[4]->translations[0]->path);
     }
-
-    /** @test */
-    public function canBuildUniquePath()
-    {
-        factory(Route::class)->create()
-            ->each(function ($route, $key) {
-                $route->translations()
-                    ->save(
-                        factory(RouteTranslation::class)
-                            ->make(['language_code' => 'en', 'path' => 'example-slug'])
-                    );
-            });
-
-        $path = $this->repository->buildUniquePath('example-slug', 'en');
-
-        $this->assertEquals('example-slug-1', $path);
-    }
 }
 

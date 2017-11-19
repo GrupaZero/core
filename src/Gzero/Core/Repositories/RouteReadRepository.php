@@ -75,23 +75,4 @@ class RouteReadRepository implements ReadRepository {
             $builder->getPage()
         );
     }
-
-    /**
-     * Function returns an unique path address from given path in specific language
-     *
-     * @param string $path         string path address to search for
-     * @param string $languageCode translation language code
-     *
-     * @return string an unique path address
-     */
-    public function buildUniquePath($path, $languageCode)
-    {
-        $count = RouteTranslation::query()
-            ->where('language_code', $languageCode)
-            ->whereRaw("path ~ '^$path($|-[0-9]+$)'")
-            ->count();
-
-        return ($count) ? $path . '-' . $count : $path;
-    }
-
 }

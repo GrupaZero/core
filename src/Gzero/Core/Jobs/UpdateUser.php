@@ -37,9 +37,9 @@ class UpdateUser {
             }
             $this->user->fill($this->attributes);
             $this->user->save();
+            event('user.updated', [$this->user]);
             return $this->user;
         });
-        event('user.updated', [$user]);
         return $user;
     }
 

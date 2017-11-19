@@ -64,10 +64,10 @@ class CreateUser {
                     'last_name'  => $this->lastName ?: null,
                 ]);
                 $user->save();
+                event('user.created', [$user]);
                 return $user;
             }
         );
-        event('user.created', [$user]);
         return $user;
     }
 

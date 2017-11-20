@@ -83,41 +83,49 @@ class CreateRolesAndPermissionsTable extends Migration {
 
         $permissions[] = [
             'name'     => 'admin-access',
-            'category' => 'general'
+            'category' => 'general',
+            'is_core'  => true
         ];
 
         $entities = ['content', 'block', 'user', 'file', 'role'];
         foreach ($entities as $entity) {
             $permissions[] = [
                 'name'     => $entity . '-create',
-                'category' => $entity
+                'category' => $entity,
+                'is_core'  => true
             ];
             $permissions[] = [
                 'name'     => $entity . '-read',
-                'category' => $entity
+                'category' => $entity,
+                'is_core'  => true
             ];
             $permissions[] = [
                 'name'     => $entity . '-update',
-                'category' => $entity
+                'category' => $entity,
+                'is_core'  => true
             ];
             $permissions[] = [
                 'name'     => $entity . '-delete',
-                'category' => $entity
+                'category' => $entity,
+                'is_core'  => true
             ];
         }
 
         // Options are different
         $permissions[] = [
             'name'     => 'options-read',
-            'category' => 'options'
+            'category' => 'options',
+            'is_core'  => true
         ];
         $permissions[] = [
             'name'     => 'options-update-general',
-            'category' => 'options'
+            'category' => 'options',
+            'is_core'  => true
         ];
         $permissions[] = [
             'name'     => 'options-update-seo',
-            'category' => 'options'
+            'category' => 'options',
+            'is_core'  => true
         ];
 
         Permission::insert($permissions);

@@ -30,7 +30,7 @@ class CreateRolesAndPermissionsTable extends Migration {
                 $table->increments('id');
                 $table->string('name')->unique();
                 $table->string('category');
-                $table->boolean('is_core');
+                $table->boolean('is_core')->default(false);
                 $table->timestamps();
             }
         );

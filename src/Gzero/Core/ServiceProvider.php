@@ -82,6 +82,7 @@ class ServiceProvider extends AbstractServiceProvider {
     public function boot()
     {
         $this->setDefaultLocale();
+        $this->shareEnabledLanguages();
 
         $this->registerRoutePatterns();
         $this->registerRoutes();
@@ -118,6 +119,17 @@ class ServiceProvider extends AbstractServiceProvider {
             throw new Exception('No default language found');
         }
         app()->setLocale($defaultLanguage->code);
+    }
+
+    /**
+     * It shares enabled languages with all Views
+     *
+     * @return void
+     */
+    protected function shareEnabledLanguages()
+    {
+        view()->share('language', resolve(LanguageService::class)->getDefault());
+        view()->share('languages', resolve(LanguageService::class)->getAllEnabled());
     }
 
     /**

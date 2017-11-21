@@ -18,12 +18,12 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-md-auto">
-            @foreach(['en', 'pl'] as $language)
+            @foreach($languages as $language)
                 <li class="nav-item">
-                    <a href="{{ routeMl('home', $language) }}"
-                       class="nav-link{{ (URL::full() == routeMl('home', $language)) ? ' active' : '' }}"
-                       title="{{$language}}">
-                        {{strtoupper($language)}}
+                    <a href="{{ routeMl('home', $language->code) }}"
+                       class="nav-link{{ (URL::full() == routeMl('home', $language->code)) ? ' active' : '' }}"
+                       title="{{$language->code}}">
+                        {{strtoupper($language->code)}}
                     </a>
                 </li>
             @endforeach

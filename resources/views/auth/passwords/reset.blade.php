@@ -1,19 +1,19 @@
-@extends('gzero-base::layouts.master')
+@extends('gzero-core::layouts.master')
 
 @section('title')
-    @lang('gzero-base::common.password_reset')
+    @lang('gzero-core::common.password_reset')
 @stop
 
 @section('content')
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <h1 class="page-header">@lang('gzero-base::common.password_reset')</h1>
+            <h1 class="page-header">@lang('gzero-core::common.password_reset')</h1>
 
             <form role="form" method="POST" action="{{ route('post.password.reset') }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="token" value="{{ $token }}">
                 <div class="form-group">
-                    <label for="email" class="control-label">@choice('gzero-base::common.email', 1)</label>
+                    <label for="email" class="control-label">@choice('gzero-core::common.email', 1)</label>
                     <input id="email" type="email" name="email" value="{{ $email or old('email') }}"
                            class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
                            required autofocus>
@@ -23,7 +23,7 @@
                     @endif
                 </div>
                 <div class="form-group">
-                    <label for="password" class="control-label">@lang('gzero-base::common.password')</label>
+                    <label for="password" class="control-label">@lang('gzero-core::common.password')</label>
                     <input id="password" type="password" name="password"
                            class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
                            required>
@@ -33,7 +33,7 @@
                     @endif
                 </div>
                 <div class="form-group">
-                    <label for="password-confirm" class="control-label">@lang('gzero-base::common.password_confirm')</label>
+                    <label for="password-confirm" class="control-label">@lang('gzero-core::common.password_confirm')</label>
                     <input id="password-confirm" type="password" name="password_confirmation"
                            class="form-control{{ $errors->has('password_confirmation') ? ' is-invalid' : '' }}"
                            required>
@@ -44,7 +44,7 @@
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">
-                        @lang('gzero-base::common.password_reset')
+                        @lang('gzero-core::common.password_reset')
                     </button>
                 </div>
             </form>

@@ -1,14 +1,14 @@
-@extends('gzero-base::layouts.master')
+@extends('gzero-core::layouts.master')
 
 @section('title')
-    @lang('gzero-base::common.password_reset')
+    @lang('gzero-core::common.password_reset')
 @stop
 
 <!-- Main Content -->
 @section('content')
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <h1 class="page-header">@lang('gzero-base::common.password_reset')</h1>
+            <h1 class="page-header">@lang('gzero-core::common.password_reset')</h1>
             @if (session('status'))
                 <div class="alert alert-success">
                     {{ session('status') }}
@@ -19,7 +19,7 @@
                 {{ csrf_field() }}
 
                 <div class="form-group">
-                    <label for="email" class="control-label">@choice('gzero-base::common.email', 1)</label>
+                    <label for="email" class="control-label">@choice('gzero-core::common.email', 1)</label>
                     <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}"
                     name="email" value="{{ old('email') }}" required>
                     @if ($errors->has('email'))
@@ -29,7 +29,7 @@
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">
-                        @lang('gzero-base::common.send_password_reset_link')
+                        @lang('gzero-core::common.send_password_reset_link')
                     </button>
                 </div>
             </form>

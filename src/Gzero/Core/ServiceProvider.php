@@ -263,7 +263,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerViews()
     {
-        $this->loadViewsFrom(__DIR__ . '/../../../resources/views', 'gzero-base');
+        $this->loadViewsFrom(__DIR__ . '/../../../resources/views', 'gzero-core');
     }
 
     /**
@@ -273,7 +273,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function registerTranslations()
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../../../resources/lang', 'gzero-base');
+        $this->loadTranslationsFrom(__DIR__ . '/../../../resources/lang', 'gzero-core');
     }
 
     /**
@@ -299,7 +299,7 @@ class ServiceProvider extends AbstractServiceProvider {
             [
                 __DIR__ . '/../../../config/config.php' => config_path('gzero.php'),
             ],
-            'gzero-base config'
+            'gzero-core config'
         );
 
         // Factories
@@ -307,15 +307,15 @@ class ServiceProvider extends AbstractServiceProvider {
             [
                 __DIR__ . '/../../../database/factories/UserFactory.php' => database_path('factories/gzero.php'),
             ],
-            'gzero-base factories'
+            'gzero-core factories'
         );
 
         // Views
         $this->publishes(
             [
-                __DIR__ . '/../../../resources/views' => resource_path('views/vendor/gzero-base'),
+                __DIR__ . '/../../../resources/views' => resource_path('views/vendor/gzero-core'),
             ],
-            'gzero-base views'
+            'gzero-core views'
         );
     }
 

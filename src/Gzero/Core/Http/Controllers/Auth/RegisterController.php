@@ -54,7 +54,7 @@ class RegisterController extends Controller {
      */
     public function showRegistrationForm()
     {
-        return view('gzero-base::auth.register');
+        return view('gzero-core::auth.register');
     }
 
     /**

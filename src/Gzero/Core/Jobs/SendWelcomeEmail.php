@@ -33,7 +33,7 @@ class SendWelcomeEmail implements ShouldQueue {
     public function handle(Mailer $mailer)
     {
         $mailer->send(
-            'gzero-base::emails.auth.welcome',
+            'gzero-core::emails.auth.welcome',
             ['user' => $this->user],
             function ($m) {
                 $m->to($this->user->email, $this->user->getPresenter()->displayName())

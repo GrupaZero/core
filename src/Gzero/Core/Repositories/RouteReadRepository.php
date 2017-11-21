@@ -36,7 +36,7 @@ class RouteReadRepository implements ReadRepository {
                     $join->where('is_active', true);
                 }
             })
-            ->first();
+            ->first(['routes.*']);
     }
 
     /**

@@ -732,7 +732,7 @@
 
                                                                             <em>
                                                                                 Copyright © {{ config('gzero.domain') }},
-                                                                                @lang('gzero-base::common.all_rights_reserved')</em>
+                                                                                @lang('gzero-core::common.all_rights_reserved')</em>
                                                                         </td>
                                                                     </tr>
                                                                     </tbody>

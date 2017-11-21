@@ -12,7 +12,7 @@ class AccountController extends Controller {
      */
     public function index()
     {
-        return view('gzero-base::account.index');
+        return view('gzero-core::account.index');
     }
 
     /**
@@ -24,7 +24,7 @@ class AccountController extends Controller {
      */
     public function edit(Request $request)
     {
-        return view('gzero-base::account.edit', ['isUserEmailSet' => strpos($request->user()->email, '@')]);
+        return view('gzero-core::account.edit', ['isUserEmailSet' => strpos($request->user()->email, '@')]);
     }
 
     /**
@@ -34,7 +34,7 @@ class AccountController extends Controller {
      */
     public function oauth()
     {
-        return view('gzero-base::account.oauth');
+        return view('gzero-core::account.oauth');
     }
 
     /**
@@ -49,7 +49,7 @@ class AccountController extends Controller {
         if (session()->has('showWelcomePage')) {
             session()->forget('showWelcomePage');
 
-            return view('gzero-base::account.welcome', ['method' => $request->get('method')]);
+            return view('gzero-core::account.welcome', ['method' => $request->get('method')]);
         }
 
         return redirect()->to(routeMl('home'));

@@ -1,11 +1,8 @@
 <?php namespace Gzero\Core\Models;
 
-use Gzero\Core\Traits\DatesFormatTrait;
 use Gzero\EloquentTree\Model\Tree;
 
 abstract class BaseTree extends Tree {
-
-    use DatesFormatTrait;
 
     /**
      * The storage format of the model's date columns.

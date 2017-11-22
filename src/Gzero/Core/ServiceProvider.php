@@ -82,7 +82,6 @@ class ServiceProvider extends AbstractServiceProvider {
     public function boot()
     {
         $this->setDefaultLocale();
-        $this->shareEnabledLanguages();
 
         $this->registerRoutePatterns();
         $this->registerRoutes();
@@ -101,6 +100,7 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerFactories();
         $this->registerMiddleware();
         $this->registerViews();
+        $this->registerViewComposers();
         $this->registerPublishes();
         $this->registerTranslations();
     }
@@ -122,14 +122,17 @@ class ServiceProvider extends AbstractServiceProvider {
     }
 
     /**
-     * It shares enabled languages with all Views
+     * It registers view composers
      *
      * @return void
      */
-    protected function shareEnabledLanguages()
+    protected function registerViewComposers()
     {
-        view()->share('language', resolve(LanguageService::class)->getDefault());
-        view()->share('languages', resolve(LanguageService::class)->getAllEnabled());
+        // Enabled languages for all Views
+        view()->composer('*', function ($view) {
+            $view->with('language', resolve(LanguageService::class)->getCurrent());
+            $view->with('languages', resolve(LanguageService::class)->getAllEnabled());
+        });
     }
 
     /**

@@ -20,16 +20,19 @@ class MultiLanguage {
     {
         /** @var LanguageService $languageService */
         $languageService = resolve(LanguageService::class);
-        $languages       = $languageService->getAllEnabled()->pluck('code');
-        $language        = $languages->first(function ($code) use ($request) {
-            return $code === $request->segment(1);
+        $languages       = $languageService->getAllEnabled();
+        $language        = $languages->first(function ($language) use ($request) {
+            return $language->code === $request->segment(1);
         });
 
         if (!empty($language)) {
-            app()->setLocale($language);
+            app()->setLocale($language->code);
         } else {
-            ServiceProvider::setDefaultLocale();
+            $language = ServiceProvider::setDefaultLocale();
         }
+
+        view()->share('language', $language);
+        view()->share('languages', $languages);
 
         return $next($request);
     }

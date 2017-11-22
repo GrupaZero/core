@@ -41,6 +41,6 @@ class LoginController extends Controller {
      */
     public function showLoginForm()
     {
-        return view('gzero-base::auth.login');
+        return view('gzero-core::auth.login');
     }
 }

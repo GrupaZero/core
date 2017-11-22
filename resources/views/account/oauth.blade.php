@@ -1,13 +1,13 @@
-@extends('gzero-base::layouts.master')
+@extends('gzero-core::layouts.master')
 
 @section('title')
-    @lang('gzero-base::user.oauth')
+    @lang('gzero-core::user.oauth')
 @stop
 
-@component('gzero-base::account.menu')@endcomponent
+@component('gzero-core::account.menu')@endcomponent
 
-@component('gzero-base::sections.content', ['class' => 'col-sm-8'])
-    <h1 class="page-header">@lang('gzero-base::user.oauth')</h1>
+@component('gzero-core::sections.content', ['class' => 'col-sm-8'])
+    <h1 class="page-header">@lang('gzero-core::user.oauth')</h1>
 
     <passport-clients></passport-clients>
     <passport-authorized-clients></passport-authorized-clients>

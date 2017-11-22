@@ -35,6 +35,6 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('gzero-base::auth.passwords.email');
+        return view('gzero-core::auth.passwords.email');
     }
 }

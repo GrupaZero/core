@@ -1,7 +1,7 @@
 <?php namespace Gzero\Core\Repositories;
 
 use Gzero\Core\Models\Route;
-use Gzero\Core\Services\RepositoryException;
+use Gzero\Core\Models\RouteTranslation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Gzero\Core\Query\QueryBuilder;
@@ -36,7 +36,7 @@ class RouteReadRepository implements ReadRepository {
                     $join->where('is_active', true);
                 }
             })
-            ->first();
+            ->first(['routes.*']);
     }
 
     /**
@@ -75,26 +75,4 @@ class RouteReadRepository implements ReadRepository {
             $builder->getPage()
         );
     }
-
-
-    // @TODO Add this when and where needed
-    ///**
-    // * Function returns an unique url address from given url in specific language
-    // *
-    // * @param string $url      string url address to search for
-    // * @param string $langCode translation language
-    // *
-    // * @return string $url an unique url address
-    // */
-    //protected function buildUniqueUrl($url, $langCode)
-    //{
-    //    // search for duplicated url
-    //    $count = $this->newQuery()
-    //        ->table('route_translations')
-    //        ->where('language_code', $langCode)
-    //        ->whereRaw("path ~ '^$url($|-[0-9]+$)'")
-    //        ->count();
-    //    return ($count) ? $url . '-' . $count : $url;
-    //}
-
 }

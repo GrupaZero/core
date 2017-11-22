@@ -112,5 +112,35 @@ class RouteReadRepositoryTest extends Unit {
         $this->assertEquals('1-example-slug', $result[3]->translations[0]->path);
         $this->assertEquals('0-example-slug', $result[4]->translations[0]->path);
     }
+
+    /** @test */
+    public function canGetByPath()
+    {
+        factory(Route::class, 2)->create()
+            ->each(function ($route, $key) {
+                $route->translations()
+                    ->save(
+                        factory(RouteTranslation::class)
+                            ->make(['language_code' => 'en', 'path' => $key . '-example-slug'])
+                    );
+                $route->translations()
+                    ->save(
+                        factory(RouteTranslation::class)
+                            ->make(['language_code' => 'pl', 'path' => $key . '-polish-slug'])
+                    );
+            });
+
+        $first  = $this->repository->getByPath('0-example-slug', 'en');
+        $second = $this->repository->getByPath('1-example-slug', 'en');
+        $third  = $this->repository->getByPath('not-existing-slug', 'en');
+
+        $this->assertEquals(2, $first->translations->count());
+        $this->assertEquals('0-example-slug', head($first->translations->toArray())['path']);
+
+        $this->assertEquals(2, $second->translations->count());
+        $this->assertEquals('1-example-slug', $second->translations->first()->path);
+
+        $this->assertNull($third);
+    }
 }
 

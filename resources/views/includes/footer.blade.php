@@ -3,7 +3,7 @@
         <div class="clearfix text-muted">
             <div class="copyrights pull-left">
                 Copyright &copy; {{ config('gzero.domain') }},
-                @lang('gzero-base::common.all_rights_reserved')
+                @lang('gzero-core::common.all_rights_reserved')
             </div>
         </div>
     </div>

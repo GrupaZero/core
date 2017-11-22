@@ -57,7 +57,7 @@ class DynamicRouter {
 
         event(new RouteMatched($route, $request));
 
-        return $route->getRoutable()->handle($route, $language);
+        return $route->getRoutable()->handle($language);
     }
 
     /**

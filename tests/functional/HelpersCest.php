@@ -37,11 +37,6 @@ class HelpersCest {
             {
                 return (object) ['code' => 'en', 'is_default' => true];
             }
-
-            function getCurrent()
-            {
-                return (object) ['code' => 'en', 'is_default' => true];
-            }
         });
 
         $I->haveMlRoutes(function ($router, $language) {

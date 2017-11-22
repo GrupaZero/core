@@ -100,7 +100,6 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerFactories();
         $this->registerMiddleware();
         $this->registerViews();
-        $this->registerViewComposers();
         $this->registerPublishes();
         $this->registerTranslations();
     }
@@ -110,7 +109,7 @@ class ServiceProvider extends AbstractServiceProvider {
      *
      * @throws Exception
      *
-     * @return void
+     * @return Language default language
      */
     public static function setDefaultLocale()
     {
@@ -118,21 +117,10 @@ class ServiceProvider extends AbstractServiceProvider {
         if (empty($defaultLanguage)) {
             throw new Exception('No default language found');
         }
-        app()->setLocale($defaultLanguage->code);
-    }
 
-    /**
-     * It registers view composers
-     *
-     * @return void
-     */
-    protected function registerViewComposers()
-    {
-        // Enabled languages for all Views
-        view()->composer('*', function ($view) {
-            $view->with('language', resolve(LanguageService::class)->getCurrent());
-            $view->with('languages', resolve(LanguageService::class)->getAllEnabled());
-        });
+        app()->setLocale($defaultLanguage->code);
+
+        return $defaultLanguage;
     }
 
     /**

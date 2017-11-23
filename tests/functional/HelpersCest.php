@@ -24,30 +24,37 @@ class HelpersCest {
 
     public function itGeneratesMlUrl(FunctionalTester $I)
     {
-        $I->assertEquals(url('news'), urlMl('news', new Language(['code' => 'en', 'is_default' => true])));
-        $I->assertEquals(url('pl/aktualnosci'), urlMl('aktualnosci', new Language(['code' => 'pl', 'is_default' => false])));
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false])
+            ])
+        ));
 
-        $I->assertEquals(url('en/news'), urlMl('news', new Language(['code' => 'en', 'is_default' => false])));
-        $I->assertEquals(url('aktualnosci'), urlMl('aktualnosci', new Language(['code' => 'pl', 'is_default' => true])));
+        $I->assertEquals(url('news'), urlMl('news', 'en'));
+        $I->assertEquals(url('pl/aktualnosci'), urlMl('aktualnosci', 'pl'));
+
+        $I->clearApplicationHandlers();
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => false]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => true])
+            ])
+        ));
+
+        $I->assertEquals(url('en/news'), urlMl('news', 'en'));
+        $I->assertEquals(url('aktualnosci'), urlMl('aktualnosci' , 'pl'));
     }
 
     public function itGeneratesUrlToMlRoute(FunctionalTester $I)
     {
-        $I->haveInstance(LanguageService::class, new class {
-            function getAllEnabled()
-            {
-                return collect([
-                    (object) ['code' => 'en', 'is_default' => true],
-                    (object) ['code' => 'pl', 'is_default' => false],
-                    (object) ['code' => 'de', 'is_default' => false],
-                ]);
-            }
-
-            function getDefault()
-            {
-                return (object) ['code' => 'en', 'is_default' => true];
-            }
-        });
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+                new Language(['code' => 'de', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
 
         $I->haveMlRoutes(function ($router, $language) {
             /** @var Router $router */

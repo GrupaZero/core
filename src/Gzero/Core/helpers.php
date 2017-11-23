@@ -92,6 +92,31 @@ if (!function_exists('routeMl')) {
     }
 }
 
+if (!function_exists('urlMl')) {
+
+    /**
+     * Generate the URL with language code as prefix.
+     *
+     * @param string $path     Path
+     * @param string $language Language code
+     *
+     * @return string
+     */
+    function urlMl($path, $language = null)
+    {
+        $url = $path;
+
+        if ($language) {
+            $language = resolve(LanguageService::class)->getByCode($language);
+            if ($language && !$language->isDefault()) {
+                $url = url($language->code . '/' . $path);
+            }
+        }
+
+        return url($url);
+    }
+}
+
 if (!function_exists('apiUrl')) {
     /**
      * Generate a url for the api

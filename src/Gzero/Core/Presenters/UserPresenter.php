@@ -18,7 +18,8 @@ class UserPresenter extends Presenter {
         if ($this->first_name || $this->last_name) {
             return $this->first_name . ' ' . $this->last_name;
         }
-        return trans('common.anonymous');
+
+        return trans('gzero-core::common.anonymous');
     }
 
 }

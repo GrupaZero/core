@@ -72,20 +72,12 @@ class AppCest {
 
         $I->clearApplicationHandlers();
 
-        $I->haveInstance(LanguageService::class, new class {
-            function getAllEnabled()
-            {
-                return collect([
-                    (object) ['code' => 'en', 'is_default' => false],
-                    (object) ['code' => 'pl', 'is_default' => true]
-                ]);
-            }
-
-            function getDefault()
-            {
-                return (object) ['code' => 'pl', 'is_default' => true];
-            }
-        });
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => false]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => true]),
+            ])
+        ));
 
         $I->haveRoutes(function ($router) {
             /** @var Router $router */

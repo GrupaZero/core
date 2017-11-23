@@ -108,7 +108,6 @@ if (!function_exists('urlMl')) {
 
         if ($language) {
             $language = resolve(LanguageService::class)->getByCode($language);
-
             if ($language && !$language->isDefault()) {
                 $url = url($language->code . '/' . $path);
             }

@@ -24,26 +24,29 @@ class HelpersCest {
 
     public function itGeneratesMlUrl(FunctionalTester $I)
     {
-        $I->haveInstance(LanguageService::class, new LanguageService(
+        $I->getApplication()->instance(LanguageService::class, new LanguageService(
             collect([
                 new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
                 new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false])
             ])
         ));
 
+        $I->assertEquals(url('news'), urlMl('news'));
         $I->assertEquals(url('news'), urlMl('news', 'en'));
         $I->assertEquals(url('pl/aktualnosci'), urlMl('aktualnosci', 'pl'));
+        $I->assertEquals(url('aktualnosci'), urlMl('aktualnosci', 'non_existing'));
 
-        $I->clearApplicationHandlers();
-        $I->haveInstance(LanguageService::class, new LanguageService(
+        $I->getApplication()->instance(LanguageService::class, new LanguageService(
             collect([
                 new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => false]),
                 new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => true])
             ])
         ));
 
+        $I->assertEquals(url('aktualnosci'), urlMl('aktualnosci', 'pl'));
+        $I->assertEquals(url('aktualnosci'), urlMl('aktualnosci'));
         $I->assertEquals(url('en/news'), urlMl('news', 'en'));
-        $I->assertEquals(url('aktualnosci'), urlMl('aktualnosci' , 'pl'));
+        $I->assertEquals(url('news'), urlMl('news', 'non_existing'));
     }
 
     public function itGeneratesUrlToMlRoute(FunctionalTester $I)

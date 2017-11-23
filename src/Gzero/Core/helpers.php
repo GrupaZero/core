@@ -1,5 +1,6 @@
 <?php
 
+use Gzero\Core\Models\Language;
 use Gzero\Core\Services\LanguageService;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +90,28 @@ if (!function_exists('routeMl')) {
     function routeMl($name, $language = null, $parameters = [], $absolute = true)
     {
         return \route(mlSuffix($name, $language), $parameters, $absolute);
+    }
+}
+
+if (!function_exists('urlMl')) {
+
+    /**
+     * Generate the URL with language prefix.
+     *
+     * @param string          $path     path
+     * @param Language|string $language Language code
+     *
+     * @return string
+     */
+    function urlMl($path, Language $language)
+    {
+        $url = $path;
+
+        if (!$language->isDefault()) {
+            $url = url($language->code . '/' . $path);
+        }
+
+        return url($url);
     }
 }
 

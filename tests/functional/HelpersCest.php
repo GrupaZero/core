@@ -1,5 +1,6 @@
 <?php namespace Core;
 
+use Gzero\Core\Models\Language;
 use Gzero\Core\Services\LanguageService;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
@@ -19,6 +20,15 @@ class HelpersCest {
     public function itGeneratesSecureApiUrl(FunctionalTester $I)
     {
         $I->assertEquals('https://api.dev.gzero.pl/v1/admin/users/1', apiUrl('admin/users', [1], true));
+    }
+
+    public function itGeneratesMlUrl(FunctionalTester $I)
+    {
+        $I->assertEquals(url('news'), urlMl('news', new Language(['code' => 'en', 'is_default' => true])));
+        $I->assertEquals(url('pl/aktualnosci'), urlMl('aktualnosci', new Language(['code' => 'pl', 'is_default' => false])));
+
+        $I->assertEquals(url('en/news'), urlMl('news', new Language(['code' => 'en', 'is_default' => false])));
+        $I->assertEquals(url('aktualnosci'), urlMl('aktualnosci', new Language(['code' => 'pl', 'is_default' => true])));
     }
 
     public function itGeneratesUrlToMlRoute(FunctionalTester $I)

@@ -29,4 +29,14 @@ class RouteTranslation extends Base {
     {
         return $this->belongsTo(Language::class);
     }
+
+    /**
+     * Route reverse relation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function route()
+    {
+        return $this->belongsTo(Route::class);
+    }
 }

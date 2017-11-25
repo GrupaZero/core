@@ -1,12 +1,22 @@
 <?php namespace Gzero\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Route extends Model {
 
-    protected $with = ['translations'];
+    /** @var array */
+    protected $fillable = [
+        'language_code',
+        'path',
+        'is_active'
+    ];
+
+    /** @var array */
+    protected $attributes = [
+        'is_active' => false
+    ];
 
     /**
      * Polymorphic relation to entities that could have route
@@ -27,32 +37,23 @@ class Route extends Model {
     }
 
     /**
-     * Translation one to many relation
+     * Language reverse relation
      *
-     * @param bool $onlyActive Only active translations
-     *
-     * @return HasMany
+     * @return BelongsTo
      */
-    public function translations($onlyActive = true)
+    public function language()
     {
-        if ($onlyActive) {
-            return $this->hasMany(RouteTranslation::class)->where('is_active', true);
-        }
-        return $this->hasMany(RouteTranslation::class);
+        return $this->belongsTo(Language::class);
     }
 
     /**
      * Check if route have active translation in specific language
      *
-     * @param string $languageCode Language code
-     *
      * @return mixed
      */
-    public function hasActiveTranslation($languageCode)
+    public function canBeShown()
     {
-        return $this->translations->first(function ($translation) use ($languageCode) {
-            return $translation->is_active === true && $translation->language_code === $languageCode;
-        });
+        return $this->is_active;
     }
 
     /**
@@ -65,7 +66,7 @@ class Route extends Model {
      */
     public static function buildUniquePath($path, $languageCode)
     {
-        $count = RouteTranslation::query()
+        $count = self::query()
             ->where('language_code', $languageCode)
             ->whereRaw("path ~ '^$path($|-[0-9]+$)'")
             ->count();

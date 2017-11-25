@@ -47,7 +47,7 @@ class DynamicRouter {
         $uri   = $this->getRequestedPath($request, $language);
         $route = $this->repository->getByPath($uri, $language->code);
 
-        if (!$this->routeCanBeShown($route, $language)) {
+        if (!$this->routeCanBeShown($route)) {
             throw new NotFoundHttpException();
         }
         if ($route->getRoutable() === null) {
@@ -76,14 +76,13 @@ class DynamicRouter {
     }
 
     /**
-     * @param Route|null $route    Route Object
-     * @param Language   $language Language object
+     * @param Route|null $route Route Object
      *
      * @return bool
      */
-    protected function routeCanBeShown($route, Language $language): bool
+    protected function routeCanBeShown($route): bool
     {
-        return !empty($route) && ($route->hasActiveTranslation($language->code) || $this->gate->allows('viewInactive', $route));
+        return !empty($route) && ($route->canBeShown() || $this->gate->allows('viewInactive', $route));
     }
 
 }

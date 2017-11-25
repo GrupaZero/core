@@ -1,8 +1,8 @@
 <?php
 
 use Faker\Generator as Faker;
+use Gzero\Core\Models\Language;
 use Gzero\Core\Models\Route;
-use Gzero\Core\Models\RouteTranslation;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,27 +17,19 @@ use Gzero\Core\Models\RouteTranslation;
 
 $factory->define(Route::class, function (Faker $faker) {
     return [
+        'language_code' => function () {
+            return factory(Language::class)->make()->code;
+        },
+        'path'          => $faker->slug,
         'routable_id'   => null,
-        'routable_type' => null
+        'routable_type' => null,
+        'is_active'     => true
     ];
 });
 
-$factory->state(Route::class, 'makeTranslationEn', function (Faker $faker) {
+$factory->state(Route::class, 'inactive', function (Faker $faker) {
     return [
-        'translations' => function () {
-            return factory(RouteTranslation::class, 1)
-                ->make(['language_code' => 'en']);
-        },
-    ];
-});
-
-$factory->state(Route::class, 'makeInactiveTranslationEn', function (Faker $faker) {
-    return [
-        'translations' => function () {
-            return factory(RouteTranslation::class, 1)
-                ->states('inactive')
-                ->make(['language_code' => 'en']);
-        },
+        'is_active' => false
     ];
 });
 

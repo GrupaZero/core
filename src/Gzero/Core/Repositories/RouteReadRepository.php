@@ -1,7 +1,6 @@
 <?php namespace Gzero\Core\Repositories;
 
 use Gzero\Core\Models\Route;
-use Gzero\Core\Models\RouteTranslation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Gzero\Core\Query\QueryBuilder;
@@ -28,15 +27,12 @@ class RouteReadRepository implements ReadRepository {
     public function getByPath(string $path, string $languageCode, bool $onlyActive = false)
     {
         return Route::query()
-            ->join('route_translations', function ($join) use ($languageCode, $path, $onlyActive) {
-                $join->on('routes.id', 'route_translations.route_id')
-                    ->where('language_code', $languageCode)
-                    ->where('path', $path);
-                if ($onlyActive) {
-                    $join->where('is_active', true);
-                }
+            ->where('language_code', $languageCode)
+            ->where('path', $path)
+            ->when($onlyActive, function ($query) {
+                $query->where('is_active', true);
             })
-            ->first(['routes.*']);
+            ->first();
     }
 
     /**
@@ -49,15 +45,6 @@ class RouteReadRepository implements ReadRepository {
     public function getMany(QueryBuilder $builder)
     {
         $query = Route::query();
-
-        if ($builder->hasRelation('translations')) {
-            if (!$builder->getRelationFilter('translations', 'language_code')) {
-                throw new RepositoryValidationException('Language code is required');
-            }
-            $query->join('route_translations as t', 'routes.id', '=', 't.route_id');
-            $builder->applyRelationFilters('translations', 't', $query);
-            $builder->applyRelationSorts('translations', 't', $query);
-        }
 
         $builder->applyFilters($query);
         $builder->applySorts($query);

@@ -31,6 +31,7 @@ use Illuminate\Http\Resources\Json\Resource;
  *     property="updated_at",
  *     type="string",
  *     format="date-time"
+ *   )
  * )
  */
 class Route extends Resource {

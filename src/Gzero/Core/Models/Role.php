@@ -1,6 +1,8 @@
 <?php namespace Gzero\Core\Models;
 
-class Role extends Base {
+use Illuminate\Database\Eloquent\Model;
+
+class Role extends Model {
 
     /**
      * @var string

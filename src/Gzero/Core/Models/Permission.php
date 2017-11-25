@@ -1,6 +1,8 @@
 <?php namespace Gzero\Core\Models;
 
-class Permission extends Base {
+use Illuminate\Database\Eloquent\Model;
+
+class Permission extends Model {
 
     /**
      * @var bool

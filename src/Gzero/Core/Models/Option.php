@@ -1,6 +1,8 @@
 <?php namespace Gzero\Core\Models;
 
-class Option extends Base {
+use Illuminate\Database\Eloquent\Model;
+
+class Option extends Model {
 
     /**
      * @var array

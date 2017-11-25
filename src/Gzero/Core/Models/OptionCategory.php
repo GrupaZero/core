@@ -1,6 +1,8 @@
 <?php namespace Gzero\Core\Models;
 
-class OptionCategory extends Base {
+use Illuminate\Database\Eloquent\Model;
+
+class OptionCategory extends Model {
 
     /**
      * @var bool

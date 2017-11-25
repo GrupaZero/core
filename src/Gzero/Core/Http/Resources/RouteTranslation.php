@@ -21,6 +21,16 @@ use Illuminate\Http\Resources\Json\Resource;
  *     property="is_active",
  *     type="boolean",
  *     example="true"
+ *   ),
+ *   @SWG\Property(
+ *     property="created_at",
+ *     type="string",
+ *     format="date-time"
+ *   ),
+ *   @SWG\Property(
+ *     property="updated_at",
+ *     type="string",
+ *     format="date-time"
  *   )
  * )
  */
@@ -39,7 +49,9 @@ class RouteTranslation extends Resource {
             'id'            => (int) $this->id,
             'language_code' => $this->language_code,
             'path'          => $this->path,
-            'is_active'     => $this->is_active
+            'is_active'     => $this->is_active,
+            'created_at'    => $this->created_at->toIso8601String(),
+            'updated_at'    => $this->updated_at->toIso8601String()
         ];
     }
 }

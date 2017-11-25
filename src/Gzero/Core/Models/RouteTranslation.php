@@ -1,8 +1,9 @@
 <?php namespace Gzero\Core\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class RouteTranslation extends Base {
+class RouteTranslation extends Model {
 
     /**
      * @var array

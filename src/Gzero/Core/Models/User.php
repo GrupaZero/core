@@ -1,5 +1,6 @@
 <?php namespace Gzero\Core\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -10,7 +11,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Robbo\Presenter\PresentableInterface;
 
-class User extends Base implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, PresentableInterface {
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract,PresentableInterface {
 
     use Authenticatable, Authorizable, CanResetPassword, HasApiTokens;
 

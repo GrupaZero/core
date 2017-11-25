@@ -1,9 +1,10 @@
 <?php namespace Gzero\Core\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Route extends Base {
+class Route extends Model {
 
     protected $with = ['translations'];
 

@@ -1,5 +1,6 @@
 <?php namespace Gzero\Core\Query;
 
+use Gzero\Core\Exception;
 use Illuminate\Database\Eloquent\Builder;
 
 class QueryBuilder {
@@ -44,9 +45,23 @@ class QueryBuilder {
      */
     public function getFilter(string $fieldName): ?Condition
     {
-        return array_first($this->filters, function ($filter) use ($fieldName) {
-            return $filter->getName() === $fieldName;
+        [$name, $filters] = $this->getArrayAndKeyName($fieldName, 'filters');
+
+        return array_first($filters, function ($filter) use ($name) {
+            return $filter->getName() === $name;
         });
+    }
+
+    /**
+     * Checks if specific filter was used during building query
+     *
+     * @param string $fieldName Relation name
+     *
+     * @return bool
+     */
+    public function hasFilter(string $fieldName): bool
+    {
+        return !!$this->getFilter($fieldName);
     }
 
     /**
@@ -68,9 +83,23 @@ class QueryBuilder {
      */
     public function getSort($sortName): ?OrderBy
     {
-        return array_first($this->sorts, function ($sort) use ($sortName) {
-            return $sort->getName() === $sortName;
+        [$name, $sorts] = $this->getArrayAndKeyName($sortName, 'sorts');
+
+        return array_first($sorts, function ($sort) use ($name) {
+            return $sort->getName() === $name;
         });
+    }
+
+    /**
+     * Checks if specific sort was used during building query
+     *
+     * @param string $sortName Relation name
+     *
+     * @return bool
+     */
+    public function hasSort(string $sortName): bool
+    {
+        return !!$this->getSort($sortName);
     }
 
     /**
@@ -223,24 +252,6 @@ class QueryBuilder {
     }
 
     /**
-     * Returns filter for specific relation
-     *
-     * @param string $relationName Relation name
-     * @param string $filterName   Filter name
-     *
-     * @return Condition|null
-     */
-    public function getRelationFilter(string $relationName, string $filterName): ?Condition
-    {
-        if (!$this->hasRelation($relationName)) {
-            return null;
-        }
-        return array_first($this->relations[$relationName]['filters'], function ($filter) use ($filterName) {
-            return $filter->getName() === $filterName;
-        });
-    }
-
-    /**
      * Returns all sorts for specific relation
      *
      * @param string $name Relation name
@@ -250,24 +261,6 @@ class QueryBuilder {
     public function getRelationSorts(string $name): array
     {
         return array_get($this->relations, $name . '.sorts', []);
-    }
-
-    /**
-     * Returns sort for specific relation
-     *
-     * @param string $relationName Relation name
-     * @param string $sortName     Sort name
-     *
-     * @return OrderBy|null
-     */
-    public function getRelationSort(string $relationName, string $sortName): ?OrderBy
-    {
-        if (!$this->hasRelation($relationName)) {
-            return null;
-        }
-        return array_first(array_get($this->relations, "$relationName.sorts", []), function ($sort) use ($sortName) {
-            return $sort->getName() === $sortName;
-        });
     }
 
     /**
@@ -328,6 +321,33 @@ class QueryBuilder {
         foreach ($this->getRelationSorts($relationName) as $sorts) {
             $sorts->apply($query, $alias);
         }
+    }
+
+    /**
+     * Helper function to figure out which array to use
+     *
+     * @param string $fieldName Field name
+     * @param string $key       filters or sorts
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
+    protected function getArrayAndKeyName(string $fieldName, string $key): array
+    {
+        if (!in_array($key, ['filters', 'sorts'], true)) {
+            throw new Exception('Key must be one of [filters, sorts]');
+        }
+        if (str_contains($fieldName, '.')) {
+            $path         = explode('.', $fieldName);
+            $name         = array_pop($path);
+            $relationPath = implode('.', $path);
+            $array        = array_get($this->relations, "$relationPath.$key", []);
+        } else {
+            $name  = $fieldName;
+            $array = ($key === 'filters') ? $this->filters : $this->sorts;
+        }
+        return [$name, $array];
     }
 
 }

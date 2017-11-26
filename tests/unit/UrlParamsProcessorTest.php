@@ -151,7 +151,7 @@ class UrlParamsProcessorTest extends Unit {
 
         $this->tester->assertEquals([new OrderBy('test1', 'DESC'), new OrderBy('test2', 'ASC')], $query->getSorts());
         $this->tester->assertEquals([new OrderBy('created_at', 'ASC')], $query->getRelationSorts('author'));
-        $this->tester->assertEquals(new OrderBy('created_at', 'ASC'), $query->getRelationSort('author', 'created_at'));
+        $this->tester->assertEquals(new OrderBy('created_at', 'ASC'), $query->getSort('author.created_at'));
     }
 
     /** @test */
@@ -179,7 +179,7 @@ class UrlParamsProcessorTest extends Unit {
         );
         $this->assertEquals(
             new Condition('language_code', '=', 'en'),
-            $query->getRelationFilter('translation', 'language_code')
+            $query->getFilter('translation.language_code')
         );
     }
 }

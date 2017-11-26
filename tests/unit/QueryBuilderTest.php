@@ -155,8 +155,8 @@ class QueryBuilderTest extends Unit {
             ->where('relation.name', 'between', [100, 200])
             ->orderBy('relation.nested.other_field', 'asc');
 
-        $filter = $this->qb->getRelationFilter('relation', 'name');
-        $sort   = $this->qb->getRelationSort('relation.nested', 'other_field');
+        $filter = $this->qb->getFilter('relation.name');
+        $sort   = $this->qb->getSort('relation.nested.other_field');
 
 
         $mock = Mockery::mock(Builder::class)
@@ -171,9 +171,15 @@ class QueryBuilderTest extends Unit {
         $this->qb->applyFilters($mock);
         $this->qb->applySorts($mock);
 
+        // Filters should be present
+        $this->assertTrue($this->qb->hasFilter('relation.name'));
+        $this->assertTrue($this->qb->hasSort('relation.nested.other_field'));
+
         // Should not add those filters on top level
         $this->assertNull($this->qb->getFilter('name'));
         $this->assertNull($this->qb->getSort('other_field'));
+        $this->assertFalse($this->qb->hasFilter('name'));
+        $this->assertFalse($this->qb->hasSort('other_field'));
 
         // Filters shouldn't be applied on top level
         $this->assertFalse($filter->hasBeenApplied());
@@ -181,6 +187,10 @@ class QueryBuilderTest extends Unit {
 
         $this->qb->applyRelationFilters('relation', 'r', $mock);
         $this->qb->applyRelationSorts('relation.nested', 'rn', $mock);
+
+        // Filters should be applied now
+        $this->assertTrue($filter->hasBeenApplied());
+        $this->assertTrue($sort->hasBeenApplied());
 
 
         // It shouldn't apply on next query

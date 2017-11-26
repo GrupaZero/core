@@ -133,27 +133,30 @@ class Condition {
      *
      * @param Builder     $query      Eloquent query builder
      * @param string|null $tableAlias SQL table alias
+     * @param string|null $customName Override field name
      *
      * @throws Exception
+     *
      * @return void
      */
-    public function apply(Builder $query, string $tableAlias = null)
+    public function apply(Builder $query, string $tableAlias = null, string $customName = null)
     {
         if ($this->hasBeenApplied()) {
             return;
         }
-        $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
+
+        $name = $this->buildDbName($tableAlias, $customName);
 
         switch ($this->operation) {
             case '=':
             case '!=':
-                $query->where($tableAlias . $this->name, $this->operation, $this->value);
+                $query->where($name, $this->operation, $this->value);
                 break;
             case 'between':
-                $query->whereBetween($tableAlias . $this->name, $this->value);
+                $query->whereBetween($name, $this->value);
                 break;
             case 'not between':
-                $query->whereNotBetween($tableAlias . $this->name, $this->value);
+                $query->whereNotBetween($name, $this->value);
                 break;
             default:
                 throw new Exception('Unsupported operation');
@@ -186,5 +189,20 @@ class Condition {
     {
         return ($this->operation === 'between' || $this->operation === 'not between')
             && count($this->value) === 2;
+    }
+
+    /**
+     * It builds db name
+     *
+     * @param string|null $tableAlias Table alias
+     * @param string|null $customName Optional field name to override to
+     *
+     * @return string
+     */
+    protected function buildDbName(?string $tableAlias, ?string $customName): string
+    {
+        $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
+        $name       = ($customName) ? $tableAlias . $customName : $tableAlias . $this->name;
+        return $name;
     }
 }

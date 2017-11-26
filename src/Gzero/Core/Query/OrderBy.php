@@ -85,16 +85,19 @@ class OrderBy {
      *
      * @param Builder     $query      Eloquent query builder
      * @param string|null $tableAlias SQL table alias
+     * @param string|null $customName Override field name
      *
      * @return void
      */
-    public function apply(Builder $query, $tableAlias = null)
+    public function apply(Builder $query, string $tableAlias = null, string $customName = null)
     {
         if ($this->hasBeenApplied()) {
             return;
         }
-        $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
-        $query->orderBy($tableAlias . $this->name, $this->direction);
+
+        $name = $this->buildDbName($tableAlias, $customName);
+
+        $query->orderBy($name, $this->direction);
         $this->setApplied(true);
     }
 
@@ -109,6 +112,21 @@ class OrderBy {
         if (!in_array($this->direction, self::$allowedOperations, true)) {
             throw new Exception('Unsupported orderBy operation');
         }
+    }
+
+    /**
+     * It build db name
+     *
+     * @param string|null $tableAlias Table alias
+     * @param string|null $customName Optional field name to override to
+     *
+     * @return string
+     */
+    protected function buildDbName(?string $tableAlias, ?string $customName = null): string
+    {
+        $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
+        $name       = ($customName) ? $tableAlias . $customName : $tableAlias . $this->name;
+        return $name;
     }
 
 }

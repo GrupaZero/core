@@ -1,5 +1,6 @@
 <?php namespace Gzero\Core\Query;
 
+use Gzero\Core\Exception;
 use Illuminate\Database\Eloquent\Builder;
 
 class Condition {

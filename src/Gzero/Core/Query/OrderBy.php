@@ -11,6 +11,9 @@ class OrderBy {
     /** @var string */
     protected $direction;
 
+    /** @var bool */
+    protected $applied = false;
+
     /** @var array */
     public static $allowedOperations = [
         'asc',
@@ -56,6 +59,28 @@ class OrderBy {
     }
 
     /**
+     * It sets applied property
+     *
+     * @param bool $value True or false
+     *
+     * @return void
+     */
+    public function setApplied(bool $value)
+    {
+        $this->applied = $value;
+    }
+
+    /**
+     * Checks if this sort was applied to query
+     *
+     * @return bool
+     */
+    public function hasBeenApplied(): bool
+    {
+        return $this->applied;
+    }
+
+    /**
      * Applies orderBy on Eloquent query builder
      *
      * @param Builder     $query      Eloquent query builder
@@ -65,8 +90,12 @@ class OrderBy {
      */
     public function apply(Builder $query, $tableAlias = null)
     {
+        if ($this->hasBeenApplied()) {
+            return;
+        }
         $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
         $query->orderBy($tableAlias . $this->name, $this->direction);
+        $this->setApplied(true);
     }
 
     /**

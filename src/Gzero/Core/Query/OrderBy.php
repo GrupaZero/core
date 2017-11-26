@@ -115,12 +115,14 @@ class OrderBy {
     }
 
     /**
-     * @param string $tableAlias Table alias
-     * @param string $customName Optional field name to override to
+     * It build db name
+     *
+     * @param string|null $tableAlias Table alias
+     * @param string|null $customName Optional field name to override to
      *
      * @return string
      */
-    protected function buildDbName(string $tableAlias, string $customName): string
+    protected function buildDbName(?string $tableAlias, ?string $customName = null): string
     {
         $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
         $name       = ($customName) ? $tableAlias . $customName : $tableAlias . $this->name;

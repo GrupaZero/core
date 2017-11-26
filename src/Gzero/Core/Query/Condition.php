@@ -192,12 +192,14 @@ class Condition {
     }
 
     /**
-     * @param string $tableAlias Table alias
-     * @param string $customName Optional field name to override to
+     * It builds db name
+     *
+     * @param string|null $tableAlias Table alias
+     * @param string|null $customName Optional field name to override to
      *
      * @return string
      */
-    protected function buildDbName(string $tableAlias, string $customName): string
+    protected function buildDbName(?string $tableAlias, ?string $customName): string
     {
         $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
         $name       = ($customName) ? $tableAlias . $customName : $tableAlias . $this->name;

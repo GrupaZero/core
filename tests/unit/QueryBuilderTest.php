@@ -5,6 +5,8 @@ use Gzero\Core\Exception;
 use Gzero\Core\Query\Condition;
 use Gzero\Core\Query\OrderBy;
 use Gzero\Core\Query\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
+use Mockery;
 
 class QueryBuilderTest extends Unit {
 
@@ -17,6 +19,11 @@ class QueryBuilderTest extends Unit {
     public function _before()
     {
         $this->qb = new QueryBuilder();
+    }
+
+    public function _after()
+    {
+        Mockery::close();
     }
 
     /** @test */
@@ -89,6 +96,118 @@ class QueryBuilderTest extends Unit {
         $this->assertEquals('z', $sort2->getName());
         $this->assertEquals('asc', $sort1->getDirection());
         $this->assertEquals('desc', $sort2->getDirection());
+    }
+
+    /** @test */
+    public function itUsesAppliedPropertyCorrectly()
+    {
+        $mock = Mockery::mock(Builder::class)
+            ->shouldReceive('where')
+            ->with('name', '!=', 'value')
+            ->once()
+            ->shouldReceive('orderBy')
+            ->with('name', 'asc')
+            ->once()
+            ->getMock();
+
+        $this->qb
+            ->where('name', '!=', 'value')
+            ->orderBy('name', 'asc');
+
+        $this->qb->applyFilters($mock);
+        $this->qb->applySorts($mock);
+
+        $filter = $this->qb->getFilter('name');
+        $sort   = $this->qb->getSort('name');
+
+        $this->assertTrue($filter->hasBeenApplied());
+        $this->assertTrue($sort->hasBeenApplied());
+
+        // It shouldn't apply on next query
+        $mock2 = Mockery::mock(Builder::class)
+            ->shouldNotReceive('where')
+            ->getMock();
+
+        $this->qb->applyFilters($mock2);
+        $this->qb->applySorts($mock2);
+
+        // Re-apply
+        $filter->setApplied(false);
+        $sort->setApplied(false);
+
+        $mock3 = Mockery::mock(Builder::class)
+            ->shouldReceive('where')
+            ->with('name', '!=', 'value')
+            ->once()
+            ->shouldReceive('orderBy')
+            ->with('name', 'asc')
+            ->once()
+            ->getMock();
+
+        $this->qb->applyFilters($mock3);
+        $this->qb->applySorts($mock3);
+    }
+
+    /** @test */
+    public function itUsesAppliedPropertyOnRelationsCorrectly()
+    {
+        $this->qb
+            ->where('relation.name', 'between', [100, 200])
+            ->orderBy('relation.nested.other_field', 'asc');
+
+        $filter = $this->qb->getRelationFilter('relation', 'name');
+        $sort   = $this->qb->getRelationSort('relation.nested', 'other_field');
+
+
+        $mock = Mockery::mock(Builder::class)
+            ->shouldReceive('whereBetween')
+            ->with('r.name', [100, 200])
+            ->once()
+            ->shouldReceive('orderBy')
+            ->with('rn.other_field', 'asc')
+            ->once()
+            ->getMock();
+
+        $this->qb->applyFilters($mock);
+        $this->qb->applySorts($mock);
+
+        // Should not add those filters on top level
+        $this->assertNull($this->qb->getFilter('name'));
+        $this->assertNull($this->qb->getSort('other_field'));
+
+        // Filters shouldn't be applied on top level
+        $this->assertFalse($filter->hasBeenApplied());
+        $this->assertFalse($sort->hasBeenApplied());
+
+        $this->qb->applyRelationFilters('relation', 'r', $mock);
+        $this->qb->applyRelationSorts('relation.nested', 'rn', $mock);
+
+
+        // It shouldn't apply on next query
+        $mock2 = Mockery::mock(Builder::class)
+            ->shouldNotReceive('whereBetween', 'orderBy')
+            ->getMock();
+
+        $this->qb->applyRelationFilters('relation', 'r', $mock2);
+        $this->qb->applyRelationSorts('relation.nested', 'rn', $mock2);
+
+
+        // Re-apply
+        $filter->setApplied(false);
+        $sort->setApplied(false);
+
+        // Apply on another query
+        $mock3 = Mockery::mock(Builder::class)
+            ->shouldReceive('whereBetween')
+            ->with('r.name', [100, 200])
+            ->once()
+            ->shouldReceive('orderBy')
+            ->with('rn.other_field', 'asc')
+            ->once()
+            ->getMock();
+
+        $this->qb->applyRelationFilters('relation', 'r', $mock3);
+        $this->qb->applyRelationSorts('relation.nested', 'rn', $mock3);
     }
 
 }

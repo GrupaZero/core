@@ -36,6 +36,20 @@ class QueryBuilder {
     }
 
     /**
+     * It returns single filter by field name
+     *
+     * @param string $fieldName Condition field name
+     *
+     * @return Condition
+     */
+    public function getFilter(string $fieldName): ?Condition
+    {
+        return array_first($this->filters, function ($filter) use ($fieldName) {
+            return $filter->getName() === $fieldName;
+        });
+    }
+
+    /**
      * It returns all sorts
      *
      * @return array
@@ -43,6 +57,20 @@ class QueryBuilder {
     public function getSorts(): array
     {
         return $this->sorts;
+    }
+
+    /**
+     * It returns single sort by field name
+     *
+     * @param string $sortName Sort field name
+     *
+     * @return OrderBy
+     */
+    public function getSort($sortName): ?OrderBy
+    {
+        return array_first($this->sorts, function ($sort) use ($sortName) {
+            return $sort->getName() === $sortName;
+        });
     }
 
     /**
@@ -138,7 +166,7 @@ class QueryBuilder {
             $fullPath            = explode('.', $key);
             $relationPath        = implode('.', array_slice($fullPath, 0, -1));
             $relationKey         = last($fullPath);
-            $result              = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
+            $result              = array_get($this->relations, $relationPath, ['filters' => [], 'sorts' => []]);
             $result['filters'][] = new Condition($relationKey, $operation, $value);
             array_set($this->relations, $relationPath, $result);
         } else {
@@ -161,7 +189,7 @@ class QueryBuilder {
             $fullPath          = explode('.', $key);
             $relationPath      = implode('.', array_slice($fullPath, 0, -1));
             $relationKey       = last($fullPath);
-            $result            = array_get($this->relations, $relationPath, ['filters' => [], 'sort' => []]);
+            $result            = array_get($this->relations, $relationPath, ['filters' => [], 'sorts' => []]);
             $result['sorts'][] = new OrderBy($relationKey, $direction);
             array_set($this->relations, $relationPath, $result);
         } else {
@@ -202,7 +230,7 @@ class QueryBuilder {
      *
      * @return Condition|null
      */
-    public function getRelationFilter(string $relationName, string $filterName)
+    public function getRelationFilter(string $relationName, string $filterName): ?Condition
     {
         if (!$this->hasRelation($relationName)) {
             return null;
@@ -232,12 +260,12 @@ class QueryBuilder {
      *
      * @return OrderBy|null
      */
-    public function getRelationSort(string $relationName, string $sortName)
+    public function getRelationSort(string $relationName, string $sortName): ?OrderBy
     {
         if (!$this->hasRelation($relationName)) {
             return null;
         }
-        return array_first($this->relations[$relationName]['sorts'], function ($sort) use ($sortName) {
+        return array_first(array_get($this->relations, "$relationName.sorts", []), function ($sort) use ($sortName) {
             return $sort->getName() === $sortName;
         });
     }

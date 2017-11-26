@@ -14,6 +14,9 @@ class Condition {
     /** @var mixed */
     protected $value;
 
+    /** @var bool */
+    protected $applied = false;
+
     /** @var array */
     public static $allowedOperations = [
         '=',
@@ -84,6 +87,28 @@ class Condition {
     }
 
     /**
+     * It sets applied property
+     *
+     * @param bool $value True or false
+     *
+     * @return void
+     */
+    public function setApplied(bool $value)
+    {
+        $this->applied = $value;
+    }
+
+    /**
+     * Checks if this condition was applied to query
+     *
+     * @return bool
+     */
+    public function hasBeenApplied(): bool
+    {
+        return $this->applied;
+    }
+
+    /**
      * Check if it's negate operation
      *
      * @return bool
@@ -114,6 +139,9 @@ class Condition {
      */
     public function apply(Builder $query, string $tableAlias = null)
     {
+        if ($this->hasBeenApplied()) {
+            return;
+        }
         $tableAlias = ($tableAlias != null) ? str_finish($tableAlias, '.') : '';
 
         switch ($this->operation) {
@@ -130,6 +158,7 @@ class Condition {
             default:
                 throw new Exception('Unsupported operation');
         }
+        $this->setApplied(true);
     }
 
     /**

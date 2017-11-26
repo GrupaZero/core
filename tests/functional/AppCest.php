@@ -13,6 +13,11 @@ use Mockery;
 
 class AppCest {
 
+    public function _after()
+    {
+        Mockery::close();
+    }
+
     public function applicationWorks(FunctionalTester $I)
     {
         $I->haveRoutes(function ($router) {

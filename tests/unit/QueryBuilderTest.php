@@ -220,4 +220,30 @@ class QueryBuilderTest extends Unit {
         $this->qb->applyRelationSorts('relation.nested', 'rn', $mock3);
     }
 
+    /** @test */
+    public function canManuallyImplementFilterOrSort()
+    {
+        $this->qb
+            ->where('relation.name', 'between', [100, 200])
+            ->orderBy('relation.nested.other_field', 'asc');
+
+        $mock = Mockery::mock(Builder::class)
+            ->shouldReceive('whereBetween')
+            ->with('r.test', [100, 200])
+            ->once()
+            ->shouldReceive('orderBy')
+            ->with('rn.test2', 'asc')
+            ->once()
+            ->getMock();
+
+        $filter = $this->qb->getFilter('relation.name');
+        $sort   = $this->qb->getSort('relation.nested.other_field');
+
+        $filter->apply($mock, 'r', 'test');
+        $sort->apply($mock, 'rn', 'test2');
+
+        $this->assertTrue($filter->hasBeenApplied());
+        $this->assertTrue($sort->hasBeenApplied());
+    }
+
 }

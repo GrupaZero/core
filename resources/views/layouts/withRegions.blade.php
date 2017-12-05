@@ -9,14 +9,14 @@
     @php($contentClass = 'col-sm-8')
 @endif
 
-@component('gzero-core::sections.sidebarLeft', ['blocks' => $blocks ?? []])
+@component('gzero-core::layouts._sidebarLeftSection', ['blocks' => $blocks ?? []])
     @yield('sidebarLeft')
 @endcomponent
 
-@component('gzero-core::sections.content', ['class' => $contentClass ?? null])
+@component('gzero-core::layouts._contentSection', ['class' => $contentClass ?? null])
     @yield('content')
 @endcomponent
 
-@component('gzero-core::sections.sidebarRight', ['blocks' => $blocks ?? []])
+@component('gzero-core::layouts._sidebarRightSection', ['blocks' => $blocks ?? []])
     @yield('sidebarRight')
 @endcomponent

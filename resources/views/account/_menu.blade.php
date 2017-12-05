@@ -1,4 +1,4 @@
-@component('gzero-core::sections.sidebarLeft', ['class' => 'col-sm-3'])
+@component('gzero-core::layouts._sidebarLeftSection', ['class' => 'col-sm-3'])
     <h3>{{ $user->displayName() }}</h3>
     <ul class="nav flex-column" role="navigation">
         <li class="nav-item">

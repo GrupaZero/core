@@ -7,6 +7,5 @@ Thumbs.db
 .vagrant
 .sass-cache
 .env.testing
-composer.lock
 
 tests/_output/*

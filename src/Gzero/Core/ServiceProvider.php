@@ -13,6 +13,7 @@ use Gzero\Core\Services\OptionService;
 use Gzero\Core\Policies\OptionPolicy;
 use Gzero\Core\Policies\UserPolicy;
 use Gzero\Core\Policies\RoutePolicy;
+use Gzero\DomainException;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
@@ -107,7 +108,7 @@ class ServiceProvider extends AbstractServiceProvider {
     /**
      * It registers default locale
      *
-     * @throws Exception
+     * @throws DomainException
      *
      * @return Language default language
      */
@@ -115,7 +116,7 @@ class ServiceProvider extends AbstractServiceProvider {
     {
         $defaultLanguage = resolve(LanguageService::class)->getDefault();
         if (empty($defaultLanguage)) {
-            throw new Exception('No default language found');
+            throw new DomainException('No default language found');
         }
 
         app()->setLocale($defaultLanguage->code);

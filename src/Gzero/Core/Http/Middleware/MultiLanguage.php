@@ -1,7 +1,6 @@
 <?php namespace Gzero\Core\Http\Middleware;
 
 use Closure;
-use Gzero\Core\Exception;
 use Gzero\Core\Services\LanguageService;
 use Gzero\Core\ServiceProvider;
 
@@ -13,7 +12,8 @@ class MultiLanguage {
      * @param \Illuminate\Http\Request $request Request object
      * @param \Closure                 $next    Next middleware
      *
-     * @throws Exception
+     * @throws \Gzero\DomainException
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)

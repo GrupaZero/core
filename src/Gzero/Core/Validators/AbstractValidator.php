@@ -1,6 +1,6 @@
 <?php namespace Gzero\Core\Validators;
 
-use Gzero\Core\Exception;
+use Gzero\InvalidArgumentException;
 use \Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Factory;
 use Illuminate\Validation\ValidationException;
@@ -14,29 +14,19 @@ abstract class AbstractValidator {
      */
     protected $data = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $context;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $placeholder = [];
 
-    /**
-     * @var \Illuminate\Validation\Validator
-     */
+    /** @var \Illuminate\Validation\Validator */
     protected $validator;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $rules = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $filters = [];
 
     /**
@@ -49,13 +39,17 @@ abstract class AbstractValidator {
         $this->validator = $validator;
     }
 
+    // @codingStandardsIgnoreStart
+    // IGNORE due to phpcs bug - https://github.com/squizlabs/PHP_CodeSniffer/issues/322
     /**
      * Validate passed data
      *
      * @param string $context Validation context
      * @param array  $data    Data to validate
      *
+     * @throws InvalidArgumentException
      * @throws ValidationException
+     *
      * @return array
      */
     public function validate($context = 'default', array $data = [])
@@ -69,10 +63,10 @@ abstract class AbstractValidator {
         $this->setValidator($this->validator->make($this->filterArray($rules, $this->data), $rules));
         if ($this->getValidator()->passes()) {
             return $this->getValidator()->getData();
-        } else {
-            throw new ValidationException($this->getValidator());
         }
+        throw new ValidationException($this->getValidator());
     }
+    // @codingStandardsIgnoreLine
 
     /**
      * Bind value for placeholder
@@ -150,16 +144,16 @@ abstract class AbstractValidator {
     /**
      * Build rules array
      *
+     * @throws InvalidArgumentException
+     *
      * @return array
-     * @throws Exception
      */
     protected function buildRulesArray()
     {
-        if (isset($this->rules[$this->context])) {
-            return $this->bindPlaceholders($this->rules[$this->context]);
-        } else {
-            throw new Exception("Undefined validation context: " . $this->context);
+        if (!isset($this->rules[$this->context])) {
+            throw new InvalidArgumentException("Undefined validation context: " . $this->context);
         }
+        return $this->bindPlaceholders($this->rules[$this->context]);
     }
 
     /**

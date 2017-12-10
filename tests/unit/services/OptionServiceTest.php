@@ -1,11 +1,10 @@
 <?php namespace Core;
 
-use Gzero\Core\Exception;
 use Gzero\Core\Models\Language;
 use Gzero\Core\Models\Option;
 use Gzero\Core\Models\OptionCategory;
-use Gzero\Core\Repositories\RepositoryValidationException;
 use Gzero\Core\Services\OptionService;
+use Gzero\InvalidArgumentException;
 
 class OptionServiceTest extends \Codeception\Test\Unit {
 
@@ -32,8 +31,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
 
         try {
             $this->service->getOptions($categoryKey);
-        } catch (Exception $exception) {
-            $this->assertEquals(RepositoryValidationException::class, get_class($exception));
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('Category nonexistent category does not exist', $exception->getMessage());
             return;
         }
@@ -52,8 +50,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
 
         try {
             $this->service->getOption($categoryKey, $optionKey);
-        } catch (Exception $exception) {
-            $this->assertEquals(RepositoryValidationException::class, get_class($exception));
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('Category nonexistent category does not exist', $exception->getMessage());
             return;
         }
@@ -72,8 +69,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
 
         try {
             $this->service->getOption($categoryKey, $optionKey);
-        } catch (Exception $exception) {
-            $this->assertEquals(RepositoryValidationException::class, get_class($exception));
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('Option nonexistent option in category general does not exist', $exception->getMessage());
             return;
         }
@@ -90,8 +86,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
 
         try {
             $this->service->deleteCategory($categoryKey);
-        } catch (Exception $exception) {
-            $this->assertEquals(RepositoryValidationException::class, get_class($exception));
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('Category nonexistent category does not exist', $exception->getMessage());
             return;
         }
@@ -110,8 +105,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
 
         try {
             $this->service->deleteOption($categoryKey, $optionKey);
-        } catch (Exception $exception) {
-            $this->assertEquals(RepositoryValidationException::class, get_class($exception));
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('Category nonexistent category does not exist', $exception->getMessage());
             return;
         }
@@ -130,8 +124,7 @@ class OptionServiceTest extends \Codeception\Test\Unit {
 
         try {
             $this->service->deleteOption($categoryKey, $optionKey);
-        } catch (Exception $exception) {
-            $this->assertEquals(RepositoryValidationException::class, get_class($exception));
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('Option nonexistent option in category general does not exist', $exception->getMessage());
             return;
         }
@@ -145,10 +138,15 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $optionKey   = 'site_name';
         $categoryKey = 'general';
 
-        $this->assertEquals(
-            $this->expectedOptions[$categoryKey][$optionKey]['en'],
-            $this->service->getOption($categoryKey, $optionKey)['en']
-        );
+        try {
+            $this->assertEquals(
+                $this->expectedOptions[$categoryKey][$optionKey]['en'],
+                $this->service->getOption($categoryKey, $optionKey)['en']
+            );
+        } catch (InvalidArgumentException $e) {
+            $this->fail('Exception should not be thrown');
+            return;
+        }
 
         $this->assertNotNull(Option::getByKey($optionKey));
         $this->assertNotNull(OptionCategory::getByKey($categoryKey));
@@ -159,10 +157,15 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     {
         $categoryKey = 'general';
 
-        $this->assertEquals(
-            collect($this->expectedOptions[$categoryKey]),
-            $this->service->getOptions($categoryKey)
-        );
+        try {
+            $this->assertEquals(
+                collect($this->expectedOptions[$categoryKey]),
+                $this->service->getOptions($categoryKey)
+            );
+        } catch (InvalidArgumentException $e) {
+            $this->fail('Exception should not be thrown');
+            return;
+        }
 
         $this->assertNotNull(OptionCategory::getByKey($categoryKey));
     }
@@ -184,14 +187,25 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $optionKey   = 'some option';
         $value       = ['en' => 'new option value'];
 
-        $this->service->updateOrCreateOption($categoryKey, $optionKey, $value);
+        try {
+            $this->service->updateOrCreateOption($categoryKey, $optionKey, $value);
+        } catch (InvalidArgumentException $e) {
+            $this->fail('Exception should not be thrown');
+            return;
+        }
 
         $savedOption = OptionCategory::getByKey($categoryKey)->options()->where(['key' => $optionKey])->first();
         $this->assertNotNull($savedOption);
         $this->assertEquals($value, $savedOption->value);
 
         $this->recreateRepository();
-        $this->assertEquals($value, $this->service->getOption($categoryKey, $optionKey));
+
+        try {
+            $this->assertEquals($value, $this->service->getOption($categoryKey, $optionKey));
+        } catch (InvalidArgumentException $e) {
+            $this->fail('Exception should not be thrown');
+            return;
+        }
 
         $this->assertNotNull(Option::getByKey($optionKey));
         $this->assertNotNull(OptionCategory::getByKey($categoryKey));
@@ -203,7 +217,13 @@ class OptionServiceTest extends \Codeception\Test\Unit {
     {
         $categoryKey = 'general';
 
-        $this->service->deleteCategory($categoryKey);
+        try {
+            $this->service->deleteCategory($categoryKey);
+        } catch (InvalidArgumentException $e) {
+            $this->fail('Exception should not be thrown');
+            return;
+        }
+
         $this->assertNull(OptionCategory::getByKey($categoryKey));
     }
 
@@ -213,7 +233,13 @@ class OptionServiceTest extends \Codeception\Test\Unit {
         $categoryKey = 'general';
         $optionKey   = 'site_name';
 
-        $this->service->deleteOption('general', $optionKey);
+        try {
+            $this->service->deleteOption('general', $optionKey);
+        } catch (InvalidArgumentException $e) {
+            $this->fail('Exception should not be thrown');
+            return;
+        }
+
         $this->assertFalse(
             OptionCategory::getByKey($categoryKey)->options()->
             where(['key' => $optionKey])->exists()

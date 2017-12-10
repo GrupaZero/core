@@ -1,6 +1,6 @@
 <?php namespace Gzero\Core\Query;
 
-use Gzero\Core\Exception;
+use Gzero\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Builder;
 
 class Condition {
@@ -43,12 +43,12 @@ class Condition {
      * @param string $operation Operation
      * @param mixed  $value     Value
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function __construct(string $name, string $operation, $value)
     {
         if (empty($name)) {
-            throw new Exception('Condition: Key must be defined');
+            throw new InvalidArgumentException('Condition: Key must be defined');
         }
         $this->name      = strtolower($name);
         $this->operation = strtolower($operation);
@@ -135,7 +135,7 @@ class Condition {
      * @param string|null $tableAlias SQL table alias
      * @param string|null $customName Override field name
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
      *
      * @return void
      */
@@ -159,7 +159,7 @@ class Condition {
                 $query->whereNotBetween($name, $this->value);
                 break;
             default:
-                throw new Exception('Unsupported operation');
+                throw new InvalidArgumentException('Unsupported operation');
         }
         $this->setApplied(true);
     }
@@ -167,16 +167,17 @@ class Condition {
     /**
      * Validates operation
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
+     *
      * @return void
      */
     protected function validate()
     {
         if (!in_array($this->operation, self::$allowedOperations, true)) {
-            throw new Exception('Unsupported condition operation');
+            throw new InvalidArgumentException('Unsupported condition operation');
         }
         if (is_array($this->value) && !$this->isCorrectRangeFormat()) {
-            throw new Exception('Wrong number of values for range');
+            throw new InvalidArgumentException('Wrong number of values for range');
         }
     }
 

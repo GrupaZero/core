@@ -101,6 +101,8 @@ class UserController extends ApiController {
      *
      * @param UrlParamsProcessor $processor Params processor
      *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
      * @return UserCollection
      */
     public function index(UrlParamsProcessor $processor)
@@ -134,7 +136,7 @@ class UserController extends ApiController {
      *   @SWG\Parameter(
      *     name="id",
      *     in="path",
-     *     description="ID of user that needs to be returned.",
+     *     description="Id of user that needs to be returned.",
      *     required=true,
      *     type="integer"
      *   ),
@@ -147,6 +149,8 @@ class UserController extends ApiController {
      * )
      *
      * @param int $id user id
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @return UserResource
      */
@@ -207,6 +211,9 @@ class UserController extends ApiController {
      *
      * @param int $id User id
      *
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
      * @return UserResource
      */
     public function update($id)
@@ -264,6 +271,9 @@ class UserController extends ApiController {
      *  )
      * )
      *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     *
      * @return UserResource
      */
     public function updateMe()
@@ -309,6 +319,8 @@ class UserController extends ApiController {
      * )
      *
      * @param int $id Id of the user
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @return \Illuminate\Http\JsonResponse
      */

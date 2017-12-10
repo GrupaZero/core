@@ -1,6 +1,6 @@
 <?php namespace Gzero\Core\Query;
 
-use Gzero\Core\Exception;
+use Gzero\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Builder;
 
 class QueryBuilder {
@@ -41,6 +41,8 @@ class QueryBuilder {
      *
      * @param string $fieldName Condition field name
      *
+     * @throws InvalidArgumentException
+     *
      * @return Condition
      */
     public function getFilter(string $fieldName): ?Condition
@@ -56,6 +58,8 @@ class QueryBuilder {
      * Checks if specific filter was used during building query
      *
      * @param string $fieldName Relation name
+     *
+     * @throws InvalidArgumentException
      *
      * @return bool
      */
@@ -79,6 +83,8 @@ class QueryBuilder {
      *
      * @param string $sortName Sort field name
      *
+     * @throws InvalidArgumentException
+     *
      * @return OrderBy
      */
     public function getSort($sortName): ?OrderBy
@@ -94,6 +100,8 @@ class QueryBuilder {
      * Checks if specific sort was used during building query
      *
      * @param string $sortName Relation name
+     *
+     * @throws InvalidArgumentException
      *
      * @return bool
      */
@@ -329,14 +337,14 @@ class QueryBuilder {
      * @param string $fieldName Field name
      * @param string $key       filters or sorts
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
      *
      * @return array
      */
     protected function getArrayAndKeyName(string $fieldName, string $key): array
     {
         if (!in_array($key, ['filters', 'sorts'], true)) {
-            throw new Exception('Key must be one of [filters, sorts]');
+            throw new InvalidArgumentException('Key must be one of [filters, sorts]');
         }
         if (str_contains($fieldName, '.')) {
             $path         = explode('.', $fieldName);

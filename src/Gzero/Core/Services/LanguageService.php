@@ -1,7 +1,6 @@
 <?php namespace Gzero\Core\Services;
 
 use Gzero\Core\Models\Language;
-use Gzero\Core\Repositories\RepositoryException;
 use Illuminate\Support\Collection;
 
 class LanguageService {
@@ -39,7 +38,6 @@ class LanguageService {
      *
      * @param string $code Lang code eg. "en"
      *
-     * @throws RepositoryException
      * @return \Gzero\Core\Models\Language
      */
     public function getByCode($code)

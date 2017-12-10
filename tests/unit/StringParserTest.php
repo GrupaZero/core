@@ -1,7 +1,7 @@
 <?php namespace Core;
 
 use Codeception\Test\Unit;
-use Gzero\Core\Exception;
+use Gzero\InvalidArgumentException;
 use Gzero\Core\Parsers\StringParser;
 use Illuminate\Http\Request;
 
@@ -48,7 +48,7 @@ class StringParserTest extends Unit {
     {
         try {
             new StringParser('', '');
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('StringParser: Name must be defined', $exception->getMessage());
             return;
         }

@@ -2,8 +2,7 @@
 
 use Gzero\Core\Models\Option;
 use Gzero\Core\Models\OptionCategory;
-use Gzero\Core\Repositories\RepositoryException;
-use Gzero\Core\Repositories\RepositoryValidationException;
+use Gzero\InvalidArgumentException;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -78,8 +77,9 @@ class OptionService {
      *
      * @param string $categoryKey category key
      *
+     * @throws InvalidArgumentException
+     *
      * @return Collection collection mapping option keys (within the given category) to their values
-     * @throws RepositoryException When queried for non-existent category
      */
     public function getOptions($categoryKey)
     {
@@ -94,8 +94,9 @@ class OptionService {
      * @param string $categoryKey Category key
      * @param string $optionKey   Option key
      *
+     * @throws InvalidArgumentException
+     *
      * @return string option value
-     * @throws RepositoryException When queried for non-existent option
      */
     public function getOption($categoryKey, $optionKey)
     {
@@ -110,8 +111,9 @@ class OptionService {
      *
      * @param string $categoryKey Category key
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryException When queried for non-existent category
      */
     public function createCategory($categoryKey)
     {
@@ -131,8 +133,9 @@ class OptionService {
      * @param string $optionKey   Option key
      * @param string $value       Option value
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryException When queried for non-existent category
      */
     public function updateOrCreateOption($categoryKey, $optionKey, $value)
     {
@@ -151,8 +154,9 @@ class OptionService {
      *
      * @param string $categoryKey Category key
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryException When queried for non-existent category
      */
     public function deleteCategory($categoryKey)
     {
@@ -169,8 +173,9 @@ class OptionService {
      * @param string $categoryKey Category key
      * @param string $optionKey   Option key
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryException When queried for non-existent category or option
      */
     public function deleteOption($categoryKey, $optionKey)
     {
@@ -237,13 +242,14 @@ class OptionService {
      *
      * @param string $name Name to validate
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryValidationException
      */
     private function validateName($name)
     {
         if (!is_string($name) || trim($name) === '') {
-            throw new RepositoryValidationException('Invalid category name format');
+            throw new InvalidArgumentException('Invalid category name format');
         }
     }
 
@@ -252,13 +258,14 @@ class OptionService {
      *
      * @param string $name Value to validate
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryValidationException
      */
     private function validateValue($name)
     {
         if (!is_array($name)) {
-            throw new RepositoryValidationException('Invalid option value format');
+            throw new InvalidArgumentException('Invalid option value format');
         }
     }
 
@@ -268,8 +275,9 @@ class OptionService {
      * @param string $categoryKey Category key
      * @param string $optionKey   Option key
      *
+     * @throws InvalidArgumentException
+     *
      * @return bool
-     * @throws RepositoryException When queried for non-existent category
      */
     private function optionExists($categoryKey, $optionKey)
     {
@@ -284,13 +292,14 @@ class OptionService {
      * @param string $categoryKey Category key
      * @param string $optionKey   Option key
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryValidationException
      */
     private function requireOptionExists($categoryKey, $optionKey)
     {
         if (!$this->optionExists($categoryKey, $optionKey)) {
-            throw new RepositoryValidationException(
+            throw new InvalidArgumentException(
                 'Option ' . $optionKey . ' in category ' . $categoryKey . ' does not exist'
             );
         }
@@ -313,13 +322,14 @@ class OptionService {
      *
      * @param string $categoryKey Category key
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryValidationException
      */
     private function requireCategoryExists($categoryKey)
     {
         if (!$this->categoryExists($categoryKey)) {
-            throw new RepositoryValidationException('Category ' . $categoryKey . ' does not exist');
+            throw new InvalidArgumentException('Category ' . $categoryKey . ' does not exist');
         }
     }
 
@@ -328,13 +338,14 @@ class OptionService {
      *
      * @param string $categoryKey Category key
      *
+     * @throws InvalidArgumentException
+     *
      * @return void
-     * @throws RepositoryValidationException
      */
     private function requireCategoryDoesNotExist($categoryKey)
     {
         if ($this->categoryExists($categoryKey)) {
-            throw new RepositoryValidationException('The category ' . $categoryKey . ' already exists');
+            throw new InvalidArgumentException('The category ' . $categoryKey . ' already exists');
         }
     }
 }

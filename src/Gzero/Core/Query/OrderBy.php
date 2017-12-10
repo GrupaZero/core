@@ -1,6 +1,6 @@
 <?php namespace Gzero\Core\Query;
 
-use Gzero\Core\Exception;
+use Gzero\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrderBy {
@@ -26,12 +26,12 @@ class OrderBy {
      * @param string $name      Column name
      * @param string $direction Direction
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function __construct(string $name, string $direction)
     {
         if (empty($name)) {
-            throw new Exception('OrderBy: Name must be defined');
+            throw new InvalidArgumentException('OrderBy: Name must be defined');
         }
         $this->name      = strtolower($name);
         $this->direction = strtolower($direction);
@@ -104,13 +104,14 @@ class OrderBy {
     /**
      * Validates
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
+     *
      * @return void
      */
     protected function validate()
     {
         if (!in_array($this->direction, self::$allowedOperations, true)) {
-            throw new Exception('Unsupported orderBy operation');
+            throw new InvalidArgumentException('Unsupported orderBy operation');
         }
     }
 

@@ -4,9 +4,9 @@
     @lang('gzero-core::user.my_account')
 @stop
 
-@component('gzero-core::account.menu')@endcomponent
+@component('gzero-core::account._menu')@endcomponent
 
-@component('gzero-core::sections.content', ['class' => 'col-sm-8'])
+@component('gzero-core::layouts._contentSection', ['class' => 'col-sm-8'])
     <h1 class="page-header">@lang('gzero-core::user.my_account')</h1>
 
     <h3>{{ $user->first_name }} {{ $user->lastName }}</h3>

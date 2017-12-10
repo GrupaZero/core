@@ -1,7 +1,7 @@
 <?php namespace Gzero\Core\Parsers;
 
-use Gzero\Core\Exception;
 use Gzero\Core\Query\QueryBuilder;
+use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
 /**
@@ -35,12 +35,12 @@ class DateRangeParser implements ConditionParser {
      *
      * @param array  $options Optional array of options
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function __construct(string $name, $options = [])
     {
         if (empty($name)) {
-            throw new Exception('DataRangeParser: Name must be defined');
+            throw new InvalidArgumentException('DataRangeParser: Name must be defined');
         }
         $this->name   = $name;
         $this->option = $options;

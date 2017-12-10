@@ -1,7 +1,7 @@
 <?php namespace Gzero\Core\Parsers;
 
-use Gzero\Core\Exception;
 use Gzero\Core\Query\QueryBuilder;
+use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
 class NumericParser implements ConditionParser {
@@ -29,12 +29,12 @@ class NumericParser implements ConditionParser {
      *
      * @param array  $options Optional array of options
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function __construct(string $name, $options = [])
     {
         if (empty($name)) {
-            throw new Exception('NumericParser: Name must be defined');
+            throw new InvalidArgumentException('NumericParser: Name must be defined');
         }
         $this->name   = $name;
         $this->option = $options;

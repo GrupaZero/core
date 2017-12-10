@@ -1,10 +1,10 @@
 <?php namespace Core;
 
 use Codeception\Test\Unit;
-use Gzero\Core\Exception;
 use Gzero\Core\Query\Condition;
 use Gzero\Core\Query\OrderBy;
 use Gzero\Core\Query\QueryBuilder;
+use Gzero\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Builder;
 use Mockery;
 
@@ -64,7 +64,7 @@ class QueryBuilderTest extends Unit {
             $this->qb
                 ->where('x', '=', 1)
                 ->where('y', 'unsupported', 2);
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('Unsupported condition operation', $exception->getMessage());
             return;
         }

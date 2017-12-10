@@ -5,11 +5,9 @@ use Gzero\Core\Models\Option;
 use Gzero\Core\Http\Resources\Option as OptionResource;
 use Gzero\Core\Http\Resources\OptionCollection;
 use Gzero\Core\Http\Resources\OptionCategoryCollection;
-use Gzero\Core\Repositories\RepositoryValidationException;
 use Gzero\Core\Services\OptionService;
 use Gzero\Core\Validators\OptionValidator;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class OptionController extends ApiController {
 
@@ -81,16 +79,14 @@ class OptionController extends ApiController {
      *
      * @param string $key option category key
      *
+     * @throws \Gzero\InvalidArgumentException
+     *
      * @return OptionCollection
      */
     public function show($key)
     {
-        try {
-            $option = $this->optionService->getOptions($key);
-            return new OptionCollection($option);
-        } catch (RepositoryValidationException $e) {
-            return $this->errorBadRequest($e->getMessage());
-        }
+        $option = $this->optionService->getOptions($key);
+        return new OptionCollection($option);
     }
 
     /**
@@ -150,19 +146,17 @@ class OptionController extends ApiController {
      *
      * @param string $categoryKey option category key
      *
-     * @return OptionResource
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Gzero\InvalidArgumentException
      *
+     * @return OptionResource
      */
     public function update($categoryKey)
     {
         $input = $this->validator->validate('update');
         $this->authorize('update', [Option::class, $categoryKey]);
-        try {
-            $this->optionService->updateOrCreateOption($categoryKey, $input['key'], $input['value']);
-            return new OptionResource($this->optionService->getOption($categoryKey, $input['key']));
-        } catch (RepositoryValidationException $e) {
-            return $this->errorBadRequest($e->getMessage());
-        }
+        $this->optionService->updateOrCreateOption($categoryKey, $input['key'], $input['value']);
+        return new OptionResource($this->optionService->getOption($categoryKey, $input['key']));
     }
 }

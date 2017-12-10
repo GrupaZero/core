@@ -1,8 +1,8 @@
 <?php namespace Core;
 
 use Codeception\Test\Unit;
-use Gzero\Core\Exception;
 use Gzero\Core\Parsers\NumericParser;
+use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
 class NumericParserTest extends Unit {
@@ -84,7 +84,7 @@ class NumericParserTest extends Unit {
     {
         try {
             new NumericParser('', '');
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('NumericParser: Name must be defined', $exception->getMessage());
             return;
         }

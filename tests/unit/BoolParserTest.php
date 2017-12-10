@@ -1,8 +1,8 @@
 <?php namespace Core;
 
 use Codeception\Test\Unit;
-use Gzero\Core\Exception;
 use Gzero\Core\Parsers\BoolParser;
+use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
 class BoolParserTest extends Unit {
@@ -84,7 +84,7 @@ class BoolParserTest extends Unit {
     {
         try {
             new BoolParser('', '');
-        } catch (Exception $exception) {
+        } catch (InvalidArgumentException $exception) {
             $this->assertEquals('BoolParser: Name must be defined', $exception->getMessage());
             return;
         }

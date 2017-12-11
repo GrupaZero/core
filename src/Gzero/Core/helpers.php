@@ -134,6 +134,20 @@ if (!function_exists('apiUrl')) {
     }
 }
 
+if (!function_exists('language')) {
+    /**
+     * Returns language model for specified language code
+     *
+     * @param string $code Language code
+     *
+     * @return \Gzero\Core\Models\Language
+     */
+    function language($code)
+    {
+        return resolve(LanguageService::class)->getByCode($code);
+    }
+}
+
 if (!function_exists('isProviderLoaded')) {
     /**
      * Check if specified provider is loaded

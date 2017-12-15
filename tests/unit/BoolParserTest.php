@@ -26,6 +26,15 @@ class BoolParserTest extends Unit {
     }
 
     /** @test */
+    public function itCanParseTrueStringToBooleanValue()
+    {
+        $parser = new BoolParser('is_active');
+        $parser->parse(new Request(['is_active' => 'true']));
+        $this->assertEquals('=', $parser->getOperation());
+        $this->assertEquals(true, $parser->getValue());
+    }
+
+    /** @test */
     public function itCanParseBooleanMatchWhenValueIsOfTypeInteger()
     {
         $parser = new BoolParser('is_active');
@@ -48,6 +57,15 @@ class BoolParserTest extends Unit {
     {
         $parser = new BoolParser('is_active');
         $parser->parse(new Request(['is_active' => false]));
+        $this->assertEquals('=', $parser->getOperation());
+        $this->assertEquals(false, $parser->getValue());
+    }
+
+    /** @test */
+    public function itCanParseFalseStringToBooleanValue()
+    {
+        $parser = new BoolParser('is_active');
+        $parser->parse(new Request(['is_active' => 'false']));
         $this->assertEquals('=', $parser->getOperation());
         $this->assertEquals(false, $parser->getValue());
     }

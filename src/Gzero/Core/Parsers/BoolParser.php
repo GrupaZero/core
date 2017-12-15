@@ -91,7 +91,7 @@ class BoolParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
-            $this->value   = $request->get($this->name);
+            $this->value   = filter_var($request->get($this->name), FILTER_VALIDATE_BOOLEAN);
         }
     }
 
@@ -102,7 +102,7 @@ class BoolParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return 'boolean';
+        return 'regex:/^(true|false|1|0)$/';
     }
 
     /**

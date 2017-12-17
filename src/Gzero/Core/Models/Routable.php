@@ -12,7 +12,6 @@ interface Routable {
     public function handle(Language $language): Response;
 
     /**
-     *
      * @return bool
      */
     public function canBeShown();

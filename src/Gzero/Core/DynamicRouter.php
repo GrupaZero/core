@@ -47,7 +47,7 @@ class DynamicRouter {
         $uri   = $this->getRequestedPath($request, $language);
         $route = $this->repository->getByPath($uri, $language->code);
 
-        if (empty($route) && $route->getRoutable() === null) {
+        if (empty($route) || $route->getRoutable() === null) {
             throw new NotFoundHttpException();
         }
 

@@ -40,3 +40,11 @@ $factory->state(Route::class, 'makeRoutableHelloWorld', function (Faker $faker) 
         }
     ];
 });
+
+$factory->state(Route::class, 'makeInactiveRoutableHelloWorld', function (Faker $faker) {
+    return [
+        'routable' => function () {
+            return new App\HelloWorld(false);
+        }
+    ];
+});

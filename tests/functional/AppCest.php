@@ -289,4 +289,33 @@ class AppCest {
         $I->dontSee('Hello World');
         $I->cantSeeEventTriggered(RouteMatched::class);
     }
+
+    public function dynamicRouterDeniesAccessToInactiveRoutable(FunctionalTester $I)
+    {
+        $route = factory(Route::class)
+            ->states('makeInactiveRoutableHelloWorld')
+            ->make(['language_code' => 'en']);
+
+        $I->haveInstance(RouteReadRepository::class, Mockery::mock(RouteReadRepository::class, [
+            'getByPath' => $route,
+        ]));
+
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
+
+        $I->haveMlRoutes(function ($router, $languages) {
+            /** @var Router $router */
+            $router->get('{path?}', 'Gzero\Core\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
+        });
+
+
+        $I->amOnPage('multi-language-content');
+        $I->seeResponseCodeIs(404);
+        $I->dontSee('Hello World');
+        $I->cantSeeEventTriggered(RouteMatched::class);
+    }
 }

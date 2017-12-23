@@ -4,6 +4,7 @@ use Gzero\Core\Presenters\FilePresenter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Robbo\Presenter\PresentableInterface;
+use Gzero\InvalidArgumentException;
 
 class File extends Model implements PresentableInterface {
 
@@ -94,6 +95,24 @@ class File extends Model implements PresentableInterface {
     public function getFullPath()
     {
         return $this->getUploadPath() . $this->getFileName();
+    }
+
+    /**
+     * @param string $type File type
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return void
+     */
+    public function setTypeAttribute($type)
+    {
+        if (!$type instanceof FileType) {
+            $type = FileType::getByName($type);
+        }
+        if (!$type) {
+            throw new InvalidArgumentException('Unknown file type');
+        }
+        $this->type()->associate($type);
     }
 
     /**

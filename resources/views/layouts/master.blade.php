@@ -4,11 +4,16 @@
     @include('gzero-core::layouts._head')
 </head>
 <body class="@yield('bodyClass')">
-<div id="root" class="page">
+<div id="root">
     <div class="wrapper">
-        @include('gzero-core::layouts._navbar')
-        @yield('header')
-        <div id="main-container" class="container">
+        <header>
+            @include('gzero-core::layouts._navbar')
+            @yield('headerRegion')
+            @yield('header')
+        </header>
+        @yield('featuredRegion')
+        <main id="main-container" role="main" class="@yield('mainClass', 'container')">
+            @yield('breadcrumbs')
             <div class="row">
                 @yield('asideLeft')
                 @section('mainContent')
@@ -18,9 +23,10 @@
                 @show
                 @yield('asideRight')
             </div>
-        </div>
+        </main>
     </div>
     <footer id="footer" class="clearfix">
+        @yield('footerRegion')
         @include('gzero-core::layouts._footer')
     </footer>
 </div>

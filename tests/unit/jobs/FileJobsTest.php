@@ -20,7 +20,7 @@ class FileJobsTest extends Unit {
     public function canCreateFile()
     {
         $user  = $this->tester->haveUser();
-        $image = UploadedFile::fake()->image('avatar.jpg');
+        $image = UploadedFile::fake()->image('avatar.jpg')->size(100);
         $file  = dispatch_now(CreateFile::image($image, 'New One', new Language(['code' => 'en']), $user, [
             'description' => 'description',
             'is_active'   => true,
@@ -36,7 +36,9 @@ class FileJobsTest extends Unit {
         Storage::disk('uploads')->assertMissing('avatar.jpg');
 
         $this->assertTrue($file->is_active);
-        $this->assertEquals('en', $translation->language_code, 'Language code was set');
+        $this->assertEquals($user->id, $file->author->id);
+        $this->assertEquals('avatar', $translation->language_code);
+        $this->assertEquals('en', $translation->language_code);
     }
 }
 

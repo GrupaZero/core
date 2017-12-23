@@ -1,10 +1,12 @@
 <?php namespace Gzero\Core\Jobs;
 
+use Gzero\Core\DBTransactionTrait;
 use Gzero\Core\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UpdateUser {
+
+    use DBTransactionTrait;
 
     /** @var User */
     protected $user;
@@ -31,7 +33,7 @@ class UpdateUser {
      */
     public function handle()
     {
-        $user = DB::transaction(function () {
+        $user = $this->dbTransaction(function () {
             if (array_key_exists('password', $this->attributes)) {
                 $this->attributes['password'] = Hash::make($this->attributes['password']);
             }

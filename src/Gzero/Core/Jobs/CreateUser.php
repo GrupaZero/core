@@ -1,9 +1,11 @@
 <?php namespace Gzero\Core\Jobs;
 
+use Gzero\Core\DBTransactionTrait;
 use Gzero\Core\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class CreateUser {
+
+    use DBTransactionTrait;
 
     /** @var string */
     protected $email;
@@ -53,21 +55,19 @@ class CreateUser {
         if (empty($this->name)) { // handle empty nickname users
             $this->name = $this->buildUniqueNickname();
         }
-        $user = DB::transaction(
-            function () {
-                $user = new User();
-                $user->fill([
-                    'email'      => $this->email,
-                    'password'   => $this->password,
-                    'name'       => $this->name,
-                    'first_name' => $this->firstName ?: null,
-                    'last_name'  => $this->lastName ?: null,
-                ]);
-                $user->save();
-                event('user.created', [$user]);
-                return $user;
-            }
-        );
+        $user = $this->dbTransaction(function () {
+            $user = new User();
+            $user->fill([
+                'email'      => $this->email,
+                'password'   => $this->password,
+                'name'       => $this->name,
+                'first_name' => $this->firstName ?: null,
+                'last_name'  => $this->lastName ?: null,
+            ]);
+            $user->save();
+            event('user.created', [$user]);
+            return $user;
+        });
         return $user;
     }
 

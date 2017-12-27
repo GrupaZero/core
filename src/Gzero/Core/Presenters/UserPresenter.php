@@ -11,11 +11,11 @@ class UserPresenter extends Presenter {
      */
     public function displayName()
     {
-        if ($this->name && config('gzero.use_users_nicks')) {
+        if (isset($this->name) && config('gzero.use_users_nicks')) {
             return $this->name;
         }
 
-        if ($this->first_name || $this->last_name) {
+        if (isset($this->first_name) || isset($this->last_name)) {
             return $this->first_name . ' ' . $this->last_name;
         }
 

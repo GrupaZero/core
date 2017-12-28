@@ -1,3 +1,4 @@
+<?php /* @var $user \Gzero\Core\ViewModels\UserViewModel */ ?>
 @extends('gzero-core::layouts.master')
 
 @section('title')
@@ -19,7 +20,7 @@
                 @if($isUserEmailSet)
                     <div class="form-group">
                         <label class="control-label" for="name">@lang('gzero-core::common.nick_name')</label>
-                        <input type="text" id="name" name="name" value="{{ $user->name }}"
+                        <input type="text" id="name" name="name" value="{{ $user->name() }}"
                                class="form-control{{ $errors->first('name') ? ' is-invalid' : '' }}"
                                placeholder="@lang('gzero-core::common.nick_name')">
                         @if($errors->first('name'))
@@ -29,13 +30,13 @@
                 @else
                     <div class="form-group">
                         <label class="control-label">@lang('gzero-core::common.nick_name')</label>
-                        <p class="form-control-static">{{ $user->name }}</p>
-                        <input type="hidden" name="name" value="{{ $user->name }}">
+                        <p class="form-control-static">{{ $user->name() }}</p>
+                        <input type="hidden" name="name" value="{{ $user->name() }}">
                     </div>
                 @endif
                 <div class="form-group">
                     <label class="control-label" for="email">@choice('gzero-core::common.email', 1)</label>
-                    <input type="email" id="email" name="email" value="{{ $user->email }}"
+                    <input type="email" id="email" name="email" value="{{ $user->email() }}"
                            class="form-control{{ $errors->first('email') ? ' is-invalid' : '' }}"
                            placeholder="@choice('gzero-core::common.email', 1)">
                     @if($errors->first('email'))
@@ -45,7 +46,7 @@
                 @if($isUserEmailSet)
                     <div class="form-group">
                         <label class="control-label" for="first_name">@lang('gzero-core::common.first_name')</label>
-                        <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}"
+                        <input type="text" id="first_name" name="first_name" value="{{ $user->firstName() }}"
                                class="form-control{{ $errors->first('first_name') ? ' is-invalid' : '' }}"
                                placeholder="@lang('gzero-core::common.first_name')">
                         @if($errors->first('first_name'))
@@ -54,7 +55,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="last_name">@lang('gzero-core::common.last_name')</label>
-                        <input type="text" id="last_name" name="last_name" value="{{ $user->last_name }}"
+                        <input type="text" id="last_name" name="last_name" value="{{ $user->lastName() }}"
                                class="form-control{{ $errors->first('last_name') ? ' is-invalid' : '' }}"
                                placeholder="@lang('gzero-core::common.last_name')">
                         @if($errors->first('last_name'))
@@ -64,15 +65,15 @@
                 @else
                     <div class="form-group">
                         <label class="control-label">@lang('gzero-core::common.first_name')</label>
-                        <p class="form-control-static">{{ $user->first_name }}</p>
+                        <p class="form-control-static">{{ $user->firstName() }}</p>
                     </div>
                     <div class="form-group">
                         <label class="control-label">@lang('gzero-core::common.last_name')</label>
-                        <p class="form-control-static">{{ $user->last_name }}</p>
+                        <p class="form-control-static">{{ $user->lastName() }}</p>
                     </div>
                 @endif
                 @if($isUserEmailSet)
-                    @if($user->password)
+                    @if($user->password())
                         <div class="separator">
                             <span>@lang('gzero-core::common.password_change')</span>
                         </div>

@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-use Gzero\core\Models\FileTranslation;
+use Gzero\Core\Models\FileTranslation;
 use Gzero\Core\Models\Language;
 
 /*

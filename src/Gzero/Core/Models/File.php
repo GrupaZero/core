@@ -48,6 +48,24 @@ class File extends Model implements PresentableInterface {
     }
 
     /**
+     * Get all of the entities that are assigned this file.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function uploadable()
+    {
+        return $this->morphedByMany(Uploadable::class, 'uploadable')->withTimestamps();
+    }
+
+    /**
+     * @return Uploadable|null
+     */
+    public function getUploadable(): ?Uploadable
+    {
+        return $this->uploadable;
+    }
+
+    /**
      * File author relation
      *
      * @return \Illuminate\Database\Eloquent\Relations\belongsTo
@@ -84,17 +102,27 @@ class File extends Model implements PresentableInterface {
      */
     public function getUploadPath()
     {
-        return str_plural($this->type) . '/';
+        return str_plural($this->type->name) . '/';
     }
 
     /**
-     * Returns file public url
+     * Returns file upload path
      *
      * @return string
      */
     public function getFullPath()
     {
         return $this->getUploadPath() . $this->getFileName();
+    }
+
+    /**
+     * Returns unique file name
+     *
+     * @return string
+     */
+    public function buildUniqueName()
+    {
+        return uniqid($this->name . '_');
     }
 
     /**
@@ -140,15 +168,29 @@ class File extends Model implements PresentableInterface {
     }
 
     /**
-     * Check if multiple files exists
+     * Function removes file translations in provided language code
      *
-     * @param array $filesIds array with file ids
+     * @param string $languageCode language code
      *
-     * @return Collection
+     * @return mixed
      */
-    public static function checkIfMultipleExists($filesIds)
+    public function removeExistingTranslation($languageCode)
     {
-        $idsInDb = self::whereIn('id', $filesIds)->pluck('id');
-        return collect($filesIds)->diff($idsInDb);
+        return $this->translations()
+            ->where('file_id', $this->id)
+            ->where('language_code', $languageCode)
+            ->delete();
+    }
+
+    /**
+     * Check if multiple files exists and return id's of existing ones
+     *
+     * @param array $ids array with files ids
+     *
+     * @return Collection with id's of exiting files
+     */
+    public static function getExistingIds($ids)
+    {
+        return self::whereIn('id', $ids)->pluck('id');
     }
 }

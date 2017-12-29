@@ -12,6 +12,9 @@ class CreateFile {
 
     use DBTransactionTrait;
 
+    /** @var UploadedFile */
+    protected $file;
+
     /** @var string */
     protected $title;
 
@@ -24,9 +27,13 @@ class CreateFile {
     /** @var array */
     protected $attributes;
 
+    /** @var string */
+    protected $disc;
+
     /** @var array */
     protected $allowedAttributes = [
         'type'        => 'image',
+        'info'        => null,
         'description' => null,
         'is_active'   => false
     ];
@@ -42,9 +49,11 @@ class CreateFile {
      */
     protected function __construct(UploadedFile $file, string $title, Language $language, User $author, array $attributes = [])
     {
+        $this->file       = $file;
         $this->title      = $title;
         $this->language   = $language;
         $this->author     = $author;
+        $this->disc       = config('gzero.upload.disk');
         $this->attributes = array_merge(
             $this->allowedAttributes,
             array_only($attributes, array_keys($this->allowedAttributes))
@@ -96,10 +105,20 @@ class CreateFile {
         $file = $this->dbTransaction(function () {
             $file = new File();
             $file->fill([
+                'name'      => str_slug(pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME)),
+                'extension' => mb_strtolower($this->file->getClientOriginalExtension()),
+                'size'      => $this->file->getSize(),
+                'mime_type' => $this->file->getMimeType(),
                 'type'      => $this->attributes['type'],
+                'info'      => $this->attributes['info'],
                 'is_active' => $this->attributes['is_active']
 
             ]);
+
+            if (Storage::disk($this->disc)->exists($file->getFullPath())) {
+                $file->name = $file->buildUniqueName();
+            }
+
             $file->author()->associate($this->author);
             $file->save();
 
@@ -110,6 +129,8 @@ class CreateFile {
                 'description'   => $this->attributes['description']
             ]);
             $file->translations()->save($translation);
+
+            Storage::disk($this->disc)->putFileAs($file->getUploadPath(), $this->file, $file->getFileName());
 
             event('file.created', [$file]);
             return $file;

@@ -4,7 +4,7 @@
             @if(!empty($blocks))
                 <div class="row">
                     @foreach($blocks as $index => $block)
-                        {!! $block->view !!}
+                        {!! $block->view() !!}
                     @endforeach
                 </div>
             @endif

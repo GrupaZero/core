@@ -1,10 +1,10 @@
 <?php namespace Gzero\Core\Models;
 
+use Gzero\Core\ViewModels\UserViewModel;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Gzero\Core\Presenters\UserPresenter;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -107,11 +107,11 @@ class User extends Model implements
     /**
      * Return a created presenter.
      *
-     * @return \Robbo\Presenter\Presenter
+     * @return UserViewModel
      */
     public function getPresenter()
     {
-        return new UserPresenter($this);
+        return new UserViewModel($this->toArray());
     }
 
     /**

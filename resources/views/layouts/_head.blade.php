@@ -1,3 +1,4 @@
+<?php /* @var $user \Gzero\Core\ViewModels\UserViewModel */ ?>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,8 +16,8 @@
 @if(option('seo', 'google_tag_manager_id') && env('APP_ENV') === 'production')
     <script>
         dataLayer = [];
-        @if(!$user->isGuest())
-        dataLayer.push({'userId': '{{ $user->id }}'});
+        @if(!auth()->guest())
+        dataLayer.push({'userId': '{{ $user->id() }}'})
         @endif
         @yield('dataLayer')
     </script>

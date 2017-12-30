@@ -16,7 +16,6 @@ class File extends Model implements PresentableInterface {
         'size',
         'mime_type',
         'info',
-        'author_id',
         'is_active'
     ];
 

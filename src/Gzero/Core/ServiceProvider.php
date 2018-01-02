@@ -66,7 +66,7 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerHelpers();
         $this->bindRepositories();
         $this->bindOtherStuff();
-        if ($this->app->environment() !== 'testing') { // We're manually registering it for test cases
+        if (config('app.env') !== 'testing') { // We're manually registering it for test cases
             $this->app->booted(function () {
                 addMultiLanguageRoutes(function ($router) {
                     $router->get('{path?}', 'Gzero\Core\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
@@ -131,7 +131,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function bindRepositories()
     {
-        if ($this->app->runningInConsole() && $this->app->environment() !== 'testing') {
+        if ($this->app->runningInConsole() && config('app.env') !== 'testing') {
             $this->app->singleton(
                 LanguageService::class,
                 function () {

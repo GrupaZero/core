@@ -3,6 +3,13 @@
 
 use Codeception\Lib\Driver\PostgreSql;
 
+if(isPlatformRun()){
+    require_once __DIR__ . '/fixture/User.php';
+    require_once __DIR__ . '/fixture/HelloWorld.php';
+    require_once __DIR__ . '/fixture/UploadableEntity.php';
+    return;
+}
+
 if (file_exists(dirname(__DIR__) . '/.env.testing')) {
     (new \Dotenv\Dotenv(dirname(__DIR__), '.env.testing'))->load();
 }
@@ -25,3 +32,8 @@ $db = new PostgreSql("pgsql:host=$host port=$port dbname=$dbName", $user, $passw
 
 $db->cleanup();
 $db->load($sql);
+
+function isPlatformRun()
+{
+    return preg_match('|vendor\/gzero\/core\/$|', \Codeception\Configuration::projectDir());
+}

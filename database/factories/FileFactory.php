@@ -16,13 +16,14 @@ use Gzero\Core\Models\File;
 
 $factory->define(File::class, function (Faker $faker) {
     return [
-        'type'      => 'image',
-        'name'      => $faker->slug,
-        'extension' => $faker->fileExtension,
-        'size'      => $faker->randomNumber(),
-        'mime_type' => $faker->mimeType,
-        'info'      => array_combine($this->faker->words(), $this->faker->words()),
-        'is_active' => false
+        'type'       => 'image',
+        'name'       => $faker->slug,
+        'extension'  => $faker->fileExtension,
+        'size'       => $faker->randomNumber(),
+        'mime_type'  => $faker->mimeType,
+        'info'       => array_combine($this->faker->words(), $this->faker->words()),
+        'is_active'  => false,
+        'updated_at' => date('Y-m-d H:i:s')
     ];
 });
 

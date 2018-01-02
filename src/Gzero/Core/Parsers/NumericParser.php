@@ -122,7 +122,7 @@ class NumericParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return 'numeric';
+        return 'regex:/^(^(!=)?|^(<=)?|^(>=)?|^(==)?|^(<)?|^(>)?)?/';
     }
 
     /**

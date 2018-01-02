@@ -1,6 +1,5 @@
 <?php namespace Gzero\Core\Http\Resources;
 
-use Gzero\Core\Models\FileTranslation;
 use Illuminate\Http\Resources\Json\Resource;
 
 /**
@@ -14,8 +13,9 @@ use Illuminate\Http\Resources\Json\Resource;
  *     example="basic"
  *   ),
  *   @SWG\Property(
- *     property="file",
- *     type="file"
+ *     property="author_id",
+ *     type="number",
+ *     example="10"
  *   ),
  *   @SWG\Property(
  *     property="name",
@@ -45,9 +45,10 @@ use Illuminate\Http\Resources\Json\Resource;
  *     example="{'key':'value'}"
  *   ),
  *   @SWG\Property(
- *     property="author_id",
- *     type="number",
- *     example="10"
+ *     property="thumb",
+ *     description="Contains thumbnail url for images",
+ *     type="string",
+ *     example="/images/file-729x459.jpg"
  *   ),
  *   @SWG\Property(
  *     property="is_active",
@@ -88,10 +89,23 @@ class File extends Resource {
             'type'         => $this->whenLoaded('type', function () {
                 return $this->type->name;
             }),
+            'name'         => $this->name,
             'extension'    => $this->extension,
-            'size'         => $this->size,
+            'size'         => (int) $this->size,
             'mime_type'    => $this->mime_type,
             'info'         => $this->info,
+            'thumb'        => $this->whenLoaded('type', function () {
+                if ($this->type->name === 'image') {
+                    $width  = config('gzero.image.thumb.width');
+                    $height = config('gzero.image.thumb.height');
+                    return croppaUrl($this->getFullPath(), $width, $height);
+                }
+
+                return null;
+            }),
+            'weight'       => $this->whenLoaded('uploadable', function () {
+                return $this->weight;
+            }),
             'is_active'    => $this->is_active,
             'created_at'   => $this->created_at->toIso8601String(),
             'updated_at'   => $this->updated_at->toIso8601String(),

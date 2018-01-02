@@ -93,6 +93,54 @@ class CreateFile {
     }
 
     /**
+     * It creates job to create file
+     *
+     * @param UploadedFile $file       Uploaded file
+     * @param string       $title      Translation title
+     * @param Language     $language   Language
+     * @param User         $author     User model
+     * @param array        $attributes Array of optional attributes
+     *
+     * @return CreateFile
+     */
+    public static function document(UploadedFile $file, string $title, Language $language, User $author, array $attributes = [])
+    {
+        return new self($file, $title, $language, $author, array_merge($attributes, ['type' => 'document']));
+    }
+
+    /**
+     * It creates job to create file
+     *
+     * @param UploadedFile $file       Uploaded file
+     * @param string       $title      Translation title
+     * @param Language     $language   Language
+     * @param User         $author     User model
+     * @param array        $attributes Array of optional attributes
+     *
+     * @return CreateFile
+     */
+    public static function video(UploadedFile $file, string $title, Language $language, User $author, array $attributes = [])
+    {
+        return new self($file, $title, $language, $author, array_merge($attributes, ['type' => 'video']));
+    }
+
+    /**
+     * It creates job to create file
+     *
+     * @param UploadedFile $file       Uploaded file
+     * @param string       $title      Translation title
+     * @param Language     $language   Language
+     * @param User         $author     User model
+     * @param array        $attributes Array of optional attributes
+     *
+     * @return CreateFile
+     */
+    public static function music(UploadedFile $file, string $title, Language $language, User $author, array $attributes = [])
+    {
+        return new self($file, $title, $language, $author, array_merge($attributes, ['type' => 'music']));
+    }
+
+    /**
      * Execute the job.
      *
      * @throws \InvalidArgumentException

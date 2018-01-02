@@ -53,7 +53,7 @@ class File extends Model implements PresentableInterface {
      */
     public function uploadable()
     {
-        return $this->morphedByMany(Uploadable::class, 'uploadable')->withTimestamps();
+        return $this->morphedByMany(Uploadable::class, 'uploadable')->withPivot('weight')->withTimestamps();
     }
 
     /**

@@ -138,6 +138,7 @@ class Condition {
      * @throws InvalidArgumentException
      *
      * @return void
+     * @SuppressWarnings(PHPMD)
      */
     public function apply(Builder $query, string $tableAlias = null, string $customName = null)
     {
@@ -150,6 +151,10 @@ class Condition {
         switch ($this->operation) {
             case '=':
             case '!=':
+            case '>':
+            case '<':
+            case '>=':
+            case '<=':
                 $query->where($name, $this->operation, $this->value);
                 break;
             case 'between':

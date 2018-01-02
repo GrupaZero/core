@@ -1,4 +1,6 @@
-<?php namespace Core;
+<?php namespace Core\api;
+
+use Core\FunctionalTester;
 
 class CORSCest {
 

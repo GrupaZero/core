@@ -1,5 +1,6 @@
-<?php namespace Core;
+<?php namespace Core\api;
 
+use Core\FunctionalTester;
 use Illuminate\Support\Facades\Hash;
 
 class UserCest {

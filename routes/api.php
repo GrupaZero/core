@@ -22,6 +22,17 @@ Route::group(
 
         // ======== Options ========
         $router->put('options/{category}', 'OptionController@update');
+
+        // ======== Files ========
+        $router->get('files', 'FileController@index');
+        $router->post('files', 'FileController@store');
+        $router->get('files/{id}', 'FileController@show');
+        $router->patch('files/{id}', 'FileController@update');
+        $router->delete('files/{id}', 'FileController@destroy');
+
+        $router->get('files/{id}/translations', 'FileTranslationController@index');
+        $router->post('files/{id}/translations', 'FileTranslationController@store');
+        $router->delete('files/{id}/translations/{translationId}', 'FileTranslationController@destroy');
     }
 );
 

@@ -24,7 +24,7 @@ class UserJobsTest extends Unit {
     /** @test */
     public function canCreateUserAndGetItById()
     {
-        $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
+        $user       = dispatch_now(new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'));
         $userFromDb = $this->repository->getById($user->id);
 
         $this->assertEquals(
@@ -48,8 +48,8 @@ class UserJobsTest extends Unit {
     /** @test */
     public function canCreateUserWithEmptyNameAsAnonymous()
     {
-        $user1 = (new CreateUser('john.doe@example.com', 'secret', '', 'John', 'Doe'))->handle();
-        $user2 = (new CreateUser('jane.doe@example.com', 'secret', '', 'Jane', 'Doe'))->handle();
+        $user1 = dispatch_now(new CreateUser('john.doe@example.com', 'secret', '', 'John', 'Doe'));
+        $user2 = dispatch_now(new CreateUser('jane.doe@example.com', 'secret', '', 'Jane', 'Doe'));
 
         $user1Db = $this->repository->getById($user1->id);
         $user2Db = $this->repository->getById($user2->id);
@@ -88,9 +88,9 @@ class UserJobsTest extends Unit {
         $this->assertRegExp('/^anonymous\-[a-z 0-9]{13}/', $user2Db->name);
 
         // Deleting user1 to make sure that we still return unique name
-        (new DeleteUser($user1))->handle();
+        dispatch_now(new DeleteUser($user1));
 
-        $user3   = (new CreateUser('jane.doe2@example.com', 'secret', '', 'Jane', 'Doe2'))->handle();
+        $user3   = dispatch_now(new CreateUser('jane.doe2@example.com', 'secret', '', 'Jane', 'Doe2'));
         $user3Db = $this->repository->getById($user3->id);
 
         $this->assertEquals(
@@ -115,9 +115,9 @@ class UserJobsTest extends Unit {
     /** @test */
     public function itHashesUserPasswordWhenUpdatingUser()
     {
-        $user = (new CreateUser('john.doe@example.com', 'password', '', 'John', 'Doe'))->handle();
+        $user = dispatch_now(new CreateUser('john.doe@example.com', 'password', '', 'John', 'Doe'));
 
-        $user = (new UpdateUser($user, ['password' => 'secret']))->handle();
+        $user = dispatch_now(new UpdateUser($user, ['password' => 'secret']));
 
         $this->assertTrue(Hash::check('secret', $user->password));
     }
@@ -125,7 +125,7 @@ class UserJobsTest extends Unit {
     /** @test */
     public function canDeleteUser()
     {
-        $user       = (new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'))->handle();
+        $user       = dispatch_now(new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'));
         $userFromDb = $this->repository->getById($user->id);
 
         $this->assertNotNull($userFromDb);
@@ -137,7 +137,7 @@ class UserJobsTest extends Unit {
             'last_name'  => 'Doe',
         ])->first());
 
-        (new DeleteUser($user))->handle();
+        dispatch_now(new DeleteUser($user));
 
         $userFromDb = $this->repository->getById($user->id);
 

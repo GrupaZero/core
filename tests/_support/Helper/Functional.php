@@ -3,6 +3,8 @@
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
+use Gzero\Core\Models\File;
+use Gzero\Core\Models\FileTranslation;
 use Gzero\Core\Models\User;
 use Illuminate\Routing\Router;
 
@@ -81,6 +83,39 @@ class Functional extends \Codeception\Module {
     public function clearRoutes()
     {
         $this->getModule('Laravel5')->clearApplicationHandlers();
+    }
+
+    /**
+     * Create file with translations and return entity
+     *
+     * @param array $attributes
+     *
+     * @return \Gzero\Core\Models\File
+     */
+    public function haveFile($attributes = [])
+    {
+        $data            = array_except($attributes, ['translations']);
+        $transByLangCode = collect(array_get($attributes, 'translations'))->groupBy('language_code');
+
+        $block = factory(File::class)->make($data);
+        $block->save();
+
+        if (empty($transByLangCode)) {
+            return $block;
+        }
+
+        $transByLangCode->each(function ($translations) use ($block) {
+            // Create block translations
+            foreach ($translations as $translation) {
+                $block->translations()
+                    ->save(
+                        factory(FileTranslation::class)
+                            ->make($translation)
+                    );
+            }
+        });
+
+        return $block;
     }
 
 }

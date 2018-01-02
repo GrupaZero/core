@@ -13,6 +13,7 @@ use Orchestra\Testbench\Traits\CreatesApplication;
 
 require_once __DIR__ . '/tests/fixture/User.php';
 require_once __DIR__ . '/tests/fixture/HelloWorld.php';
+require_once __DIR__ . '/tests/fixture/UploadableEntity.php';
 require __DIR__ . '/vendor/autoload.php';
 
 if (file_exists(__DIR__ . '/.env.testing')) {

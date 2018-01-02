@@ -212,7 +212,6 @@ class FileController extends ApiController {
         return new FileResource($file);
     }
 
-
     /**
      * Stores newly created file in database.
      *

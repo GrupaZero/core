@@ -1,6 +1,6 @@
 <?php namespace Gzero\Core\Models;
 
-use Gzero\Core\Presenters\FilePresenter;
+use Gzero\Core\Presenters\FileViewModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Robbo\Presenter\PresentableInterface;
@@ -77,11 +77,11 @@ class File extends Model implements PresentableInterface {
     /**
      * Return a created presenter.
      *
-     * @return \Robbo\Presenter\Presenter
+     * @return FileViewModel
      */
     public function getPresenter()
     {
-        return new FilePresenter($this);
+        return new FileViewModel($this->toArray());
     }
 
     /**

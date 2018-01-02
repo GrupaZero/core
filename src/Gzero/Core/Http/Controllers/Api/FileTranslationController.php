@@ -130,7 +130,6 @@ class FileTranslationController extends ApiController {
         return new FileTranslationCollection($results);
     }
 
-
     /**
      * Stores newly created translation for specified file entity in database.
      *
@@ -179,7 +178,6 @@ class FileTranslationController extends ApiController {
         }
 
         $this->authorize('create', $file);
-        $this->authorize('update', $file);
 
         $input = $this->validator->validate('create');
 

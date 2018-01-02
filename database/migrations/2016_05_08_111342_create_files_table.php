@@ -26,10 +26,10 @@ class CreateFilesTable extends Migration {
             function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('type_id')->unsigned()->nullable();
-                $table->string('name')->nullable();
-                $table->string('extension')->nullable();
-                $table->integer('size')->nullable();
-                $table->string('mime_type')->nullable();
+                $table->string('name');
+                $table->string('extension');
+                $table->integer('size');
+                $table->string('mime_type');
                 $table->text('info')->nullable();
                 $table->integer('author_id')->unsigned()->nullable();
                 $table->boolean('is_active')->default(false);

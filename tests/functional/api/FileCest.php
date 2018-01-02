@@ -807,4 +807,307 @@ class FileCest {
         $I->seeResponseCodeIs(204);
         Storage::disk('uploads')->assertMissing('images/file.jpg');
     }
+
+    public function shouldBeAbleToGetFileTranslations(FunctionalTester $I)
+    {
+        $user  = factory(User::class)->create();
+        $en    = new Language(['code' => 'en']);
+        $pl    = new Language(['code' => 'pl']);
+        $image = UploadedFile::fake()->image('file.jpg')->size(10);
+
+        $file = dispatch_now(CreateFile::image($image, 'Original title', $en, $user, [
+            'description' => 'Original description'
+        ]));
+
+        dispatch_now(new AddFileTranslation($file, 'Modified title', $en, $user, [
+            'description' => 'Modified description'
+        ]));
+
+        dispatch_now(new AddFileTranslation($file, 'Oryginalny tytuł', $pl, $user, [
+            'description' => 'Originalny opis'
+        ]));
+
+        dispatch_now(new AddFileTranslation($file, 'Nowy tytuł', $pl, $user, [
+            'description' => 'Nowy opis'
+        ]));
+
+        $I->sendGET(apiUrl("files/$file->id/translations"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                [
+                    'language_code' => 'en',
+                    'title'         => 'Modified title',
+                    'description'   => 'Modified description'
+                ],
+                [
+                    'language_code' => 'pl',
+                    'title'         => 'Nowy tytuł',
+                    'description'   => 'Nowy opis'
+                ]
+            ]
+        );
+
+        $I->dontSeeResponseContainsJson(
+            [
+                [
+                    'language_code' => 'en',
+                    'title'         => 'Original title',
+                    'description'   => 'Original description'
+                ],
+                [
+                    'language_code' => 'pl',
+                    'title'         => 'Oryginalny tytuł',
+                    'description'   => 'Originalny opis'
+                ]
+            ]
+        );
+    }
+
+    public function shouldBeAbleToFilterListOfFileTranslationsByLanguageCode(FunctionalTester $I)
+    {
+        $user  = factory(User::class)->create();
+        $en    = new Language(['code' => 'en']);
+        $pl    = new Language(['code' => 'pl']);
+        $image = UploadedFile::fake()->image('file.jpg')->size(10);
+
+        $file = dispatch_now(CreateFile::image($image, 'Example Title', $en, $user, ['is_active' => true]));
+
+        dispatch_now(new AddFileTranslation($file, 'Przykładowy Tytuł', $pl, $user));
+
+        $I->sendGET(apiUrl("files/$file->id/translations?language_code=en"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                ['language_code' => 'en', 'title' => 'Example Title']
+            ]
+        );
+
+        $I->dontSeeResponseContainsJson(
+            [
+                ['language_code' => 'pl', 'title' => 'Przykładowy Tytuł']
+            ]
+        );
+
+        $I->sendGET(apiUrl("files/$file->id/translations?language_code=pl"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                ['language_code' => 'pl', 'title' => 'Przykładowy Tytuł']
+            ]
+        );
+
+        $I->dontSeeResponseContainsJson(
+            [
+                ['language_code' => 'en', 'title' => 'Example Title']
+            ]
+        );
+    }
+
+    public function shouldBeAbleToFilterListOfFileTranslationsByAuthorId(FunctionalTester $I)
+    {
+        $user1 = factory(User::class)->create();
+        $user2 = factory(User::class)->create();
+        $en    = new Language(['code' => 'en']);
+        $pl    = new Language(['code' => 'pl']);
+        $image = UploadedFile::fake()->image('file.jpg')->size(10);
+
+        $file = dispatch_now(CreateFile::image($image, 'Example Title', $en, $user1, ['is_active' => true]));
+
+        dispatch_now(new AddFileTranslation($file, 'Translation from first user', $en, $user1));
+        dispatch_now(new AddFileTranslation($file, 'Translation from second user', $pl, $user2));
+
+        $I->sendGET(apiUrl("files/$file->id/translations?author_id=$user1->id"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                ['title' => 'Translation from first user']
+            ]
+        );
+
+        $I->dontSeeResponseContainsJson(
+            [
+                ['title' => 'Translation from second user']
+            ]
+        );
+
+        $I->sendGET(apiUrl("files/$file->id/translations?author_id=$user2->id"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                ['title' => 'Translation from second user']
+            ]
+        );
+
+        $I->dontSeeResponseContainsJson(
+            [
+                ['title' => 'Translation from first user']
+            ]
+        );
+    }
+
+    public function shouldBeAbleToFilterListOfFileTranslationsByCreatedAt(FunctionalTester $I)
+    {
+        $fourDaysAgo = Carbon::now()->subDays(4);
+        $yesterday   = Carbon::yesterday()->format('Y-m-d');
+        $today       = Carbon::now()->format('Y-m-d');
+
+        $file = $I->haveFile([
+            'type'         => 'image',
+            'created_at'   => $fourDaysAgo,
+            'translations' => [
+                [
+                    'language_code' => 'en',
+                    'title'         => "Four day's ago files's content",
+                    'created_at'    => $fourDaysAgo
+                ]
+            ]
+        ]);
+
+        $I->sendGET(apiUrl("files/$file->id/translations?created_at=$yesterday,$today"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->assertEmpty($I->grabDataFromResponseByJsonPath('data[*]'));
+
+        $I->sendGET(apiUrl("files/$file->id/translations?created_at=!$yesterday,$today"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                ['title' => "Four day's ago files's content"]
+            ]
+        );
+    }
+
+    public function shouldBeAbleToFilterListOfFileTranslationsByUpdatedAt(FunctionalTester $I)
+    {
+        $fourDaysAgo = Carbon::now()->subDays(4);
+        $yesterday   = Carbon::yesterday()->format('Y-m-d');
+        $today       = Carbon::now()->format('Y-m-d');
+
+        $file = $I->haveFile([
+            'type'         => 'image',
+            'created_at'   => $fourDaysAgo,
+            'translations' => [
+                [
+                    'language_code' => 'en',
+                    'title'         => "Four day's ago file's content",
+                    'updated_at'    => $fourDaysAgo
+                ]
+            ]
+        ]);
+
+        $I->sendGET(apiUrl("files/$file->id/translations?updated_at=$yesterday,$today"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->assertEmpty($I->grabDataFromResponseByJsonPath('data[*]'));
+
+        $I->sendGET(apiUrl("files/$file->id/translations?updated_at=!$yesterday,$today"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                ['title' => "Four day's ago file's content"]
+            ]
+        );
+    }
+
+    public function canCreateFileTranslation(FunctionalTester $I)
+    {
+        $user     = factory(User::class)->create();
+        $language = new Language(['code' => 'en']);
+        $image    = UploadedFile::fake()->image('file.jpg')->size(10);
+
+        $file = dispatch_now(CreateFile::image($image, 'Original Title', $language, $user));
+
+        $I->sendPOST(apiUrl("files/$file->id/translations"),
+            [
+                'language_code' => 'en',
+                'title'         => 'Example title',
+                'description'   => 'Example description'
+            ]);
+
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                'language_code' => 'en',
+                'title'         => 'Example title',
+                'description'   => 'Example description'
+            ]
+        );
+
+        $I->sendPOST(apiUrl("files/$file->id/translations"),
+            [
+                'language_code' => 'pl',
+                'title'         => 'Nowy tytuł',
+                'description'   => 'Nowy opis'
+            ]);
+
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseIsJson();
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                'language_code' => 'pl',
+                'title'         => 'Nowy tytuł',
+                'description'   => 'Nowy opis'
+            ]
+        );
+    }
+
+    public function canDeleteFileTranslation(FunctionalTester $I)
+    {
+        $user  = factory(User::class)->create();
+        $en    = new Language(['code' => 'en']);
+        $pl    = new Language(['code' => 'pl']);
+        $image = UploadedFile::fake()->image('file.jpg')->size(10);
+
+        $file        = dispatch_now(CreateFile::image($image, 'Original Title', $en, $user));
+        $translation = dispatch_now(new AddFileTranslation($file, 'Przykładowy Tytuł', $pl, $user));
+
+        $I->sendDELETE(apiUrl("files/$file->id/translations", ['translationId' => $translation->id]));
+
+        $I->seeResponseCodeIs(204);
+    }
+
+
+    public function cantDeleteNotExistingFileTranslation(FunctionalTester $I)
+    {
+        $file = $I->haveFile([
+            'type'         => 'image',
+            'translations' => [
+                [
+                    'language_code' => 'en',
+                    'title'         => "File title"
+                ]
+            ]
+        ]);
+
+        $I->sendDELETE(apiUrl("files/$file->id/translations", ['translationId' => 100]));
+
+        $I->seeResponseCodeIs(404);
+    }
 }

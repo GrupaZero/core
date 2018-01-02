@@ -368,6 +368,8 @@ class FileController extends ApiController {
             return $this->errorNotFound();
         }
 
+        $this->authorize('delete', $file);
+
         dispatch_now(new DeleteFile($file));
 
         return $this->successNoContent();

@@ -29,6 +29,10 @@ Route::group(
         $router->get('files/{id}', 'FileController@show');
         $router->patch('files/{id}', 'FileController@update');
         $router->delete('files/{id}', 'FileController@destroy');
+
+        $router->get('files/{id}/translations', 'FileTranslationController@index');
+        $router->post('files/{id}/translations', 'FileTranslationController@store');
+        $router->delete('files/{id}/translations/{translationId}', 'FileTranslationController@destroy');
     }
 );
 

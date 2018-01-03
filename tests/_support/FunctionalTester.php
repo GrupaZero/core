@@ -83,6 +83,6 @@ class FunctionalTester extends \Codeception\Actor {
         $width  = config('gzero.image.thumb.width');
         $height = config('gzero.image.thumb.height');
 
-        return '/images\/' . $fileName . '-' . $width . 'x' . $height . '\.' . $extension . '/';
+        return '/images\/' . $fileName . '-' . $width . 'x' . $height . '\.' . $extension . '\?token=.+$/';
     }
 }

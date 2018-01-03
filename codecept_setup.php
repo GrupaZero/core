@@ -3,6 +3,7 @@
 namespace App;
 
 use Barryvdh\Cors\ServiceProvider as CORSServiceProvider;
+use Bkwld\Croppa\ServiceProvider as CroppaServiceProvider;
 use Dotenv\Dotenv;
 use Gzero\Core\Exceptions\Handler;
 use Gzero\Core\ServiceProvider;
@@ -48,6 +49,7 @@ if (!class_exists('App\TestApp')) {
             return [
                 PassportServiceProvider::class,
                 CORSServiceProvider::class,
+                CroppaServiceProvider::class,
                 ServiceProvider::class
             ];
         }

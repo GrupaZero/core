@@ -16,4 +16,9 @@ interface Routable {
      */
     public function canBeShown();
 
+    /**
+     * @return array
+     */
+    public function getTreePath(): array;
+
 }

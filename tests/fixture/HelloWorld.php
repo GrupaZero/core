@@ -8,8 +8,6 @@ class HelloWorld implements Routable {
 
     protected $canBeShown;
 
-    public $path;
-
     /**
      * HelloWorld constructor.
      *
@@ -18,7 +16,6 @@ class HelloWorld implements Routable {
     public function __construct($canBeShown = true)
     {
         $this->canBeShown = $canBeShown;
-        $this->path = null;
     }
 
     public function handle(Language $language): Response
@@ -29,5 +26,10 @@ class HelloWorld implements Routable {
     public function canBeShown()
     {
         return $this->canBeShown;
+    }
+
+    public function getTreePath(): array
+    {
+        return [];
     }
 }

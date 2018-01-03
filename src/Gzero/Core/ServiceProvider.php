@@ -1,9 +1,11 @@
 <?php namespace Gzero\Core;
 
 use Carbon\Carbon;
+use Gzero\Core\Policies\FilePolicy;
 use Gzero\Core\Http\Middleware\Init;
 use Gzero\Core\Http\Middleware\MultiLanguage;
 use Gzero\Core\Http\Middleware\ViewShareUser;
+use Gzero\Core\Models\File;
 use Gzero\Core\Models\Language;
 use Gzero\Core\Models\Option;
 use Gzero\Core\Models\Route;
@@ -51,7 +53,8 @@ class ServiceProvider extends AbstractServiceProvider {
     protected $policies = [
         Route::class  => RoutePolicy::class,
         User::class   => UserPolicy::class,
-        Option::class => OptionPolicy::class
+        Option::class => OptionPolicy::class,
+        File::class   => FilePolicy::class
     ];
 
     /**
@@ -159,13 +162,13 @@ class ServiceProvider extends AbstractServiceProvider {
         //        return new Register();
         //    }
         //);
-        //
-        //$this->app->singleton(
-        //    'croppa.src_dir',
-        //    function () {
-        //        return resolve('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
-        //    }
-        //);
+
+        $this->app->singleton(
+            'croppa.src_dir',
+            function () {
+                return resolve('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
+            }
+        );
     }
 
     /**
@@ -219,10 +222,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function mergeConfig()
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../../../config/config.php',
-            'gzero'
-        );
+        $this->mergeConfigFrom(__DIR__ . '/../../../config/config.php', 'gzero');
     }
 
     /**

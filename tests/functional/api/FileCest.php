@@ -49,7 +49,6 @@ class FileCest {
                     'size'         => 10240,
                     'mime_type'    => 'image/jpeg',
                     'info'         => 'info',
-                    'thumb'        => '/images/file-729x459.jpg',
                     'is_active'    => true,
                     'translations' => [
                         [
@@ -66,6 +65,9 @@ class FileCest {
                 ]
             ]
         );
+
+        $thumbPath = head($I->grabDataFromResponseByJsonPath('data[0]thumb'));
+        $I->assertRegExp($I->generateCroppaRegExp($file->name, $file->extension), $thumbPath);
     }
 
     public function shouldBeAbleToFilterListOfFilesByCreatedAt(FunctionalTester $I)
@@ -702,7 +704,6 @@ class FileCest {
                 'size'         => 10240,
                 'mime_type'    => 'image/jpeg',
                 'info'         => 'info',
-                'thumb'        => '/images/file-729x459.jpg',
                 'is_active'    => true,
                 'translations' => [
                     [
@@ -718,6 +719,9 @@ class FileCest {
                 ]
             ]
         );
+
+        $thumbPath = head($I->grabDataFromResponseByJsonPath('thumb'));
+        $I->assertRegExp($I->generateCroppaRegExp('file', 'jpg'), $thumbPath);
     }
 
     public function shouldNotBeAbleToGetNonExistingFile(FunctionalTester $I)
@@ -751,7 +755,6 @@ class FileCest {
                 'size'         => $image->getSize(),
                 'mime_type'    => $image->getMimeType(),
                 'info'         => ['option' => 'value'],
-                'thumb'        => '/images/file-729x459.png',
                 'is_active'    => true,
                 'translations' => [
                     [
@@ -764,6 +767,8 @@ class FileCest {
         );
 
         Storage::disk('uploads')->assertExists('images/file.png');
+        $thumbPath = head($I->grabDataFromResponseByJsonPath('thumb'));
+        $I->assertRegExp($I->generateCroppaRegExp('file', 'png'), $thumbPath);
     }
 
     public function canUpdateFile(FunctionalTester $I)

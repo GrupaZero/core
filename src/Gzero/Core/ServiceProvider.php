@@ -1,9 +1,11 @@
 <?php namespace Gzero\Core;
 
 use Carbon\Carbon;
+use Gzero\Core\Policies\FilePolicy;
 use Gzero\Core\Http\Middleware\Init;
 use Gzero\Core\Http\Middleware\MultiLanguage;
 use Gzero\Core\Http\Middleware\ViewShareUser;
+use Gzero\Core\Models\File;
 use Gzero\Core\Models\Language;
 use Gzero\Core\Models\Option;
 use Gzero\Core\Models\Route;
@@ -51,7 +53,8 @@ class ServiceProvider extends AbstractServiceProvider {
     protected $policies = [
         Route::class  => RoutePolicy::class,
         User::class   => UserPolicy::class,
-        Option::class => OptionPolicy::class
+        Option::class => OptionPolicy::class,
+        File::class   => FilePolicy::class
     ];
 
     /**

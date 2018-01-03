@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 
 class HelloWorld implements Routable {
 
+    /**@var $canBeShown */
     protected $canBeShown;
 
     /**
@@ -18,13 +19,29 @@ class HelloWorld implements Routable {
         $this->canBeShown = $canBeShown;
     }
 
+    /**
+     * @param Language $language Language
+     *
+     * @return Response
+     */
     public function handle(Language $language): Response
     {
         return response('Hello World');
     }
 
+    /**
+     * @return bool
+     */
     public function canBeShown()
     {
         return $this->canBeShown;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTreePath(): array
+    {
+        return [];
     }
 }

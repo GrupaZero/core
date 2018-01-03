@@ -51,7 +51,7 @@ class FilePolicy {
      */
     public function update(User $user, File $file)
     {
-        if ($file->createdBy === $user->id) {
+        if ($file->author_id === $user->id) {
             return true;
         }
         return $user->hasPermission('file-update');
@@ -67,7 +67,7 @@ class FilePolicy {
      */
     public function delete(User $user, File $file)
     {
-        if ($file->createdBy === $user->id) {
+        if ($file->author_id === $user->id) {
             return true;
         }
         return $user->hasPermission('file-delete');

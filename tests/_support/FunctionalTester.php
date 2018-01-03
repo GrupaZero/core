@@ -69,4 +69,20 @@ class FunctionalTester extends \Codeception\Actor {
         $I->amLoggedAs(['email' => $email, 'password' => $password], 'web');
         $I->seeAuthentication();
     }
+
+    /**
+     * Generates regular expression for corppa url assertions
+     *
+     * @param $fileName
+     * @param $extension
+     *
+     * @return string
+     */
+    public function generateCroppaRegExp($fileName, $extension)
+    {
+        $width  = config('gzero.image.thumb.width');
+        $height = config('gzero.image.thumb.height');
+
+        return '/images\/' . $fileName . '-' . $width . 'x' . $height . '\.' . $extension . '/';
+    }
 }

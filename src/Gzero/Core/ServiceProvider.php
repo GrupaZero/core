@@ -162,13 +162,13 @@ class ServiceProvider extends AbstractServiceProvider {
         //        return new Register();
         //    }
         //);
-        //
-        //$this->app->singleton(
-        //    'croppa.src_dir',
-        //    function () {
-        //        return resolve('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
-        //    }
-        //);
+
+        $this->app->singleton(
+            'croppa.src_dir',
+            function () {
+                return resolve('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
+            }
+        );
     }
 
     /**
@@ -222,10 +222,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function mergeConfig()
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../../../config/config.php',
-            'gzero'
-        );
+        $this->mergeConfigFrom(__DIR__ . '/../../../config/config.php', 'gzero');
     }
 
     /**

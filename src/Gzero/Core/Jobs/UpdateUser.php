@@ -2,7 +2,6 @@
 
 use Gzero\Core\DBTransactionTrait;
 use Gzero\Core\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class UpdateUser {
 
@@ -35,7 +34,7 @@ class UpdateUser {
     {
         $user = $this->dbTransaction(function () {
             if (array_key_exists('password', $this->attributes)) {
-                $this->attributes['password'] = Hash::make($this->attributes['password']);
+                $this->attributes['password'] = bcrypt($this->attributes['password']);
             }
             $this->user->fill($this->attributes);
             $this->user->save();

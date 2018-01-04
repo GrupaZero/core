@@ -123,6 +123,15 @@ class UserJobsTest extends Unit {
     }
 
     /** @test */
+    public function itHashesUserPasswordWhenCreatingUser()
+    {
+        $user       = dispatch_now(new CreateUser('john.doe@example.com', 'password', '', 'John', 'Doe'));
+        $userFromDb = $this->repository->getById($user->id);
+
+        $this->assertTrue(Hash::check('password', $userFromDb->password));
+    }
+
+    /** @test */
     public function canDeleteUser()
     {
         $user       = dispatch_now(new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'));
@@ -131,7 +140,6 @@ class UserJobsTest extends Unit {
         $this->assertNotNull($userFromDb);
         $this->assertNotNull(User::where([
             'email'      => 'john.doe@example.com',
-            'password'   => 'secret',
             'name'       => 'Nickname',
             'first_name' => 'John',
             'last_name'  => 'Doe',

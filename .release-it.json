@@ -22,7 +22,7 @@
     "publish": false,
     "publishPath": ".",
     "tag": "latest",
-    "private": false,
+    "private": true,
     "forcePublishSourceRepo": false
   },
   "github": {

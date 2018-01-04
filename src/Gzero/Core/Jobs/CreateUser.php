@@ -59,7 +59,7 @@ class CreateUser {
             $user = new User();
             $user->fill([
                 'email'      => $this->email,
-                'password'   => $this->password,
+                'password'   => bcrypt($this->password),
                 'name'       => $this->name,
                 'first_name' => $this->firstName ?: null,
                 'last_name'  => $this->lastName ?: null,

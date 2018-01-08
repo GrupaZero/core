@@ -1,6 +1,8 @@
 <?php namespace Core;
 
+use Gzero\Core\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Notification;
 
 class AuthCest {
 
@@ -65,6 +67,20 @@ class AuthCest {
 
         $I->seeInField('email', null);
         $I->see('Send password reset link', 'button[type=submit]');
+    }
+
+    public function ItShouldUseResetPasswordNotificationWhenResetForgottenPassword(FunctionalTester $I)
+    {
+        $user = $I->haveUser();
+
+        Notification::fake();
+
+        $I->amOnPage(route('password.request'));
+        $I->fillField(['id' => 'email'], $user->email);
+        $I->click('button[type=submit]');
+
+        Notification::assertSentTo($user, ResetPasswordNotification::class);
+        Notification::assertSentToTimes($user, ResetPasswordNotification::class, 1);
     }
 
     public function canAccessPasswordResetPage(FunctionalTester $I)

@@ -1,6 +1,7 @@
 <?php namespace Gzero\Core\Models;
 
 use Gzero\Core\ViewModels\UserViewModel;
+use Gzero\Core\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
@@ -52,6 +53,29 @@ class User extends Model implements
      * @var array
      */
     protected $hidden = ['password'];
+
+    /*
+    |--------------------------------------------------------------------------
+    | START override methods of CanResetPassword trait
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | END override methods of CanResetPassword trait
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * The roles that belong to the user.

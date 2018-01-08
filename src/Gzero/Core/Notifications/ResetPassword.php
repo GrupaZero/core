@@ -11,7 +11,10 @@ class ResetPassword extends IlluminateResetPassword
      * Build the mail representation of the notification.
      *
      * @param  mixed $notifiable Notifiable entity
+     *
      * @return \Illuminate\Notifications\Messages\MailMessage
+     *
+     * @SuppressWarnings(PHPMD)
      */
     public function toMail($notifiable)
     {

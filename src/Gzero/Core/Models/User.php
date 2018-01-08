@@ -64,6 +64,7 @@ class User extends Model implements
      * Send the password reset notification.
      *
      * @param  string $token Token required to rest password
+     *
      * @return void
      */
     public function sendPasswordResetNotification($token)

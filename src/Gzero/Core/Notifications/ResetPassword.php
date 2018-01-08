@@ -1,6 +1,4 @@
-<?php
-
-namespace Gzero\Core\Notifications;
+<?php namespace Gzero\Core\Notifications;
 
 use Illuminate\Auth\Notifications\ResetPassword as IlluminateResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;

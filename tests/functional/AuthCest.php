@@ -1,8 +1,10 @@
 <?php namespace Core;
 
+use App\User;
 use Gzero\Core\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Notifications\ChannelManager;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Testing\Fakes\NotificationFake;
 
 class AuthCest {
 
@@ -73,14 +75,20 @@ class AuthCest {
     {
         $user = $I->haveUser();
 
-        Notification::fake();
+        $I->getApplication();
+
+        $fake = new NotificationFake;
+
+        $I->haveInstance(ChannelManager::class, $fake);
 
         $I->amOnPage(route('password.request'));
         $I->fillField(['id' => 'email'], $user->email);
         $I->click('button[type=submit]');
 
-        Notification::assertSentTo($user, ResetPasswordNotification::class);
-        Notification::assertSentToTimes($user, ResetPasswordNotification::class, 1);
+        $user = User::find($user->id); // We need App\User for assertions
+
+        $fake->assertSentTo($user, ResetPasswordNotification::class);
+        $fake->assertSentToTimes($user, ResetPasswordNotification::class, 1);
     }
 
     public function canAccessPasswordResetPage(FunctionalTester $I)

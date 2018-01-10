@@ -30,7 +30,7 @@ class NumericParserTest extends Unit {
     {
         $parser = new NumericParser('number');
         $parser->parse(new Request(['number' => '!123']));
-        $this->assertEquals('!', $parser->getOperation());
+        $this->assertEquals('!=', $parser->getOperation());
         $this->assertEquals(123, $parser->getValue());
     }
 

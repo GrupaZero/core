@@ -29,8 +29,13 @@ class NumericParserTest extends Unit {
     public function itCanParseNegatedExactMatch()
     {
         $parser = new NumericParser('number');
-        $parser->parse(new Request(['number' => '!123']));
+        $parser->parse(new Request(['number' => '!=123']));
         $this->assertEquals('!=', $parser->getOperation());
+        $this->assertEquals(123, $parser->getValue());
+
+        $parser = new NumericParser('number');
+        $parser->parse(new Request(['number' => '!123']));
+        $this->assertEquals('!', $parser->getOperation());
         $this->assertEquals(123, $parser->getValue());
     }
 

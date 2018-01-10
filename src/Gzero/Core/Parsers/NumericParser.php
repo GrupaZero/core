@@ -97,7 +97,7 @@ class NumericParser implements ConditionParser {
 
             // do not reorder this
             if (substr($value, 0, 1) === '!') {
-                $this->operation = '!';
+                $this->operation = '!=';
                 $this->value = substr($value, 1);
             } elseif (substr($value, 0, 2) === '>=') {
                 $this->operation = '>=';
@@ -115,7 +115,7 @@ class NumericParser implements ConditionParser {
                 $this->value = $value;
             }
 
-            // Need it becouse of Cyclomatic Complexity.
+            // Need it because of Cyclomatic Complexity.
             $this->checkValue();
         }
     }

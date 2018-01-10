@@ -29,11 +29,6 @@ class NumericParserTest extends Unit {
     public function itCanParseNegatedExactMatch()
     {
         $parser = new NumericParser('number');
-        $parser->parse(new Request(['number' => '!=123']));
-        $this->assertEquals('!=', $parser->getOperation());
-        $this->assertEquals(123, $parser->getValue());
-
-        $parser = new NumericParser('number');
         $parser->parse(new Request(['number' => '!123']));
         $this->assertEquals('!', $parser->getOperation());
         $this->assertEquals(123, $parser->getValue());
@@ -73,6 +68,19 @@ class NumericParserTest extends Unit {
         $parser->parse(new Request(['number' => '<123']));
         $this->assertEquals('<', $parser->getOperation());
         $this->assertEquals(123, $parser->getValue());
+    }
+
+    /** @test */
+    public function itCanNotParseStringValue()
+    {
+        try {
+            $parser = new NumericParser('size');
+            $parser->parse(new Request(['size' => '<ten']));
+        } catch (InvalidArgumentException $exception) {
+            $this->assertEquals('NumericParser: Value must be of type numeric', $exception->getMessage());
+            return;
+        }
+        $this->fail('Exception should be thrown');
     }
 
     /** @test */

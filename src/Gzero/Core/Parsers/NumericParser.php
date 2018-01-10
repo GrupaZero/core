@@ -19,7 +19,7 @@ class NumericParser implements ConditionParser {
     protected $applied = false;
 
     /** @var array */
-    protected $availableOperations = ['!=', '!', '>=', '<=', '<', '>',];
+    protected $availableOperations = ['!', '>=', '<=', '<', '>'];
 
     /** @var array */
     protected $option;
@@ -86,6 +86,8 @@ class NumericParser implements ConditionParser {
      * @param Request $request Request object
      *
      * @return void
+     *
+     * @throws InvalidArgumentException
      */
     public function parse(Request $request)
     {
@@ -94,10 +96,7 @@ class NumericParser implements ConditionParser {
             $value         = $request->get($this->name);
 
             // do not reorder this
-            if (substr($value, 0, 2) === '!=') {
-                $this->operation = '!=';
-                $this->value     = substr($value, 2);
-            } elseif (substr($value, 0, 1) === '!') {
+            if (substr($value, 0, 1) === '!') {
                 $this->operation = '!';
                 $this->value = substr($value, 1);
             } elseif (substr($value, 0, 2) === '>=') {
@@ -115,6 +114,9 @@ class NumericParser implements ConditionParser {
             } else {
                 $this->value = $value;
             }
+
+            // Need it becouse of Cyclomatic Complexity.
+            $this->checkValue();
         }
     }
 
@@ -125,7 +127,7 @@ class NumericParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return 'regex:/^(^(!=)?|^(!)?|^(<=)?|^(>=)?|^(==)?|^(<)?|^(>)?)?\d$/';
+        return 'regex:/((!)?|(<=)?|(>=)?|(=)?|(<)?|(>)?)?\d{1,}$/';
     }
 
     /**
@@ -138,6 +140,18 @@ class NumericParser implements ConditionParser {
     public function apply(QueryBuilder $builder)
     {
         $builder->where($this->name, $this->operation, $this->value);
+    }
+
+    /**
+     * Check if value is not a number.
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function checkValue(): void
+    {
+        if (!ctype_digit($this->value) && !is_numeric($this->value) && !empty($this->value)) {
+            throw new InvalidArgumentException('NumericParser: Value must be of type numeric');
+        }
     }
 
 }

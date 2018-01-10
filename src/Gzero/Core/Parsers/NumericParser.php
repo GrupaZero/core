@@ -146,6 +146,8 @@ class NumericParser implements ConditionParser {
      * Check if value is not a number.
      *
      * @throws InvalidArgumentException
+     *
+     * @return void
      */
     protected function checkValue(): void
     {

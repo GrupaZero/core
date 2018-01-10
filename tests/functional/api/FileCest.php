@@ -674,6 +674,37 @@ class FileCest {
         );
     }
 
+    public function shouldNotBeAbleToFilterListOfFilesBySizeUsingStringValue(FunctionalTester $I)
+    {
+        $user     = factory(User::class)->create();
+        $language = new Language(['code' => 'en']);
+        $document = UploadedFile::fake()->image('document.txt')->size(20);
+
+        dispatch_now(CreateFile::document($document, 'Document Title', $language, $user, ['is_active' => true]));
+
+        $I->sendGET(apiUrl('files?size=<=fourty'));
+
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'size' => [
+                        'The size format is invalid.'
+                    ]
+                ]
+            ]
+        );
+        $I->dontSeeResponseJsonMatchesJsonPath('data[*]');
+        $I->dontSeeResponseContainsJson(
+            [
+                'type' => 'document',
+                'size' => 20480
+            ]
+        );
+    }
+
     public function shouldGetSingleFile(FunctionalTester $I)
     {
         $user  = factory(User::class)->create();

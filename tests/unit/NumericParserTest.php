@@ -71,6 +71,19 @@ class NumericParserTest extends Unit {
     }
 
     /** @test */
+    public function itCanNotParseStringValue()
+    {
+        try {
+            $parser = new NumericParser('size');
+            $parser->parse(new Request(['size' => '<ten']));
+        } catch (InvalidArgumentException $exception) {
+            $this->assertEquals('NumericParser: Value must be of type numeric', $exception->getMessage());
+            return;
+        }
+        $this->fail('Exception should be thrown');
+    }
+
+    /** @test */
     public function shouldWorkWithEmptyValue()
     {
         $parser = new NumericParser('xyz');

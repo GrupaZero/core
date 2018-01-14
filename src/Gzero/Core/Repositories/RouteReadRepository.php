@@ -46,8 +46,8 @@ class RouteReadRepository implements ReadRepository {
     {
         $query = Route::query();
 
-        $builder->applyFilters($query);
-        $builder->applySorts($query);
+        $builder->applyFilters($query, 'routes');
+        $builder->applySorts($query, 'routes');
 
         $count = clone $query->getQuery();
 

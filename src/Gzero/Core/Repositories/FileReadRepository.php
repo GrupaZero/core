@@ -78,8 +78,8 @@ class FileReadRepository implements ReadRepository {
             optional($builder->getSort('type'))->apply($query, 'ft', 'name');
         }
 
-        $builder->applyFilters($query);
-        $builder->applySorts($query);
+        $builder->applyFilters($query, 'files');
+        $builder->applySorts($query, 'files');
 
         $count = clone $query->getQuery();
 

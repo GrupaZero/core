@@ -38,8 +38,8 @@ class UserReadRepository implements ReadRepository {
     {
         $query = User::query();
 
-        $builder->applyFilters($query);
-        $builder->applySorts($query);
+        $builder->applyFilters($query, 'users');
+        $builder->applySorts($query, 'users');
 
         $count = clone $query->getQuery();
 

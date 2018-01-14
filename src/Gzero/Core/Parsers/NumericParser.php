@@ -93,7 +93,7 @@ class NumericParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
-            $value         = $request->get($this->name);
+            $value         = $request->input($this->name);
 
             // do not reorder this
             if (substr($value, 0, 1) === '!') {

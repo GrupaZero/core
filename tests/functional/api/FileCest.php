@@ -247,6 +247,41 @@ class FileCest {
         $I->assertEquals('document', head($second));
     }
 
+    public function shouldBeAbleToSortListOfFilesByTranslationsTitle(FunctionalTester $I)
+    {
+        $user     = factory(User::class)->create();
+        $language = new Language(['code' => 'en']);
+        $image    = UploadedFile::fake()->image('file.jpg')->size(10);
+        $document = UploadedFile::fake()->image('file.txt')->size(10);
+
+        dispatch_now(CreateFile::image($image, 'Image Title', $language, $user, ['is_active' => true]));
+        dispatch_now(CreateFile::document($document, 'Document Title', $language, $user, ['is_active' => true]));
+
+        $I->sendGET(apiUrl('files?translations[language_code]=en&sort=translations.title'));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+
+        $first  = $I->grabDataFromResponseByJsonPath('data[0].translations[0].title');
+        $second = $I->grabDataFromResponseByJsonPath('data[1].translations[0].title');
+
+        $I->assertEquals('Document Title', head($first));
+        $I->assertEquals('Image Title', head($second));
+
+        $I->sendGET(apiUrl('files?translations[language_code]=en&sort=-translations.title'));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+
+        $first  = $I->grabDataFromResponseByJsonPath('data[0].translations[0].title');
+        $second = $I->grabDataFromResponseByJsonPath('data[1].translations[0].title');
+
+        $I->assertEquals('Image Title', head($first));
+        $I->assertEquals('Document Title', head($second));
+    }
+
     public function shouldBeAbleToFilterListOfFilesByAuthorId(FunctionalTester $I)
     {
         $user1    = factory(User::class)->create();

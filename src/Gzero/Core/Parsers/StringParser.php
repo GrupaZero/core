@@ -92,7 +92,7 @@ class StringParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
-            $value         = $request->get($this->name);
+            $value         = $request->input($this->name);
             $operation     = substr($value, 0, 1);
             if ($operation === '!') {
                 $this->operation = '!=';

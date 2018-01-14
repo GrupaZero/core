@@ -1,6 +1,8 @@
 <?php namespace Core;
 
 use Codeception\Test\Unit;
+use Gzero\Core\Parsers\BoolParser;
+use Gzero\Core\Parsers\NumericParser;
 use Gzero\Core\Query\Condition;
 use Gzero\Core\Query\QueryBuilder;
 use Gzero\Core\UrlParamsProcessor;
@@ -162,11 +164,14 @@ class UrlParamsProcessorTest extends Unit {
             ->addFilter(new StringParser('lang'))
             ->addFilter(new StringParser('test2'), 'required')
             ->addFilter(new StringParser('translation.language_code'))
+            ->addFilter(new NumericParser('translation.number'))
+            ->addFilter(new BoolParser('translation.bool'))
             ->process(new Request([
-                'lang'                      => 'en',
-                'test2'                     => 'test2',
-                'translation.language_code' => 'en',
+                'lang'        => 'en',
+                'test2'       => 'test2',
+                'translation' => ['language_code' => 'en', 'number' => 1, 'bool' => 'false']
             ]));
+
         $query = $this->processor->buildQueryBuilder();
 
         $this->assertEquals(
@@ -174,7 +179,11 @@ class UrlParamsProcessorTest extends Unit {
             $query->getFilters()
         );
         $this->assertEquals(
-            [new Condition('language_code', '=', 'en')],
+            [
+                new Condition('language_code', '=', 'en'),
+                new Condition('number', '=', 1),
+                new Condition('bool', '=', false),
+            ],
             $query->getRelationFilters('translation')
         );
         $this->assertEquals(

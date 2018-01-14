@@ -137,15 +137,15 @@ class QueryBuilderTest extends Unit {
 
         $mock3 = Mockery::mock(Builder::class)
             ->shouldReceive('where')
-            ->with('name', '!=', 'value')
+            ->with('alias.name', '!=', 'value')
             ->once()
             ->shouldReceive('orderBy')
-            ->with('name', 'asc')
+            ->with('alias.name', 'asc')
             ->once()
             ->getMock();
 
-        $this->qb->applyFilters($mock3);
-        $this->qb->applySorts($mock3);
+        $this->qb->applyFilters($mock3, 'alias');
+        $this->qb->applySorts($mock3, 'alias');
     }
 
     /** @test */

@@ -158,6 +158,7 @@ class FileController extends ApiController {
             ->addFilter(new StringParser('name'))
             ->addFilter(new StringParser('extension'))
             ->addFilter(new StringParser('mime_type'))
+            ->addFilter(new StringParser('translations.language_code'))
             ->addFilter(new NumericParser('size'))
             ->addFilter(new NumericParser('author_id'))
             ->addFilter(new BoolParser('is_active'))

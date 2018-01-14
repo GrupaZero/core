@@ -91,7 +91,7 @@ class BoolParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
-            $this->value   = filter_var($request->get($this->name), FILTER_VALIDATE_BOOLEAN);
+            $this->value   = filter_var($request->input($this->name), FILTER_VALIDATE_BOOLEAN);
         }
     }
 

@@ -274,14 +274,15 @@ class QueryBuilder {
     /**
      * Applies filter to Eloquent Query builder
      *
-     * @param Builder $query Eloquent query builder
+     * @param Builder     $query Eloquent query builder
+     * @param string|null $alias SQL alias
      *
      * @return void
      */
-    public function applyFilters(Builder $query)
+    public function applyFilters(Builder $query, string $alias = null)
     {
         foreach ($this->getFilters() as $filter) {
-            $filter->apply($query);
+            $filter->apply($query, $alias);
         }
     }
 
@@ -304,14 +305,15 @@ class QueryBuilder {
     /**
      * Applies sorts Eloquent Query builder
      *
-     * @param Builder $query Eloquent query builder
+     * @param Builder     $query Eloquent query builder
+     * @param string|null $alias SQL alias
      *
      * @return void
      */
-    public function applySorts(Builder $query)
+    public function applySorts(Builder $query, string $alias = null)
     {
         foreach ($this->getSorts() as $sort) {
-            $sort->apply($query);
+            $sort->apply($query, $alias);
         }
     }
 

@@ -324,12 +324,26 @@ class AppCest {
     {
         $dt = Carbon::now()->subDays(2);
 
-        app()->setLocale('en');
-        Carbon::setLocale(app()->getLocale());
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
+
+        $I->haveMlRoutes(function ($router, $languages) {
+            /** @var Router $router */
+            $router->get('multi-language-content', function () {
+                return 'Check diff for humans ' . app()->getLocale() . ' translations.';
+            });
+        });
+
+        $I->amOnPage('/multi-language-content');
+        $I->see('Check diff for humans en translations.');
         $I->assertEquals('2 days ago', $dt->diffForHumans());
 
-        app()->setLocale('pl');
-        Carbon::setLocale(app()->getLocale());
+        $I->amOnPage('/pl/multi-language-content');
+        $I->see('Check diff for humans pl translations.');
         $I->assertEquals('2 dni temu', $dt->diffForHumans());
     }
 }

@@ -1,5 +1,6 @@
 <?php namespace Core;
 
+use Carbon\Carbon;
 use Gzero\Core\Events\RouteMatched;
 use Gzero\Core\Models\Language;
 use Gzero\Core\Models\Permission;
@@ -317,5 +318,18 @@ class AppCest {
         $I->seeResponseCodeIs(404);
         $I->dontSee('Hello World');
         $I->cantSeeEventTriggered(RouteMatched::class);
+    }
+
+    public function carbonDatesAreTranslated(FunctionalTester $I)
+    {
+        $dt = Carbon::now()->subDays(2);
+
+        app()->setLocale('en');
+        Carbon::setLocale(app()->getLocale());
+        $I->assertEquals('2 days ago', $dt->diffForHumans());
+
+        app()->setLocale('pl');
+        Carbon::setLocale(app()->getLocale());
+        $I->assertEquals('2 dni temu', $dt->diffForHumans());
     }
 }

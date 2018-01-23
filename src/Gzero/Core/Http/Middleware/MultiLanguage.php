@@ -1,5 +1,6 @@
 <?php namespace Gzero\Core\Http\Middleware;
 
+use Carbon\Carbon;
 use Closure;
 use Gzero\Core\Services\LanguageService;
 use Gzero\Core\ServiceProvider;
@@ -55,6 +56,9 @@ class MultiLanguage {
         } else {
             $language = ServiceProvider::setDefaultLocale();
         }
+
+        // We need it to make carbon's diffForHumans work correctly
+        Carbon::setLocale(app()->getLocale());
 
         view()->share('language', $language);
         view()->share('languages', $languages);

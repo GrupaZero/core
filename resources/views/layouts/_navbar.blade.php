@@ -18,15 +18,20 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-md-auto">
-            @foreach($languages as $language)
-                <li class="nav-item">
-                    <a href="{{ routeMl('home', $language->code) }}"
-                       class="nav-link{{ (URL::full() == routeMl('home', $language->code)) ? ' active' : '' }}"
-                       title="{{$language->code}}">
-                        {{strtoupper($language->code)}}
-                    </a>
-                </li>
-            @endforeach
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @lang('gzero-core::language_names.' . app()->getLocale())
+                </a>
+                <div class="dropdown-menu" aria-labelledby="languageDropdown">
+                    @foreach($languages as $language)
+                        <a href="{{ routeMl('home', $language->code) }}"
+                           class="dropdown-item {{ (app()->getLocale() == $language->code) ? 'active' : '' }}"
+                           title="{{$language->code}}">
+                           @lang('gzero-core::language_names.' . $language->code)
+                        </a>
+                    @endforeach
+                </div>
+            </li>
             @guest
                 <li class="nav-item ml-4">
                     <a href="{{ route('login') }}" class="btn btn-outline-success my-2 my-sm-0"

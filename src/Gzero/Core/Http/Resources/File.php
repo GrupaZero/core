@@ -103,8 +103,8 @@ class File extends Resource {
 
                 return null;
             }),
-            'weight'       => $this->whenLoaded('uploadable', function () {
-                return $this->weight;
+            'weight'       => $this->whenPivotLoaded('uploadables', function () {
+                return $this->pivot->weight;
             }),
             'is_active'    => $this->is_active,
             'created_at'   => $this->created_at->toIso8601String(),

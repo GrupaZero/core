@@ -30,7 +30,6 @@
         @include('gzero-core::layouts._footer')
     </footer>
 </div>
-@stack('footer')
 @yield('footerScripts')
 </body>
 </html>

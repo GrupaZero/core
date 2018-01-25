@@ -2,6 +2,7 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     @include('gzero-core::layouts._head')
+    @yield('headScripts')
 </head>
 <body class="@yield('bodyClass')">
 <div id="root">

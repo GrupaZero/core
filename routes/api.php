@@ -62,3 +62,20 @@ Route::group(
         $router->get('options/{category}', 'OptionController@show');
     }
 );
+
+Route::group(
+    [
+        'domain'     => 'api.' . config('gzero.domain'),
+        'namespace'  => 'Gzero\Core\Http\Controllers\Api',
+        'middleware' => [HandleCors::class]
+    ],
+    function ($router) {
+        $router->get('/', function () {
+            return ['version' => 'v1'];
+        });
+
+        $router->get('/ping', function () {
+            return ['status' => 'ok'];
+        });
+    }
+);

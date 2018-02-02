@@ -116,10 +116,16 @@ class UrlParamsProcessorTest extends Unit {
     {
         $this->processor->process(new Request(['q' => 'Lore Ipsum']));
 
-        $this->tester->assertEquals(
-            $this->processor->getSearchQuery(),
-            'Lore Ipsum'
-        );
+        $this->tester->assertEquals($this->processor->getSearchQuery(), 'Lore Ipsum');
+    }
+
+    /** @test */
+    public function canProcessSearchQueryFromQueryBuilder()
+    {
+        $this->processor->process(new Request(['q' => 'Lore Ipsum']));
+        $builder = $this->processor->buildQueryBuilder();
+
+        $this->tester->assertEquals($builder->getSearchQuery(), 'Lore Ipsum');
     }
 
     /** @test */

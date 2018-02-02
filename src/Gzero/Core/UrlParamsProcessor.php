@@ -170,6 +170,10 @@ class UrlParamsProcessor {
             $builder->setPage($this->page);
         }
 
+        if (!empty($this->searchQuery)) {
+            $builder->setSearchQuery($this->searchQuery);
+        }
+
         return $builder;
     }
 

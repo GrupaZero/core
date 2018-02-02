@@ -78,6 +78,12 @@ class FileReadRepository implements ReadRepository {
             optional($builder->getSort('type'))->apply($query, 'ft', 'name');
         }
 
+        if ($builder->hasSearchQuery()) {
+            $searchQuery = '%' . $builder->getSearchQuery() . '%';
+
+            $query->where('files.name', 'like', $searchQuery);
+        }
+
         $builder->applyFilters($query, 'files');
         $builder->applySorts($query, 'files');
 

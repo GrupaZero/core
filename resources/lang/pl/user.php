@@ -10,4 +10,5 @@ return [
     'oauth'            => 'OAuth',
     'user'             => 'Użytkownik',
     'invalid_language' => 'Ten język nie istnieje',
+    'invalid_timezone' => 'Ta strefa czasowa jest niepoprawna',
 ];

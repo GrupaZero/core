@@ -152,7 +152,9 @@ abstract class AbstractValidator {
     {
         if (method_exists($this, $this->context)) {
             $rules = $this->{$this->context}();
-        } elseif (!isset($this->rules[$this->context])) {
+        } elseif (isset($this->rules[$this->context])) {
+            $rules = $this->rules[$this->context];
+        } else {
             throw new InvalidArgumentException("Undefined validation context: " . $this->context);
         }
         return $this->bindPlaceholders($rules);

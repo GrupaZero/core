@@ -150,10 +150,12 @@ abstract class AbstractValidator {
      */
     protected function buildRulesArray()
     {
-        if (!isset($this->rules[$this->context])) {
+        if (method_exists($this, $this->context)) {
+            $rules = $this->{$this->context}();
+        } elseif (!isset($this->rules[$this->context])) {
             throw new InvalidArgumentException("Undefined validation context: " . $this->context);
         }
-        return $this->bindPlaceholders($this->rules[$this->context]);
+        return $this->bindPlaceholders($rules);
     }
 
     /**

@@ -1,15 +1,9 @@
-<?php namespace Gzero\Core\Rules;
+<?php namespace Gzero\Core\Validators\Rules;
 
+use Gzero\Core\Services\LanguageService;
 use Illuminate\Contracts\Validation\Rule;
 
 class LanguageCodeIsActive implements Rule {
-    /**
-     * LanguageCodeIsActive constructor.
-     */
-    public function __construct()
-    {
-    }
-
 
     /**
      * Determine if the validation rule passes.
@@ -21,7 +15,10 @@ class LanguageCodeIsActive implements Rule {
      */
     public function passes($attribute, $value)
     {
-        return false;
+        /** @var LanguageService $languageService */
+        $languageService = resolve(LanguageService::class);
+
+        return true;
     }
 
     /**

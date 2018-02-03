@@ -1,5 +1,7 @@
 <?php namespace Gzero\Core\Validators;
 
+use Gzero\Core\Validators\Rules\LanguageCodeIsActive;
+
 class UserValidator extends AbstractValidator {
 
     /** @var array */
@@ -21,6 +23,7 @@ class UserValidator extends AbstractValidator {
             'last_name'             => 'min:2|regex:/^([^0-9]*)$/', // without numbers
             'password'              => 'sometimes|min:6|same:password_confirmation|required_with:password_confirmation',
             'password_confirmation' => 'sometimes|min:6|same:password|required_with:password',
+            'language_code'         => ['sometimes', new LanguageCodeIsActive],
         ];
     }
 

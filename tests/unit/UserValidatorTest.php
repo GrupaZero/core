@@ -53,8 +53,8 @@ class UserValidatorTest extends Unit {
             ->bind('email', ['user_id' => 1]);
 
         $data = [
-            'email'    => 'test@example.com',
-            'name'     => 'John Doe',
+            'email'         => 'test@example.com',
+            'name'          => 'John Doe',
             'language_code' => 'xx'
         ];
 
@@ -85,8 +85,8 @@ class UserValidatorTest extends Unit {
             ->bind('email', ['user_id' => 1]);
 
         $data = [
-            'email'    => 'test@example.com',
-            'name'     => 'John Doe',
+            'email'         => 'test@example.com',
+            'name'          => 'John Doe',
             'language_code' => 'pl'
         ];
 
@@ -117,11 +117,23 @@ class UserValidatorTest extends Unit {
             ->bind('email', ['user_id' => 1]);
 
         $data = [
-            'email'    => 'test@example.com',
-            'name'     => 'John Doe',
+            'email'         => 'test@example.com',
+            'name'          => 'John Doe',
             'language_code' => 'en'
         ];
 
         $validator->validate('updateMe', $data);
+    }
+
+    /** @test */
+    public function canValidateNullLanguageCode()
+    {
+        $this->validator
+            ->bind('name', ['user_id' => 1])
+            ->bind('email', ['user_id' => 1])
+            ->validate('updateMe', [
+                'email'         => 'test@example.com',
+                'name'          => 'John Doe',
+            ]);
     }
 }

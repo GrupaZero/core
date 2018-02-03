@@ -1,6 +1,7 @@
 <?php namespace Gzero\Core\Validators;
 
 use Gzero\Core\Validators\Rules\LanguageCodeIsActive;
+use Gzero\Core\Validators\Rules\TimezoneIsValid;
 
 class UserValidator extends AbstractValidator {
 
@@ -24,6 +25,7 @@ class UserValidator extends AbstractValidator {
             'password'              => 'sometimes|min:6|same:password_confirmation|required_with:password_confirmation',
             'password_confirmation' => 'sometimes|min:6|same:password|required_with:password',
             'language_code'         => ['sometimes', new LanguageCodeIsActive],
+            'timezone'              => ['sometimes', new TimezoneIsValid]
         ];
     }
 

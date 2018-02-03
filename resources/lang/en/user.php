@@ -10,4 +10,5 @@ return [
     'oauth'            => 'OAuth',
     'user'             => 'User',
     'invalid_language' => 'This language is invalid',
+    'invalid_timezone' => 'This timezone does not exist',
 ];

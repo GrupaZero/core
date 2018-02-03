@@ -20,6 +20,9 @@ abstract class AbstractValidator {
     /** @var array */
     protected $placeholder = [];
 
+    /** @var Factory */
+    protected $factory;
+
     /** @var \Illuminate\Validation\Validator */
     protected $validator;
 
@@ -32,11 +35,11 @@ abstract class AbstractValidator {
     /**
      * AbstractValidator constructor
      *
-     * @param Factory $validator Validator factory
+     * @param Factory $factory Validator factory
      */
-    public function __construct(Factory $validator)
+    public function __construct(Factory $factory)
     {
-        $this->validator = $validator;
+        $this->factory = $factory;
     }
 
     // @codingStandardsIgnoreStart
@@ -60,11 +63,11 @@ abstract class AbstractValidator {
 
         $this->setContext($context);
         $rules = $this->buildRulesArray();
-        $this->setValidator($this->validator->make($this->filterArray($rules, $this->data), $rules));
-        if ($this->getValidator()->passes()) {
-            return $this->getValidator()->getData();
+        $validator = $this->factory->make($this->filterArray($rules, $this->data), $rules);
+        if ($validator->passes()) {
+            return $validator->getData();
         }
-        throw new ValidationException($this->getValidator());
+        throw new ValidationException($validator);
     }
     // @codingStandardsIgnoreLine
 
@@ -105,28 +108,6 @@ abstract class AbstractValidator {
     public function trim($value)
     {
         return trim($value);
-    }
-
-    /**
-     * Return laravel validator
-     *
-     * @return Validator
-     */
-    protected function getValidator()
-    {
-        return $this->validator;
-    }
-
-    /**
-     * Set laravel validator
-     *
-     * @param \Illuminate\Validation\Validator $validator Laravel validator
-     *
-     * @return void
-     */
-    protected function setValidator($validator)
-    {
-        $this->validator = $validator;
     }
 
     /**

@@ -1,9 +1,12 @@
 <?php namespace Core;
 
+use function array_merge;
 use Codeception\Test\Unit;
+use DateTimeZone;
 use Gzero\Core\Models\Language;
 use Gzero\Core\Services\LanguageService;
 use Gzero\Core\Validators\UserValidator;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use function resolve;
 
@@ -63,7 +66,7 @@ class UserValidatorTest extends Unit {
         } catch (ValidationException $exception) {
             $this->assertNotSame(
                 false,
-                array_search('This language is not active', $exception->errors()['language_code']));
+                array_search(trans('gzero-core::user.invalid_language'), $exception->errors()['language_code']));
             return;
         }
 
@@ -126,14 +129,70 @@ class UserValidatorTest extends Unit {
     }
 
     /** @test */
-    public function canValidateNullLanguageCode()
+    public function canValidateWithoutLanguageCode()
     {
         $this->validator
             ->bind('name', ['user_id' => 1])
             ->bind('email', ['user_id' => 1])
             ->validate('updateMe', [
-                'email'         => 'test@example.com',
-                'name'          => 'John Doe',
+                'email' => 'test@example.com',
+                'name'  => 'John Doe',
             ]);
     }
+
+    /** @test */
+    public function canValidateWithoutTimezone()
+    {
+        $this->validator
+            ->bind('name', ['user_id' => 1])
+            ->bind('email', ['user_id' => 1])
+            ->validate('updateMe', [
+                'email' => 'test@example.com',
+                'name'  => 'John Doe',
+            ]);
+    }
+
+    /** @test */
+    public function canValidateInvalidTimezone()
+    {
+        $validator = $this->validator
+            ->bind('name', ['user_id' => 1])
+            ->bind('email', ['user_id' => 1]);
+
+        $data = [
+            'email'    => 'test@example.com',
+            'name'     => 'John Doe',
+            'timezone' => 'Moon/Nowa_Częstochowa'
+        ];
+
+        try {
+            $validator->validate('updateMe', $data);
+        } catch (ValidationException $exception) {
+            $this->assertNotSame(
+                false,
+                array_search(trans('gzero-core::user.invalid_timezone'), $exception->errors()['timezone']));
+            return;
+        }
+
+        $this->fail('It should throw an exception');
+    }
+
+    /** @test */
+    public function canValidateValidTimezone()
+    {
+        $validator = $this->validator
+            ->bind('name', ['user_id' => 1])
+            ->bind('email', ['user_id' => 1]);
+
+        $data = [
+            'email' => 'test@example.com',
+            'name'  => 'John Doe',
+        ];
+
+        $timezoneAbbreviations = DateTimeZone::listIdentifiers();
+        foreach ($timezoneAbbreviations as $timezone) {
+            $validator->validate('updateMe', array_merge($data, ['timezone' => $timezone]));
+        }
+    }
 }
+

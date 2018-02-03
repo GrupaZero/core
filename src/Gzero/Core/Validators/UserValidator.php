@@ -1,5 +1,7 @@
 <?php namespace Gzero\Core\Validators;
 
+use Gzero\Core\Rules\LanguageCodeIsActive;
+
 class UserValidator extends AbstractValidator {
 
     /** @var array */
@@ -8,7 +10,8 @@ class UserValidator extends AbstractValidator {
             'email'      => 'required|email|unique:users,email,@user_id',
             'name'       => 'required|min:3|unique:users,name,@user_id',
             'first_name' => '',
-            'last_name'  => ''
+            'last_name'  => '',
+            'language_code'=> 'Gzero\Core\Rules\LanguageCodeIsActive'
         ],
         'updateMe' => [
             'email'                 => 'required|email|unique:users,email,@user_id',

@@ -18,7 +18,8 @@ class LanguageCodeIsActive implements Rule {
         /** @var LanguageService $languageService */
         $languageService = resolve(LanguageService::class);
 
-        return true;
+        $language = $languageService->getByCode($value);
+        return $language ? $language->is_enabled : false;
     }
 
     /**
@@ -28,6 +29,6 @@ class LanguageCodeIsActive implements Rule {
      */
     public function message()
     {
-        return "this language is not active";
+        return trans('gzero-core::user.invalid_language');
     }
 }

@@ -1,6 +1,6 @@
 <?php namespace Core;
 
-use App\User;
+use App\Models\User;
 use Gzero\Core\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Notifications\ChannelManager;
 use Illuminate\Routing\Router;

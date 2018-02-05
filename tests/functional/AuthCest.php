@@ -85,11 +85,7 @@ class AuthCest {
         $I->fillField(['id' => 'email'], $user->email);
         $I->click('button[type=submit]');
 
-        if (class_exists('App\Models\User')) {
-            $user = \App\Models\User::find($user->id); // We need App\Models\User for assertions if test runs in platform
-        } else {
-            $user = User::find($user->id); // We need App\User for assertions if test runs alone in core
-        }
+        $user = User::find($user->id); // We need App\User for assertions
 
         $fake->assertSentTo($user, ResetPasswordNotification::class);
         $fake->assertSentToTimes($user, ResetPasswordNotification::class, 1);

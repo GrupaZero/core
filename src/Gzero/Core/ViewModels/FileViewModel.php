@@ -95,7 +95,7 @@ class FileViewModel {
     /** @return string */
     public function uploadPath()
     {
-        return str_plural($this->type) . '/' . $this->name() . '.' . $this->extension();
+        return str_plural($this->type['name']) . '/' . $this->name() . '.' . $this->extension();
     }
 
     /**

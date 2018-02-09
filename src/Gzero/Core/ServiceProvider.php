@@ -134,7 +134,7 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected function bindRepositories()
     {
-        if ($this->app->runningInConsole() && config('app.env') !== 'testing') {
+        if ($this->app->runningInConsole() && config('app.env') !== 'testing' && !getenv('IS_LARAVEL_WORKER')) {
             $this->app->singleton(
                 LanguageService::class,
                 function () {

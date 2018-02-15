@@ -724,7 +724,7 @@ class FileCest {
         $I->seeResponseContainsJson(
             [
                 'message' => 'The given data was invalid.',
-                'errors' => [
+                'errors'  => [
                     'size' => [
                         'The size format is invalid.'
                     ]

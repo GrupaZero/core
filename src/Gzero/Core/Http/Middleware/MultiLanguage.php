@@ -3,7 +3,8 @@
 use Carbon\Carbon;
 use Closure;
 use Gzero\Core\Services\LanguageService;
-use Gzero\Core\ServiceProvider;
+use Gzero\Core\Services\RoutesService;
+use Gzero\DomainException;
 
 class MultiLanguage {
 
@@ -38,7 +39,7 @@ class MultiLanguage {
      * @param \Illuminate\Http\Request $request Request object
      * @param \Closure                 $next    Next middleware
      *
-     * @throws \Gzero\DomainException
+     * @throws DomainException
      *
      * @return mixed
      */
@@ -47,21 +48,37 @@ class MultiLanguage {
         /** @var LanguageService $languageService */
         $languageService = resolve(LanguageService::class);
         $languages       = $languageService->getAllEnabled();
-        $language        = $languages->first(function ($language) use ($request) {
-            return $language->code === $request->segment(1);
-        });
+        $language        = null;
 
-        if (!empty($language)) {
-            app()->setLocale($language->code);
+        if (str_is('api.*', $request->getHost())) {
+            $language = $languages->first(function ($language) use ($request) {
+                return $language->code === $request->header('Accept-Language');
+            });
         } else {
-            $language = ServiceProvider::setDefaultLocale();
+            $language = $languages->first(function ($language) use ($request) {
+                return $language->code === $request->segment(1);
+            });
         }
+
+        if (empty($language)) {
+            $language = $languageService->getDefault();
+        }
+
+        if (empty($language)) {
+            throw new DomainException('No default language found');
+        }
+
+        app()->setLocale($language->code);
 
         // We need it to make carbon's diffForHumans work correctly
         Carbon::setLocale(app()->getLocale());
 
-        view()->share('language', $language);
-        view()->share('languages', $languages);
+        if (!str_is('api.*', $request->getHost())) {
+            view()->share('language', $language);
+            view()->share('languages', $languages);
+        }
+
+        resolve(RoutesService::class)->registerAll();
 
         // We use this callbacks to register some view shares after we change app locale
         foreach (static::$callbacks as $callback) {

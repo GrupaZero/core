@@ -68,12 +68,13 @@ class Functional extends \Codeception\Module {
     {
         $this->getModule('Laravel5')
             ->haveApplicationHandler(function ($app) use ($closure) {
-                /** @var Router $router */
-                $router = $app->make('router');
-                $closure($router);
+                addRoutes(function ($router) use ($closure) {
+                    /** @var Router $router */
+                    $closure($router);
 
-                $router->getRoutes()->refreshActionLookups();
-                $router->getRoutes()->refreshNameLookups();
+                    $router->getRoutes()->refreshActionLookups();
+                    $router->getRoutes()->refreshNameLookups();
+                });
             });
     }
 

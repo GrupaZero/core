@@ -2,6 +2,8 @@
 
 use Gzero\Core\Models\Language;
 use Gzero\Core\Services\LanguageService;
+use Gzero\Core\Services\RoutesService;
+use Illuminate\Routing\Route;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 
@@ -122,6 +124,8 @@ class HelpersCest {
             $router->getRoutes()->refreshNameLookups();
         });
 
+        $I->getApplication()->make(RoutesService::class)->registerAll(); // We need to register routers first
+
         /** @var RouteCollection $routes */
         $routes  = $I->getApplication()->make('router')->getRoutes();
         $routePl = $routes->getByName(mlSuffix('home', 'pl'));
@@ -130,5 +134,65 @@ class HelpersCest {
         $I->assertNotNull($routePl);
         $I->assertEquals($routeEn->uri, '/');
         $I->assertEquals($routePl->uri, 'pl');
+    }
+
+    public function itAddsGroupArgumentsToMultiLanguageRoute(FunctionalTester $I)
+    {
+        addMultiLanguageRoutes([
+            'middleware' => 'web',
+            'domain'     => 'test.pl'
+        ], function ($router, $language) {
+            /** @var Router $router */
+            $router->put('/', function () {
+                return 'Home: ' . app()->getLocale();
+            })->name(mlSuffix('home', $language));
+
+            $router->getRoutes()->refreshActionLookups();
+            $router->getRoutes()->refreshNameLookups();
+        });
+
+        $I->getApplication()->make(RoutesService::class)->registerAll(); // We need to register routers first
+
+        /** @var RouteCollection $routes */
+        $routes = $I->getApplication()->make('router')->getRoutes();
+        /** @var Route $routePl */
+        /** @var Route $routeEn */
+        $routePl = $routes->getByName(mlSuffix('home', 'pl'));
+        $routeEn = $routes->getByName(mlSuffix('home', 'en'));
+        $I->assertNotNull($routeEn);
+        $I->assertNotNull($routePl);
+        $I->assertEquals($routeEn->uri, '/');
+        $I->assertEquals($routePl->uri, 'pl');
+        $I->assertEquals($routeEn->getDomain(), 'test.pl');
+        $I->assertEquals($routePl->getDomain(), 'test.pl');
+        $I->assertEquals($routeEn->getPrefix(), null);
+        $I->assertEquals($routePl->getPrefix(), 'pl');
+    }
+
+    public function itAddsGroupArgumentsToRoutes(FunctionalTester $I)
+    {
+        addRoutes([
+            'middleware' => 'web',
+            'domain'     => 'test.pl'
+        ], function ($router) {
+            /** @var Router $router */
+            $router->put('/', function () {
+                return 'Home: ' . app()->getLocale();
+            })->name('home');
+
+            $router->getRoutes()->refreshActionLookups();
+            $router->getRoutes()->refreshNameLookups();
+        });
+
+        $I->getApplication()->make(RoutesService::class)->registerAll(); // We need to register routers first
+
+        /** @var RouteCollection $routes */
+        $routes = $I->getApplication()->make('router')->getRoutes();
+        /** @var Route $route */
+        $route = $routes->getByName('home');
+        $I->assertNotNull($route);
+        $I->assertEquals($route->uri, '/');
+        $I->assertEquals($route->getDomain(), 'test.pl');
+        $I->assertEquals($route->getPrefix(), null);
     }
 }

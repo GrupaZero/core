@@ -15,7 +15,7 @@ use Gzero\Core\Services\OptionService;
 use Gzero\Core\Policies\OptionPolicy;
 use Gzero\Core\Policies\UserPolicy;
 use Gzero\Core\Policies\RoutePolicy;
-use Gzero\DomainException;
+use Gzero\Core\Services\RoutesService;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
@@ -69,11 +69,11 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerHelpers();
         $this->bindRepositories();
         $this->bindOtherStuff();
-        if (config('app.env') !== 'testing') { // We're manually registering it for test cases
-            $this->app->booted(function () {
-                addMultiLanguageRoutes(function ($router) {
-                    $router->get('{path?}', 'Gzero\Core\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
-                });
+
+        if (config('app.env') === 'testing') {
+            // We're registering all routes here to unify the whole process between Laravel & Orchestra setup
+            $this->app->booted(function ($app) {
+                $app->make(RoutesService::class)->registerAll();
             });
         }
     }
@@ -85,8 +85,6 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     public function boot()
     {
-        $this->setDefaultLocale();
-
         $this->registerRoutePatterns();
         $this->registerRoutes();
 
@@ -109,66 +107,27 @@ class ServiceProvider extends AbstractServiceProvider {
     }
 
     /**
-     * It registers default locale
-     *
-     * @throws DomainException
-     *
-     * @return Language default language
-     */
-    public static function setDefaultLocale()
-    {
-        $defaultLanguage = resolve(LanguageService::class)->getDefault();
-        if (empty($defaultLanguage)) {
-            throw new DomainException('No default language found');
-        }
-
-        app()->setLocale($defaultLanguage->code);
-
-        return $defaultLanguage;
-    }
-
-    /**
      * Bind services
      *
      * @return void
      */
     protected function bindRepositories()
     {
-        if ($this->app->runningInConsole() && config('app.env') !== 'testing' && !getenv('IS_LARAVEL_WORKER')) {
-            $this->app->singleton(
-                LanguageService::class,
-                function () {
-                    return new LanguageService(
-                        collect([new Language(['code' => app()->getLocale(), 'is_enabled' => true, 'is_default' => true])])
-                    );
-                }
-            );
-        } else {
-            $this->app->singleton(
-                LanguageService::class,
-                function () {
-                    return new LanguageService(
-                        cache()->rememberForever('languages', function () {
-                            return Language::all();
-                        })
-                    );
-                }
-            );
-        }
+        $this->app->singleton(RoutesService::class, function () {
+            return new RoutesService();
+        });
 
-        //$this->app->singleton(
-        //    'gzero.menu.account',
-        //    function () {
-        //        return new Register();
-        //    }
-        //);
+        $this->app->singleton(LanguageService::class, function () {
+            return new LanguageService(
+                cache()->rememberForever('languages', function () {
+                    return Language::all();
+                })
+            );
+        });
 
-        $this->app->singleton(
-            'croppa.src_dir',
-            function () {
-                return resolve('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
-            }
-        );
+        $this->app->singleton('croppa.src_dir', function () {
+            return resolve('filesystem')->disk(config('gzero.upload.disk'))->getDriver();
+        });
     }
 
     /**
@@ -253,9 +212,9 @@ class ServiceProvider extends AbstractServiceProvider {
     protected function registerMiddleware()
     {
         resolve(Kernel::class)->prependMiddleware(Init::class);
+        resolve(Kernel::class)->prependMiddleware(MultiLanguage::class);
         /** @var Router $router */
         $router = resolve(Router::class);
-        $router->prependMiddlewareToGroup('web', MultiLanguage::class);
         $router->pushMiddlewareToGroup('web', CreateFreshApiToken::class);
         $router->pushMiddlewareToGroup('web', ViewShareUser::class);
     }

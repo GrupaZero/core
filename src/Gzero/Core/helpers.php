@@ -1,7 +1,6 @@
 <?php
 
 use Gzero\Core\Services\LanguageService;
-use Illuminate\Support\Facades\Route;
 
 if (!function_exists('setMultiLanguageRouting')) {
 
@@ -34,26 +33,43 @@ if (!function_exists('addMultiLanguageRoutes')) {
     /**
      * It registers new multi language routes
      *
-     * @param Closure $closure Closure with route definitions
+     * @param array ...$parameters closure or group options plus closure
      *
      * @return void
      */
-    function addMultiLanguageRoutes(Closure $closure)
+    function addMultiLanguageRoutes(...$parameters)
     {
-        /** @var LanguageService $service */
-        $service   = resolve(LanguageService::class);
-        $languages = $service->getAllEnabled();
-        foreach ($languages as $language) {
-            $prefix = '';
-            if (!$language->is_default) {
-                $prefix = $language->code;
-            }
-            Route::prefix($prefix)
-                ->middleware('web')
-                ->group(function () use ($closure, $language) {
-                    $closure(resolve('router'), $language->code);
-                });
-        }
+        resolve(\Gzero\Core\Services\RoutesService::class)->addMultiLanguage(...$parameters);
+    }
+}
+
+if (!function_exists('addRoutes')) {
+
+    /**
+     * It registers new routes
+     *
+     * @param array ...$parameters closure or group options plus closure
+     *
+     * @return void
+     */
+    function addRoutes(...$parameters)
+    {
+        resolve(\Gzero\Core\Services\RoutesService::class)->add(...$parameters);
+    }
+}
+
+if (!function_exists('setCatchAllRoute')) {
+
+    /**
+     * It sets catch all route
+     *
+     * @param array ...$parameters closure or group options plus closure
+     *
+     * @return void
+     */
+    function setCatchAllRoute(...$parameters)
+    {
+        resolve(\Gzero\Core\Services\RoutesService::class)->setCatchAll(...$parameters);
     }
 }
 

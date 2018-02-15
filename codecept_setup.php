@@ -1,13 +1,13 @@
-<?php
+<?php namespace App;
 
-namespace App;
-
+use App\Models\User;
 use Barryvdh\Cors\ServiceProvider as CORSServiceProvider;
 use Bkwld\Croppa\ServiceProvider as CroppaServiceProvider;
 use Dotenv\Dotenv;
 use Gzero\Core\Exceptions\Handler;
 use Gzero\Core\ServiceProvider;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Database\DatabaseManager;
 use Laravel\Passport\Passport;
 use Laravel\Passport\PassportServiceProvider;
 use Orchestra\Testbench\Traits\CreatesApplication;
@@ -22,6 +22,14 @@ if (file_exists(__DIR__ . '/.env.testing')) {
 }
 
 if (!class_exists('App\TestApp')) {
+
+    function dbReconnectIfNeeded(DatabaseManager $db)
+    {
+        if ($db->connection()->getPdo() === null) {
+            $db->connection()->reconnect();
+        }
+    }
+
     class TestApp {
 
         static $oldDb = null;
@@ -65,6 +73,7 @@ if (!class_exists('App\TestApp')) {
         {
             // Reuse existing db to prevent transaction between application calls
             if (static::$oldDb !== null) {
+                dbReconnectIfNeeded(static::$oldDb);
                 $app->singleton('db', function () {
                     return static::$oldDb;
                 });
@@ -74,13 +83,12 @@ if (!class_exists('App\TestApp')) {
                 }
             }
 
-            /** @TODO Why I need to do this here? Are we fine with overriding config options in service providers? */
             // Use passport as guard for api
             $app['config']->set('auth.guards.api.driver', 'passport');
             // We want to return Access-Control-Allow-Credentials header as well
             $app['config']->set('cors.supportsCredentials', true);
             // We moved user model in platform
-            $app['config']->set('auth.providers.users.model', \App\Models\User::class);
+            $app['config']->set('auth.providers.users.model', User::class);
         }
     }
 

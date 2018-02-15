@@ -65,6 +65,35 @@ class CORSCest {
         );
     }
 
+    public function validationErrorInDifferentLanguage(FunctionalTester $I)
+    {
+        $I->loginAsAdmin();
+        $I->haveHttpHeader('Accept-Language', 'pl');
+        $I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');
+        $I->haveHttpHeader('Origin', 'http://dev.gzero.pl');
+
+        // Adding PL translation on fly, because this file is stored in platform
+        $I->haveApplicationHandler(function ($app) {
+            $app->make('translator')->addLines(['validation.required' => 'Pole :attribute jest wymagane.'], 'pl');
+        });
+
+        $I->sendPUT(apiUrl('options/seo'));
+
+        $I->seeResponseCodeIs(422);
+        $I->seeHttpHeader('Access-Control-Allow-Credentials', 'true');
+        $I->seeHttpHeader('Access-Control-Allow-Origin', 'http://dev.gzero.pl');
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'message' => 'The given data was invalid.',
+                'errors'  => [
+                    'key'   => [0 => 'Pole key jest wymagane.',],
+                    'value' => [0 => 'Pole value jest wymagane.',]
+                ],
+            ]
+        );
+    }
+
     public function methodNotAllowedHttpException(FunctionalTester $I)
     {
         $I->haveHttpHeader('X-Requested-With', 'XMLHttpRequest');

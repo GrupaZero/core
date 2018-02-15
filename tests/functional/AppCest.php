@@ -85,19 +85,20 @@ class AppCest {
             ])
         ));
 
+        $I->haveMlRoutes(function ($router) {
+            /** @var Router $router */
+            $router->get('test', function () {
+                return 'Laravel Multi Language Content: ' . app()->getLocale();
+            });
+        });
+
         $I->haveRoutes(function ($router) {
             /** @var Router $router */
-            addMultiLanguageRoutes(function ($router, $languages) {
-                $router->get('test', function () {
-                    return 'Laravel Multi Language Content: ' . app()->getLocale();
-                });
-            });
             $router->middleware('web')
                 ->get('{path?}', function () {
                     return 'Dynamic Router: ' . app()->getLocale();
                 })->where('path', '.*');
         });
-
 
         $I->amOnPage('/test');
         $I->seeResponseCodeIs(200);
@@ -146,7 +147,10 @@ class AppCest {
 
         $I->amOnPage('/pl/test');
         $I->seeResponseCodeIs(200);
-        // Should use en because our ServiceProvider set it once and we don't use middleware to override it
+        $I->see('Dynamic Router: pl');
+
+        $I->amOnPage('/en/test');
+        $I->seeResponseCodeIs(200);
         $I->see('Dynamic Router: en');
     }
 

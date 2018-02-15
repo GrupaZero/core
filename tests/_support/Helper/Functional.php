@@ -54,9 +54,6 @@ class Functional extends \Codeception\Module {
                 addMultiLanguageRoutes(function ($router, $language) use ($closure) {
                     /** @var Router $router */
                     $closure($router, $language);
-
-                    $router->getRoutes()->refreshActionLookups();
-                    $router->getRoutes()->refreshNameLookups();
                 });
             });
     }
@@ -71,9 +68,20 @@ class Functional extends \Codeception\Module {
                 addRoutes(function ($router) use ($closure) {
                     /** @var Router $router */
                     $closure($router);
+                });
+            });
+    }
 
-                    $router->getRoutes()->refreshActionLookups();
-                    $router->getRoutes()->refreshNameLookups();
+    /**
+     * @param callable $closure
+     */
+    public function haveCatchAllRoute(callable $closure)
+    {
+        $this->getModule('Laravel5')
+            ->haveApplicationHandler(function ($app) use ($closure) {
+                setCatchAllRoute(function ($router) use ($closure) {
+                    /** @var Router $router */
+                    $closure($router);
                 });
             });
     }

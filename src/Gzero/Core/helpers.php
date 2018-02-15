@@ -58,6 +58,21 @@ if (!function_exists('addRoutes')) {
     }
 }
 
+if (!function_exists('setCatchAllRoute')) {
+
+    /**
+     * It sets catch all route
+     *
+     * @param array ...$parameters closure or group options plus closure
+     *
+     * @return void
+     */
+    function setCatchAllRoute(...$parameters)
+    {
+        resolve(\Gzero\Core\Services\RoutesService::class)->setCatchAll(...$parameters);
+    }
+}
+
 if (!function_exists('mlSuffix')) {
 
     /**

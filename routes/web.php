@@ -39,3 +39,14 @@ addRoutes([
     $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
     $router->post('password/reset', 'Auth\ResetPasswordController@reset')->name('post.password.reset');
 });
+
+setCatchAllRoute([
+    'domain'     => config('gzero.domain'),
+    'middleware' => ['web']
+], function ($router) {
+    /** @var \Illuminate\Routing\Router $router */
+    if (config('app.env') !== 'testing') {
+        // We're manually registering dynamicRouter for test cases
+        $router->get('{path?}', 'Gzero\Core\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
+    }
+});

@@ -75,13 +75,6 @@ class ServiceProvider extends AbstractServiceProvider {
             $this->app->booted(function ($app) {
                 $app->make(RoutesService::class)->registerAll();
             });
-        } else {
-            // We're manually registering dynamicRouter for test cases
-            $this->app->booted(function () {
-                addMultiLanguageRoutes(function ($router) {
-                    $router->get('{path?}', 'Gzero\Core\Http\Controllers\RouteController@dynamicRouter')->where('path', '.*');
-                });
-            });
         }
     }
 

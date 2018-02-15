@@ -6,8 +6,9 @@ class RoutesService {
 
     /** @var array */
     protected $routes = [
-        'ml'      => [],
-        'regular' => []
+        'ml'       => [],
+        'regular'  => [],
+        'catchAll' => []
     ];
 
     /**
@@ -51,6 +52,26 @@ class RoutesService {
     }
 
     /**
+     * Add catch all route
+     *
+     * @param array ...$parameters closure or group options plus closure
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return void
+     */
+    public function setCatchAll(...$parameters)
+    {
+        if (count($parameters) === 1) {
+            $this->routes['catchAll'] = ['closure' => $parameters[0], 'groupArgs' => []];
+        } elseif (count($parameters) === 2) {
+            $this->routes['catchAll'] = ['closure' => $parameters[1], 'groupArgs' => $parameters[0]];
+        } else {
+            throw new \InvalidArgumentException;
+        }
+    }
+
+    /**
      * It registers all routes
      *
      * @return void
@@ -79,6 +100,14 @@ class RoutesService {
                 $value['groupArgs'],
                 function ($router) use ($value) {
                     $value['closure']($router);
+                }
+            );
+        }
+        if (!empty($this->routes['catchAll'])) {
+            Route::group(
+                $this->routes['catchAll']['groupArgs'],
+                function ($router) {
+                    $this->routes['catchAll']['closure']($router);
                 }
             );
         }

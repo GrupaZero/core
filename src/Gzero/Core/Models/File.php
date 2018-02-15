@@ -1,10 +1,10 @@
 <?php namespace Gzero\Core\Models;
 
-use Gzero\Core\Presenters\FileViewModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Robbo\Presenter\PresentableInterface;
 use Gzero\InvalidArgumentException;
+use Gzero\Core\ViewModels\FileViewModel;
 
 class File extends Model implements PresentableInterface {
 

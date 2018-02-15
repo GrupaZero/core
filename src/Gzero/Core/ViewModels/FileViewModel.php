@@ -1,6 +1,4 @@
-<?php namespace Gzero\Core\Presenters;
-
-use Gzero\Core\ViewModels\UserViewModel;
+<?php namespace Gzero\Core\ViewModels;
 
 class FileViewModel {
 

@@ -1,5 +1,6 @@
 <?php namespace Gzero\Core\Jobs;
 
+use function bcrypt;
 use Gzero\Core\DBTransactionTrait;
 use Gzero\Core\Models\User;
 
@@ -7,42 +8,28 @@ class CreateUser {
 
     use DBTransactionTrait;
 
-    /** @var string */
-    protected $email;
+    /** @var array */
+    protected $attributes;
 
-    /** @var string */
-    protected $password;
-
-    /** @var string */
-    protected $name;
-
-    /** @var string */
-    protected $firstName;
-
-    /** @var string */
-    protected $lastName;
+    /** @var array */
+    protected $allowedAttributes = [
+        'email',
+        'password',
+        'name',
+        'first_name',
+        'last_name',
+        'language_code',
+        'timezone',
+    ];
 
     /**
      * Create a new job instance.
      *
-     * @param string $email     Email
-     * @param string $password  Password
-     * @param string $name      Name
-     * @param string $firstName First name
-     * @param string $lastName  Last name
+     * @param array $attributes array of attributes
      */
-    public function __construct(
-        string $email,
-        string $password,
-        ?string $name = null,
-        ?string $firstName = null,
-        ?string $lastName = null
-    ) {
-        $this->email     = $email;
-        $this->password  = $password;
-        $this->name      = $name;
-        $this->firstName = $firstName;
-        $this->lastName  = $lastName;
+    public function __construct(array $attributes = [])
+    {
+        $this->attributes = array_only($attributes, $this->allowedAttributes);
     }
 
     /**
@@ -52,18 +39,15 @@ class CreateUser {
      */
     public function handle()
     {
-        if (empty($this->name)) { // handle empty nickname users
-            $this->name = $this->buildUniqueNickname();
+        if (empty($this->attributes['name'])) { // handle empty nickname users
+            $this->attributes['name'] = $this->buildUniqueNickname();
         }
         $user = $this->dbTransaction(function () {
+            if (array_key_exists('password', $this->attributes)) {
+                $this->attributes['password'] = bcrypt($this->attributes['password']);
+            }
             $user = new User();
-            $user->fill([
-                'email'      => $this->email,
-                'password'   => bcrypt($this->password),
-                'name'       => $this->name,
-                'first_name' => $this->firstName ?: null,
-                'last_name'  => $this->lastName ?: null,
-            ]);
+            $user->fill($this->attributes);
             $user->save();
             event('user.created', [$user]);
             return $user;

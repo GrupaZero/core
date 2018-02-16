@@ -14,7 +14,9 @@ class UserViewModel {
         'first_name',
         'last_name',
         'has_social_integrations',
-        'is_admin'
+        'is_admin',
+        'language_code',
+        'timezone'
     ];
 
     /**
@@ -81,6 +83,22 @@ class UserViewModel {
     public function isSuperAdmin()
     {
         return array_get($this->data, 'is_admin', false);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguageCode()
+    {
+        return array_get($this->data, 'language_code');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimezone()
+    {
+        return array_get($this->data, 'timezone');
     }
 
     /**

@@ -13,6 +13,17 @@ class UpdateUser {
     /** @var array */
     protected $attributes;
 
+    /** @var array */
+    protected $allowedAttributes = [
+        'email',
+        'first_name',
+        'last_name',
+        'name',
+        'language_code',
+        'timezone',
+        'password'
+    ];
+
     /**
      * Create a new job instance.
      *
@@ -22,7 +33,7 @@ class UpdateUser {
     public function __construct(User $user, array $attributes = [])
     {
         $this->user       = $user;
-        $this->attributes = array_only($attributes, ['email', 'first_name', 'last_name', 'name', 'password']);
+        $this->attributes = array_only($attributes, $this->allowedAttributes);
     }
 
     /**

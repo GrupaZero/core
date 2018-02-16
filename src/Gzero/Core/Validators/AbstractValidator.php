@@ -1,7 +1,6 @@
 <?php namespace Gzero\Core\Validators;
 
 use Gzero\InvalidArgumentException;
-use \Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Factory;
 use Illuminate\Validation\ValidationException;
 
@@ -20,6 +19,9 @@ abstract class AbstractValidator {
     /** @var array */
     protected $placeholder = [];
 
+    /** @var Factory */
+    protected $factory;
+
     /** @var \Illuminate\Validation\Validator */
     protected $validator;
 
@@ -32,11 +34,11 @@ abstract class AbstractValidator {
     /**
      * AbstractValidator constructor
      *
-     * @param Factory $validator Validator factory
+     * @param Factory $factory Validator factory
      */
-    public function __construct(Factory $validator)
+    public function __construct(Factory $factory)
     {
-        $this->validator = $validator;
+        $this->factory = $factory;
     }
 
     // @codingStandardsIgnoreStart
@@ -60,11 +62,11 @@ abstract class AbstractValidator {
 
         $this->setContext($context);
         $rules = $this->buildRulesArray();
-        $this->setValidator($this->validator->make($this->filterArray($rules, $this->data), $rules));
-        if ($this->getValidator()->passes()) {
-            return $this->getValidator()->getData();
+        $validator = $this->factory->make($this->filterArray($rules, $this->data), $rules);
+        if ($validator->passes()) {
+            return $validator->getData();
         }
-        throw new ValidationException($this->getValidator());
+        throw new ValidationException($validator);
     }
     // @codingStandardsIgnoreLine
 
@@ -108,28 +110,6 @@ abstract class AbstractValidator {
     }
 
     /**
-     * Return laravel validator
-     *
-     * @return Validator
-     */
-    protected function getValidator()
-    {
-        return $this->validator;
-    }
-
-    /**
-     * Set laravel validator
-     *
-     * @param \Illuminate\Validation\Validator $validator Laravel validator
-     *
-     * @return void
-     */
-    protected function setValidator($validator)
-    {
-        $this->validator = $validator;
-    }
-
-    /**
      * Set validation context
      *
      * @param string $context Validation context
@@ -150,10 +130,14 @@ abstract class AbstractValidator {
      */
     protected function buildRulesArray()
     {
-        if (!isset($this->rules[$this->context])) {
+        if (method_exists($this, $this->context)) {
+            $rules = $this->{$this->context}();
+        } elseif (isset($this->rules[$this->context])) {
+            $rules = $this->rules[$this->context];
+        } else {
             throw new InvalidArgumentException("Undefined validation context: " . $this->context);
         }
-        return $this->bindPlaceholders($this->rules[$this->context]);
+        return $this->bindPlaceholders($rules);
     }
 
     /**

@@ -30,7 +30,9 @@ class User extends Model implements
         'last_name',
         'name',
         'password',
-        'remember_token'
+        'remember_token',
+        'language_code',
+        'timezone'
     ];
 
     /**

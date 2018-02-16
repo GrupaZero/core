@@ -8,7 +8,7 @@
 @component('gzero-core::account._menu')@endcomponent
 
 @component('gzero-core::layouts._contentSection', ['class' => 'col-sm-8'])
-    <h1 class="page-header">@lang('gzero-core::user.edit_account')</h1>
+    <h1 class="mt-4">@lang('gzero-core::user.edit_account')</h1>
     @if(!$isUserEmailSet)
         <div class="alert alert-info">
             <i class="fa fa-info-circle"><!-- icon --></i> @lang('gzero-core::common.set_email_to_edit_account')
@@ -112,20 +112,29 @@
         </div>
     </div>
 @endcomponent
-@push('footer')
+@section('footerScripts')
+    @parent
     <script type="text/javascript">
         $(function() {
-            $('#edit-account').click(function(event) {
+            $('#edit-account-form').submit(function(event) {
                 event.preventDefault();
                 Loading.start('#main-container');
+
+                var data = $('#edit-account-form').serializeObject();
+                if (((!data.hasOwnProperty('password')) || data.password.length === 0) &&
+                    ((!data.hasOwnProperty('password_confirmation')) || data.password_confirmation.length === 0)) {
+                    delete data.password
+                    delete data.password_confirmation
+                }
+
                 $.ajax({
-                    url: "{{ request()->getScheme() }}://api.{{ request()->getHTTPHost() }}/v1/user/account",
+                    url: "{{ request()->getScheme() }}://api.{{ request()->getHTTPHost() }}/v1/users/me",
                     headers: {'X-CSRF-TOKEN': Laravel.csrfToken},
                     xhrFields: {
                         withCredentials: true
                     },
-                    data: $('#edit-account-form').serializeObject(),
-                    type: 'PUT',
+                    data: data,
+                    type: 'PATCH',
                     success: function(xhr) {
                         @if($isUserEmailSet)
                              Loading.stop();
@@ -152,4 +161,4 @@
             })
         });
     </script>
-@endpush
+@stop

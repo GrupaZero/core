@@ -8,7 +8,7 @@
 @section('content')
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <h1 class="page-header">@lang('gzero-core::common.password_reset')</h1>
+            <h1 class="mt-4">@lang('gzero-core::common.password_reset')</h1>
             @if (session('status'))
                 <div class="alert alert-success">
                     {{ session('status') }}

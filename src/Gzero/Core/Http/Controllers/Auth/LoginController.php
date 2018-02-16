@@ -18,11 +18,19 @@ class LoginController extends Controller {
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
+     * Where to redirect users after login / registration.
      *
-     * @var string
+     * @return string
      */
-    protected $redirectTo = '/';
+    protected function redirectTo()
+    {
+        return routeMl('home', $this->getEffectiveLocale());
+    }
+
+    protected function getEffectiveLocale()
+    {
+        return $this->guard()->user()->language_code ?: app()->getLocale();
+    }
 
     /**
      * Create a new controller instance.

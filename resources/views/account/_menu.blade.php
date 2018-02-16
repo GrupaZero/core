@@ -3,10 +3,14 @@
         <div class="col-sm-12 my-4">
             <h3>{{ $user->displayName() }}</h3>
             <nav class="nav flex-column">
-                <a href="{{route('account')}}" class="nav-link{{ (URL::full() == route('account')) ? ' active' : '' }}">
+                <a href="{{routeMl('account')}}"
+                   class="nav-link{{ (URL::full() == routeMl('account')) ? ' active' : '' }}"
+                >
                     @lang('gzero-core::user.my_account')
                 </a>
-                <a href="{{route('account.oauth')}}" class="nav-link{{ (URL::full() == route('account.oauth')) ? ' active' : '' }}">
+                <a href="{{routeMl('account.oauth')}}"
+                   class="nav-link{{ (URL::full() == routeMl('account.oauth')) ? ' active' :'' }}"
+                >
                     @lang('gzero-core::user.oauth')
                 </a>
             </nav>

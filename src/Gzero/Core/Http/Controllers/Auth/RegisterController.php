@@ -1,12 +1,12 @@
 <?php namespace Gzero\Core\Http\Controllers\Auth;
 
 use Gzero\Core\Http\Controllers\Controller;
+use Gzero\Core\Http\Controllers\Controller;
 use Gzero\Core\Jobs\CreateUser;
 use Gzero\Core\Jobs\SendWelcomeEmail;
 use Gzero\Core\Services\UserService;
 use Gzero\Core\Validators\BaseUserValidator;
 use Gzero\Core\Validators\UserValidator;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,11 +28,20 @@ class RegisterController extends Controller {
     use RedirectsUsers;
 
     /**
-     * Where to redirect users after login / registration.
+     * Where to redirect users after registration.
      *
-     * @var string
+     * @return string
      */
-    protected $redirectTo = '/';
+    protected function redirectTo()
+    {
+        return routeMl('account.welcome', $this->getEffectiveLocale());
+    }
+
+
+    protected function getEffectiveLocale()
+    {
+        return $this->guard()->user()->language_code ?: app()->getLocale();
+    }
 
     /** @var UserValidator */
     protected $validator;
@@ -78,8 +87,10 @@ class RegisterController extends Controller {
         event(new Registered($user));
 
         $this->guard()->login($user);
+        dispatch(new SendWelcomeEmail($user));
+        session()->put('showWelcomePage', true);
 
-        return $this->registered($request, $user) ?: redirect($this->redirectPath());
+        return redirect($this->redirectPath();
     }
 
     /**
@@ -90,22 +101,5 @@ class RegisterController extends Controller {
     protected function guard()
     {
         return Auth::guard();
-    }
-
-    /**
-     * The user has been registered.
-     *
-     * @param  \Illuminate\Http\Request $request Request
-     * @param  mixed                    $user    User
-     *
-     * @SuppressWarnings(PHPMD)
-     *
-     * @return mixed
-     */
-    protected function registered(Request $request, $user)
-    {
-        dispatch(new SendWelcomeEmail($user));
-        session()->put('showWelcomePage', true);
-        return redirect()->route('account.welcome', ['method' => 'Signup form']);
     }
 }

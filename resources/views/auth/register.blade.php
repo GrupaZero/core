@@ -9,7 +9,7 @@
         <div class="col-md-4">
             <h1 class="mt-4">@lang('gzero-core::common.register')</h1>
 
-            <form id="register-account-form" method="POST" role="form" action="{{ route('post.register') }}">
+            <form id="register-account-form" method="POST" role="form" action="{{ routeMl('register') }}">
                 {{ csrf_field() }}
                 <div class="form-group">
                     <label class="control-label" for="email">@choice('gzero-core::common.email', 1)</label>
@@ -56,12 +56,15 @@
                         <div class="invalid-feedback">{{ $errors->first('password') }}</div>
                     @endif
                 </div>
+
+                <input type="hidden" name="language_code" value="{{ app()->getLocale() }}">
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">
                         @lang('gzero-core::common.register')
                     </button>
                 </div>
-                <input id="accountIntent" type="text" name="accountIntent" class="hidden">
+                <input id="accountIntent" type="text" name="accountIntent" hidden>
             </form>
             @if(isProviderLoaded('Gzero\Social\ServiceProvider'))
                 @include('gzero-social::includes.socialLogin')

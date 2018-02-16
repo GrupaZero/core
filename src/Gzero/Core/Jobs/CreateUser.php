@@ -1,5 +1,7 @@
 <?php namespace Gzero\Core\Jobs;
 
+use function __construct;
+use function bcrypt;
 use Gzero\Core\DBTransactionTrait;
 use Gzero\Core\Models\User;
 
@@ -7,54 +9,31 @@ class CreateUser {
 
     use DBTransactionTrait;
 
-    /** @var string */
-    protected $email;
+    /** @var array */
+    protected $attributes;
 
-    /** @var string */
-    protected $password;
-
-    /** @var string */
-    protected $name;
-
-    /** @var string */
-    protected $firstName;
-
-    /** @var string */
-    protected $lastName;
-
-    /** @var string */
-    protected $languageCode;
-
-    /** @var string */
-    protected $timezone;
+    /** @var array */
+    protected $allowedAttributes = [
+        'email',
+        'password',
+        'name',
+        'first_name',
+        'last_name',
+        'language_code',
+        'timezone',
+    ];
 
     /**
      * Create a new job instance.
      *
-     * @param string $email        Email
-     * @param string $password     Password
-     * @param string $name         Name
-     * @param string $firstName    First name
-     * @param string $lastName     Last name
-     * @param string $languageCode Preferred language
-     * @param string $timezone     User's timezone
+     * @param array $attributes array of attributes
      */
-    public function __construct(
-        string $email,
-        string $password,
-        ?string $name = null,
-        ?string $firstName = null,
-        ?string $lastName = null,
-        string $languageCode = null,
-        string $timezone = null
-    ) {
-        $this->email        = $email;
-        $this->password     = $password;
-        $this->name         = $name;
-        $this->firstName    = $firstName;
-        $this->lastName     = $lastName;
-        $this->languageCode = $languageCode;
-        $this->timezone     = $timezone;
+    public function __construct(array $attributes = [])
+    {
+        $this->attributes               = array_only($attributes, $this->allowedAttributes);
+
+        $this->attributes['first_name'] = $this->attributes['first_name'] ?: null;
+        $this->attributes['last_name']  = $this->attributes['last_name'] ?: null;
     }
 
     /**
@@ -64,20 +43,15 @@ class CreateUser {
      */
     public function handle()
     {
-        if (empty($this->name)) { // handle empty nickname users
-            $this->name = $this->buildUniqueNickname();
+        if (empty($this->attributes['name'])) { // handle empty nickname users
+            $this->attributes['name'] = $this->buildUniqueNickname();
         }
         $user = $this->dbTransaction(function () {
+            if (array_key_exists('password', $this->attributes)) {
+                $this->attributes['password'] = bcrypt($this->attributes['password']);
+            }
             $user = new User();
-            $user->fill([
-                'email'         => $this->email,
-                'password'      => bcrypt($this->password),
-                'name'          => $this->name,
-                'first_name'    => $this->firstName ?: null,
-                'last_name'     => $this->lastName ?: null,
-                'language_code' => $this->languageCode,
-                'timezone'      => $this->timezone
-            ]);
+            $user->fill($this->attributes);
             $user->save();
             event('user.created', [$user]);
             return $user;

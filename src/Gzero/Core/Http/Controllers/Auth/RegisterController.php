@@ -1,14 +1,15 @@
 <?php namespace Gzero\Core\Http\Controllers\Auth;
 
+use Gzero\Core\Http\Controllers\Controller;
 use Gzero\Core\Jobs\CreateUser;
 use Gzero\Core\Jobs\SendWelcomeEmail;
 use Gzero\Core\Services\UserService;
 use Gzero\Core\Validators\BaseUserValidator;
+use Gzero\Core\Validators\UserValidator;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Registered;
-use Gzero\Core\Http\Controllers\Controller;
 
 class RegisterController extends Controller {
     /*
@@ -33,7 +34,7 @@ class RegisterController extends Controller {
      */
     protected $redirectTo = '/';
 
-    /** @var BaseUserValidator */
+    /** @var UserValidator */
     protected $validator;
 
     /**
@@ -41,7 +42,7 @@ class RegisterController extends Controller {
      *
      * @param BaseUserValidator $validator Validator
      */
-    public function __construct(BaseUserValidator $validator)
+    public function __construct(UserValidator $validator)
     {
         $this->validator = $validator;
         $this->middleware('guest');
@@ -73,13 +74,7 @@ class RegisterController extends Controller {
 
         $this->validator->setData($request->all());
         $input = $this->validator->validate('register');
-        $user = dispatch_now(new CreateUser(
-            $input['email'],
-            $input['password'],
-            $input['name'],
-            $input['first_name'],
-            $input['last_name']
-        ));
+        $user = dispatch_now(new CreateUser($input);
         event(new Registered($user));
 
         $this->guard()->login($user);

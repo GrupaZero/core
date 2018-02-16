@@ -1,6 +1,10 @@
 <?php namespace Core;
 
+use function array_merge;
+use function array_only;
 use Codeception\Test\Unit;
+use function delete;
+use function dispatch_now;
 use Gzero\Core\Jobs\CreateUser;
 use Gzero\Core\Jobs\DeleteUser;
 use Gzero\Core\Jobs\UpdateUser;
@@ -22,40 +26,57 @@ class UserJobsTest extends Unit {
     }
 
     /** @test */
-    public function doTest()
-    {
-        $user1 = dispatch_now(new CreateUser('john.doe@example.com', 'secret', '', 'John'));
-    }
-
-    /** @test */
     public function canCreateUserAndGetItById()
     {
-        $user       = dispatch_now(new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'));
+        $testedAttribues = [
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'language_code',
+            'timezone'
+        ];
+        $data            = [
+            'email'         => 'john.doe@example.com',
+            'password'      => 'secret',
+            'name'          => 'Nickname',
+            'first_name'    => 'John',
+            'last_name'     => 'Doe',
+            'language_code' => 'pl',
+            'timezone'      => 'Africa/Algiers'
+        ];
+
+        $user       = dispatch_now(new CreateUser($data));
         $userFromDb = $this->repository->getById($user->id);
 
         $this->assertEquals(
-            [
-                $user->email,
-                $user->id,
-                $user->name,
-                $user->first_name,
-                $user->last_name
-            ],
-            [
-                $userFromDb->email,
-                $userFromDb->id,
-                $userFromDb->name,
-                $userFromDb->first_name,
-                $userFromDb->last_name
-            ]
+            array_only($data, $testedAttribues),
+            array_only($user->attributesToArray(), $testedAttribues)
+        );
+
+        $this->assertEquals(
+            array_only($user->attributesToArray(), $testedAttribues),
+            array_only($userFromDb->attributesToArray(), $testedAttribues)
         );
     }
 
     /** @test */
     public function canCreateUserWithEmptyNameAsAnonymous()
     {
-        $user1 = dispatch_now(new CreateUser('john.doe@example.com', 'secret', '', 'John', 'Doe'));
-        $user2 = dispatch_now(new CreateUser('jane.doe@example.com', 'secret', '', 'Jane', 'Doe'));
+        $user1 = dispatch_now(new CreateUser([
+            'email'      => 'john.doe@example.com',
+            'password'   => 'secret',
+            'name'       => '',
+            'first_name' => 'John',
+            'last_name'  => 'Doe'
+        ]));
+        $user2 = dispatch_now(new CreateUser([
+            'email'      => 'jane.doe@example.com',
+            'password'   => 'secret',
+            'name'       => '',
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe'
+        ]));
 
         $user1Db = $this->repository->getById($user1->id);
         $user2Db = $this->repository->getById($user2->id);
@@ -96,7 +117,13 @@ class UserJobsTest extends Unit {
         // Deleting user1 to make sure that we still return unique name
         dispatch_now(new DeleteUser($user1));
 
-        $user3   = dispatch_now(new CreateUser('jane.doe2@example.com', 'secret', '', 'Jane', 'Doe2'));
+        $user3   = dispatch_now(new CreateUser([
+            'email'      => 'jane.doe2@example.com',
+            'password'   => 'secret',
+            'name'       => '',
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe2'
+        ]));
         $user3Db = $this->repository->getById($user3->id);
 
         $this->assertEquals(
@@ -121,26 +148,45 @@ class UserJobsTest extends Unit {
     /** @test */
     public function itHashesUserPasswordWhenUpdatingUser()
     {
-        $user = dispatch_now(new CreateUser('john.doe@example.com', 'password', '', 'John', 'Doe'));
+        $user = dispatch_now(new CreateUser([
+            'email'      => 'john.doe@example.com',
+            'password'   => 'secret',
+            'name'       => '',
+            'first_name' => 'John',
+            'last_name'  => 'Doe'
+        ]));
 
-        $user = dispatch_now(new UpdateUser($user, ['password' => 'secret']));
+        $user = dispatch_now(new UpdateUser($user, ['password' => 'secret2']));
 
-        $this->assertTrue(Hash::check('secret', $user->password));
+        $this->assertTrue(Hash::check('secret2', $user->password));
     }
 
     /** @test */
     public function itHashesUserPasswordWhenCreatingUser()
     {
-        $user       = dispatch_now(new CreateUser('john.doe@example.com', 'password', '', 'John', 'Doe'));
+        $user       = dispatch_now(new CreateUser([
+            'email'      => 'john.doe@example.com',
+            'password'   => 'secret',
+            'name'       => '',
+            'first_name' => 'John',
+            'last_name'  => 'Doe'
+        ]));
         $userFromDb = $this->repository->getById($user->id);
 
-        $this->assertTrue(Hash::check('password', $userFromDb->password));
+        $this->assertTrue(Hash::check('secret', $user->password));
+        $this->assertTrue(Hash::check('secret', $userFromDb->password));
     }
 
     /** @test */
     public function canDeleteUser()
     {
-        $user       = dispatch_now(new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'));
+        $user       = dispatch_now(new CreateUser([
+            'email'      => 'john.doe@example.com',
+            'password'   => 'secret',
+            'name'       => 'Nickname',
+            'first_name' => 'John',
+            'last_name'  => 'Doe'
+        ]));
         $userFromDb = $this->repository->getById($user->id);
 
         $this->assertNotNull($userFromDb);
@@ -158,5 +204,47 @@ class UserJobsTest extends Unit {
         $this->assertNull($userFromDb);
     }
 
+    /** @test */
+    public function canUpdateUser()
+    {
+        $user = dispatch_now(new CreateUser([
+            'email'         => 'john.doe@example.com',
+            'password'      => 'secret',
+            'name'          => '',
+            'first_name'    => 'John',
+            'last_name'     => 'Doe',
+            'language_code' => 'pl',
+            'timezone'      => 'Aftica/Algiers'
+        ]));
+
+        $afterUser = dispatch_now(new UpdateUser($user, [
+            'email'         => 'johnny.mnemonic@example.com',
+            'name'          => 'Super Johnny',
+            'first_name'    => 'Johnny',
+            'last_name'     => 'Mnemonic',
+            'language_code' => 'en',
+            'timezone'      => 'Africa/Dakar'
+        ]));
+
+        $this->assertEquals($user->id, $afterUser->id);
+
+        $userFromDb = $this->repository->getById($user->id);
+
+        $testedAttributes = ['email', 'name', 'first_name', 'last_name', 'language_code', 'timezone'];
+        $this->assertEquals(
+            [
+                'email'         => 'johnny.mnemonic@example.com',
+                'name'          => 'Super Johnny',
+                'first_name'    => 'Johnny',
+                'last_name'     => 'Mnemonic',
+                'language_code' => 'en',
+                'timezone'      => 'Africa/Dakar'
+            ],
+            array_only($afterUser->attributesToArray(), $testedAttributes));
+        $this->assertEquals(
+            array_only($afterUser->attributesToArray(), $testedAttributes),
+            array_only($userFromDb->attributesToArray(), $testedAttributes)
+        );
+    }
 }
 

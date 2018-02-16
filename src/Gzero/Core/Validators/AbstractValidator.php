@@ -1,7 +1,6 @@
 <?php namespace Gzero\Core\Validators;
 
 use Gzero\InvalidArgumentException;
-use \Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Factory;
 use Illuminate\Validation\ValidationException;
 

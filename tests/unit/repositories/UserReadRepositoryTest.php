@@ -21,8 +21,20 @@ class UserReadRepositoryTest extends Unit {
     /** @test */
     public function canSortUsersList()
     {
-        $firstUser  = (new CreateUser('john.doe@example.com', 'secret', null, 'John', 'Doe'))->handle();
-        $secondUser = (new CreateUser('zoe.doe@example.com', 'secret', null, 'Zoe', 'Doe'))->handle();
+        $firstUser  = (new CreateUser([
+            'email'      => 'john.doe@example.com',
+            'password'   => 'secret',
+            'name'       => null,
+            'first_name' => 'John',
+            'last_name'  => 'Doe'
+        ]))->handle();
+        $secondUser = (new CreateUser([
+            'email'      => 'zoe.doe@example.com',
+            'password'   => 'secret',
+            'name'       => null,
+            'first_name' => 'Zoe',
+            'last_name'  => 'Doe'
+        ]))->handle();
 
         // ASC
         $result = $this->repository->getMany(

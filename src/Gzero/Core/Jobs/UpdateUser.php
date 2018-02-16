@@ -34,7 +34,6 @@ class UpdateUser {
     {
         $this->user       = $user;
         $this->attributes = array_only($attributes, $this->allowedAttributes);
-
     }
 
     /**

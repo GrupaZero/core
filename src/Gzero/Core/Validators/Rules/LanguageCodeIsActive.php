@@ -8,8 +8,8 @@ class LanguageCodeIsActive implements Rule {
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string $attribute
-     * @param  string $value
+     * @param  string $attribute attribute
+     * @param  string $value     value
      *
      * @return bool
      */

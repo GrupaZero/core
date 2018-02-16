@@ -5,6 +5,11 @@ use Gzero\Core\Validators\Rules\TimezoneIsValid;
 
 class UserValidator extends AbstractValidator {
 
+    /**
+     * Returns validation rules for login
+     *
+     * @return array
+     */
     public function login()
     {
         return [
@@ -13,6 +18,11 @@ class UserValidator extends AbstractValidator {
         ];
     }
 
+    /**
+     * Returns validation rules for register
+     *
+     * @return array
+     */
     public function register()
     {
         return [
@@ -26,6 +36,11 @@ class UserValidator extends AbstractValidator {
         ];
     }
 
+    /**
+     * Returns validation rules for login
+     *
+     * @return array
+     */
     public function remind()
     {
         return [
@@ -33,6 +48,11 @@ class UserValidator extends AbstractValidator {
         ];
     }
 
+    /**
+     * Returns validation rules for reset
+     *
+     * @return array
+     */
     public function reset()
     {
         return [
@@ -43,6 +63,11 @@ class UserValidator extends AbstractValidator {
         ];
     }
 
+    /**
+     * Returns validation rules for update
+     *
+     * @return array
+     */
     public function update()
     {
         return [
@@ -53,6 +78,11 @@ class UserValidator extends AbstractValidator {
         ];
     }
 
+    /**
+     * Returns validation rules for updateMe
+     *
+     * @return array
+     */
     public function updateMe()
     {
         return [

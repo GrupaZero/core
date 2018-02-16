@@ -74,7 +74,7 @@ class RegisterController extends Controller {
 
         $this->validator->setData($request->all());
         $input = $this->validator->validate('register');
-        $user = dispatch_now(new CreateUser($input);
+        $user = dispatch_now(new CreateUser($input));
         event(new Registered($user));
 
         $this->guard()->login($user);

@@ -5,7 +5,7 @@
 @stop
 
 @section('content')
-    <div class="col-md-4 col-md-offset-4 text-center">
+    <div class="col-md-4 offset-md-4 text-center mt-4">
         <h1 class="page-header">@lang('gzero-core::common.welcome')!</h1>
         <p class="lead">@lang('gzero-core::common.welcome_message')</p>
         <hr>

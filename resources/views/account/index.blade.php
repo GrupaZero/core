@@ -22,7 +22,7 @@
         </p>
     @endif
 
-    <a href="{{ route('account.edit') }}" title="@lang('gzero-core::user.edit_account')" class="btn btn-default">
+    <a href="{{ route('account.edit') }}" title="@lang('gzero-core::user.edit_account')" class="btn btn-outline-primary">
         @lang('gzero-core::user.edit_account')
     </a>
 

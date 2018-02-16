@@ -8,7 +8,7 @@
 @component('gzero-core::account._menu')@endcomponent
 
 @component('gzero-core::layouts._contentSection', ['class' => 'col-sm-8'])
-    <h1 class="page-header">@lang('gzero-core::user.my_account')</h1>
+    <h1 class="mt-4">@lang('gzero-core::user.my_account')</h1>
 
     <h3>{{ $user->firstName() }} {{ $user->lastName() }}</h3>
 

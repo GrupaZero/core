@@ -7,7 +7,7 @@
 @section('content')
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <h1 class="page-header">@lang('gzero-core::common.register')</h1>
+            <h1 class="mt-4">@lang('gzero-core::common.register')</h1>
 
             <form id="register-account-form" method="POST" role="form" action="{{ route('register') }}">
                 {{ csrf_field() }}

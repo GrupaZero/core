@@ -5,9 +5,9 @@
 @stop
 
 @section('content')
-    <div class="row justify-content-md-center">
+    <div class="row justify-content-md-center mt-4 text-left">
         <div class="col-md-4">
-            <h1 class="page-header">@lang('gzero-core::common.login')</h1>
+            <h1 class="mt-4">@lang('gzero-core::common.login')</h1>
 
             <form role="form" method="POST" action="{{ route('post.login') }}">
                 {{ csrf_field() }}
@@ -31,7 +31,7 @@
                         <div class="invalid-feedback">{{ $errors->first('password') }}</div>
                     @endif
                 </div>
-                <div class="form-group">
+                <div class="form-check mb-3">
                     <div class="row">
                         <div class="col-sm-6">
                             <label class="form-check-label">

@@ -1,6 +1,5 @@
 <?php namespace Gzero\Core\Jobs;
 
-use function __construct;
 use function bcrypt;
 use Gzero\Core\DBTransactionTrait;
 use Gzero\Core\Models\User;

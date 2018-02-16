@@ -1,16 +1,14 @@
 <?php namespace Core;
 
-use function array_merge;
-use function array_only;
 use Codeception\Test\Unit;
-use function delete;
-use function dispatch_now;
 use Gzero\Core\Jobs\CreateUser;
 use Gzero\Core\Jobs\DeleteUser;
 use Gzero\Core\Jobs\UpdateUser;
 use Gzero\Core\Models\User;
 use Gzero\Core\Repositories\UserReadRepository;
 use Illuminate\Support\Facades\Hash;
+use function array_only;
+use function dispatch_now;
 
 class UserJobsTest extends Unit {
 

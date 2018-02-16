@@ -22,6 +22,12 @@ class UserJobsTest extends Unit {
     }
 
     /** @test */
+    public function doTest()
+    {
+        $user1 = dispatch_now(new CreateUser('john.doe@example.com', 'secret', '', 'John'));
+    }
+
+    /** @test */
     public function canCreateUserAndGetItById()
     {
         $user       = dispatch_now(new CreateUser('john.doe@example.com', 'secret', 'Nickname', 'John', 'Doe'));

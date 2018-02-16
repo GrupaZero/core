@@ -30,7 +30,7 @@ class UserValidatorTest extends Unit {
     }
 
     /** @test */
-    public function canValidateUsingRulesInMethod()
+    public function canValidateWithoutLanguageCodeNorTimezone()
     {
         $this->validator
             ->bind('name', ['user_id' => 1])
@@ -126,30 +126,6 @@ class UserValidatorTest extends Unit {
         ];
 
         $validator->validate('updateMe', $data);
-    }
-
-    /** @test */
-    public function canValidateWithoutLanguageCode()
-    {
-        $this->validator
-            ->bind('name', ['user_id' => 1])
-            ->bind('email', ['user_id' => 1])
-            ->validate('updateMe', [
-                'email' => 'test@example.com',
-                'name'  => 'John Doe',
-            ]);
-    }
-
-    /** @test */
-    public function canValidateWithoutTimezone()
-    {
-        $this->validator
-            ->bind('name', ['user_id' => 1])
-            ->bind('email', ['user_id' => 1])
-            ->validate('updateMe', [
-                'email' => 'test@example.com',
-                'name'  => 'John Doe',
-            ]);
     }
 
     /** @test */

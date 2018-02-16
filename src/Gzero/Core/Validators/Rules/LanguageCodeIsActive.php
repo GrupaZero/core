@@ -11,6 +11,8 @@ class LanguageCodeIsActive implements Rule {
      * @param  string $attribute attribute
      * @param  string $value     value
      *
+     * @SuppressWarnings(PHPMD)
+     *
      * @return bool
      */
     public function passes($attribute, $value)

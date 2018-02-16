@@ -12,6 +12,8 @@ class TimezoneIsValid implements Rule {
      * @param  string $attribute attribute
      * @param  mixed  $value     value
      *
+     * @SuppressWarnings(PHPMD)
+     *
      * @return bool
      */
     public function passes($attribute, $value)

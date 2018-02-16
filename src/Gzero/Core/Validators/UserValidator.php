@@ -16,11 +16,13 @@ class UserValidator extends AbstractValidator {
     public function register()
     {
         return [
-            'email'      => 'required|email|unique:users',
-            'name'       => 'required|min:3|unique:users',
-            'password'   => 'required|min:6',
-            'first_name' => 'nullable|min:2|regex:/^([^0-9]*)$/', // without numbers
-            'last_name'  => 'nullable|min:2|regex:/^([^0-9]*)$/' // without numbers
+            'email'         => 'required|email|unique:users',
+            'name'          => 'required|min:3|unique:users',
+            'password'      => 'required|min:6',
+            'first_name'    => 'nullable|min:2|regex:/^([^0-9]*)$/', // without numbers
+            'last_name'     => 'nullable|min:2|regex:/^([^0-9]*)$/', // without numbers
+            'language_code' => ['nullable', 'sometimes', new LanguageCodeIsActive],
+            'timezone'      => ['nullable', 'sometimes', new TimezoneIsValid]
         ];
     }
 

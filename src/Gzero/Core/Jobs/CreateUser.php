@@ -30,10 +30,7 @@ class CreateUser {
      */
     public function __construct(array $attributes = [])
     {
-        $this->attributes               = array_only($attributes, $this->allowedAttributes);
-
-        $this->attributes['first_name'] = $this->attributes['first_name'] ?: null;
-        $this->attributes['last_name']  = $this->attributes['last_name'] ?: null;
+        $this->attributes = array_only($attributes, $this->allowedAttributes);
     }
 
     /**

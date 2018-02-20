@@ -86,7 +86,11 @@ if (!function_exists('mlSuffix')) {
     function mlSuffix($name, $language = null)
     {
         $language = $language ?: app()->getLocale();
-        return $name . '-' . $language;
+        if ($language === app()->getLocale()) {
+            return $name;
+        } else {
+            return $name . '-' . $language;
+        }
     }
 }
 

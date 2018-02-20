@@ -1,12 +1,12 @@
 <?php namespace Gzero\Core\Http\Controllers\Auth;
 
 use Gzero\Core\Http\Controllers\Controller;
-use Gzero\Core\Http\Controllers\Controller;
 use Gzero\Core\Jobs\CreateUser;
 use Gzero\Core\Jobs\SendWelcomeEmail;
 use Gzero\Core\Services\UserService;
 use Gzero\Core\Validators\BaseUserValidator;
 use Gzero\Core\Validators\UserValidator;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,7 +90,7 @@ class RegisterController extends Controller {
         dispatch(new SendWelcomeEmail($user));
         session()->put('showWelcomePage', true);
 
-        return redirect($this->redirectPath();
+        return redirect($this->redirectPath());
     }
 
     /**

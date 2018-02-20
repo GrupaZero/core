@@ -4,7 +4,7 @@ addMultiLanguageRoutes([
     'domain'     => config('gzero.domain'),
     'namespace'  => 'Gzero\Core\Http\Controllers',
     'middleware' => ['web', 'auth']
-], function ($router) {
+], function ($router, $language) {
     /** @var \Illuminate\Routing\Router $router */
 
     // ======== Account ========
@@ -27,7 +27,7 @@ addMultilanguageRoutes([
     'domain'     => config('gzero.domain'),
     'namespace'  => 'Gzero\Core\Http\Controllers',
     'middleware' => ['web']
-], function ($router) {
+], function ($router, $language) {
     /** @var \Illuminate\Routing\Router $router */
 
     // Authentication Routes...

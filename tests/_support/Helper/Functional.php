@@ -6,7 +6,6 @@
 use Gzero\Core\Models\File;
 use Gzero\Core\Models\FileTranslation;
 use Gzero\Core\Models\User;
-use Illuminate\Routing\Router;
 
 class Functional extends \Codeception\Module {
 
@@ -51,10 +50,7 @@ class Functional extends \Codeception\Module {
     {
         $this->getModule('Laravel5')
             ->haveApplicationHandler(function ($app) use ($closure) {
-                addMultiLanguageRoutes(function ($router, $language) use ($closure) {
-                    /** @var Router $router */
-                    $closure($router, $language);
-                });
+                addMultiLanguageRoutes($closure);
             });
     }
 
@@ -65,10 +61,7 @@ class Functional extends \Codeception\Module {
     {
         $this->getModule('Laravel5')
             ->haveApplicationHandler(function ($app) use ($closure) {
-                addRoutes(function ($router) use ($closure) {
-                    /** @var Router $router */
-                    $closure($router);
-                });
+                addRoutes($closure);
             });
     }
 
@@ -79,10 +72,7 @@ class Functional extends \Codeception\Module {
     {
         $this->getModule('Laravel5')
             ->haveApplicationHandler(function ($app) use ($closure) {
-                setCatchAllRoute(function ($router) use ($closure) {
-                    /** @var Router $router */
-                    $closure($router);
-                });
+                setCatchAllRoute($closure);
             });
     }
 

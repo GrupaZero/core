@@ -55,8 +55,7 @@
             @endif
             <hr/>
             <div class="text-center">
-                @lang('gzero-core::common.not_a_member')
-                <a href="{{ route('register') }}"> @lang('gzero-core::common.register')</a>
+                @lang('gzero-core::common.not_a_member') <a href="{{ route('register') }}"> @lang('gzero-core::common.register')</a>
             </div>
         </div>
     </div>

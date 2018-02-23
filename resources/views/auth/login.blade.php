@@ -9,7 +9,7 @@
         <div class="col-md-4">
             <h1 class="mt-4">@lang('gzero-core::common.login')</h1>
 
-            <form role="form" method="POST" action="{{ routeMl('post.login') }}">
+            <form role="form" method="POST" action="{{ route('post.login') }}">
                 {{ csrf_field() }}
 
                 <div class="form-group">
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="checkbox text-right">
-                                <a href="{{ routeMl('password.request') }}">@lang('gzero-core::common.forgot_password')</a>
+                                <a href="{{ route('password.request') }}">@lang('gzero-core::common.forgot_password')</a>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
             <hr/>
             <div class="text-center">
                 @lang('gzero-core::common.not_a_member')
-                <a href="{{ routeMl('register') }}"> @lang('gzero-core::common.register')</a>
+                <a href="{{ route('register') }}"> @lang('gzero-core::common.register')</a>
             </div>
         </div>
     </div>

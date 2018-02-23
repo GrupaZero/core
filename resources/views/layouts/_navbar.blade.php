@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{ routeMl('home') }}" title="{{ config('app.name') }}">
+    <a class="navbar-brand" href="{{ route('home') }}" title="{{ config('app.name') }}">
         <img src="{{ asset('/images/logo.png') }}" alt="{{ config('app.name') }}">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
@@ -8,10 +8,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav">
-            <li class="nav-item{{ (URL::full() == routeMl('home')) ? ' active' : '' }}">
-                <a class="nav-link" href="{{ routeMl('home') }}">
+            <li class="nav-item{{ (URL::full() == route('home')) ? ' active' : '' }}">
+                <a class="nav-link" href="{{ route('home') }}">
                     @lang('gzero-core::common.home')
-                    @if((URL::full() == routeMl('home')))
+                    @if((URL::full() == route('home')))
                         <span class="sr-only">(@lang('gzero-core::common.current'))</span>
                     @endif
                 </a>
@@ -24,7 +24,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="languageDropdown">
                     @foreach($languages as $language)
-                        <a href="{{ routeMl('home', $language->code) }}"
+                        <a href="{{ route('home', $language->code) }}"
                            class="dropdown-item {{ (app()->getLocale() == $language->code) ? 'active' : '' }}"
                            title="{{$language->code}}">
                            @lang('gzero-core::language_names.' . $language->code)
@@ -34,13 +34,13 @@
             </li>
             @guest
                 <li class="nav-item ml-4">
-                    <a href="{{ routeMl('login') }}" class="btn btn-outline-success my-2 my-sm-0"
+                    <a href="{{ route('login') }}" class="btn btn-outline-success my-2 my-sm-0"
                        title="@lang('gzero-core::common.login')">
                         @lang('gzero-core::common.login')
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ routeMl('register') }}" class="btn btn-outline-primary ml-2 my-2 my-sm-0"
+                    <a href="{{ route('register') }}" class="btn btn-outline-primary ml-2 my-2 my-sm-0"
                        title="@lang('gzero-core::common.register')">
                         @lang('gzero-core::common.register')
                     </a>
@@ -58,10 +58,10 @@
                             @lang('gzero-core::user.admin_panel')
                         </a>
                     @endif
-                    <a href="{{ routeMl('account') }}" class="dropdown-item">
+                    <a href="{{ route('account') }}" class="dropdown-item">
                         @lang('gzero-core::user.my_account')
                     </a>
-                    <a href="{{ routeMl('account.edit') }}" class="dropdown-item">
+                    <a href="{{ route('account.edit') }}" class="dropdown-item">
                         @lang('gzero-core::user.edit_account')
                     </a>
                     <div class="dropdown-divider"></div>

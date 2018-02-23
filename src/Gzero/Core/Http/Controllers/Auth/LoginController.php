@@ -24,19 +24,7 @@ class LoginController extends Controller {
      */
     protected function redirectTo()
     {
-        return routeMl('home', $this->getEffectiveLocale());
-    }
-
-    /**
-     * Gets the effective locale which is:
-     * user's set language OR (if not set)
-     * language determined by URL
-     *
-     * @return string
-     */
-    protected function getEffectiveLocale()
-    {
-        return $this->guard()->user()->language_code ?: app()->getLocale();
+        return route('home');
     }
 
     /**

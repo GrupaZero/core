@@ -9,7 +9,7 @@
         <div class="col-md-4">
             <h1 class="mt-4">@lang('gzero-core::common.register')</h1>
 
-            <form id="register-account-form" method="POST" role="form" action="{{ routeMl('register') }}">
+            <form id="register-account-form" method="POST" role="form" action="{{ route('register') }}">
                 {{ csrf_field() }}
                 <div class="form-group">
                     <label class="control-label" for="email">@choice('gzero-core::common.email', 1)</label>

@@ -6,12 +6,14 @@ use Gzero\Core\Services\RoutesService;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
+use function mlSuffix;
 
 class HelpersCest {
 
     public function itGeneratesStringWithMlSuffix(FunctionalTester $I)
     {
-        $I->assertEquals('test-en', mlSuffix('test', 'en'));
+        $I->assertEquals('test', mlSuffix('test', 'en'));
+        $I->assertEquals('test-pl', mlSuffix('test', 'pl'));
     }
 
     public function itGeneratesApiUrl(FunctionalTester $I)
@@ -75,8 +77,9 @@ class HelpersCest {
         // We need to visit it by url first to apply application handlers
         $I->amOnPage('/test-url');
 
-        $I->assertEquals('home-en', mlSuffix('home'));
-        $I->assertEquals('home-en', mlSuffix('home', 'en'));
+        $I->assertEquals('home', mlSuffix('home'));
+        $I->assertEquals('home', mlSuffix('home', 'en'));
+        $I->assertEquals('home-pl', mlSuffix('home', 'pl'));
         $I->assertEquals('home-it', mlSuffix('home', 'it'));
 
         $I->amOnPage(routeMl('test', 'en'));
@@ -101,15 +104,32 @@ class HelpersCest {
         $I->amOnPage(routeMl('home', 'de'));
         $I->seeResponseCodeIs(200);
         $I->see('Home: de');
+    }
 
-        $I->getApplication()->setLocale('en'); // reset default lang after last call
+    public function itGeneratesDefaultRouteForCurrentLanguage(FunctionalTester $I)
+    {
+        $I->haveInstance(LanguageService::class, new LanguageService(
+            collect([
+                new Language(['code' => 'en', 'is_enabled' => true, 'is_default' => true]),
+                new Language(['code' => 'pl', 'is_enabled' => true, 'is_default' => false]),
+                new Language(['code' => 'ru', 'is_enabled' => true, 'is_default' => false]),
+            ])
+        ));
 
-        $I->amOnRoute(mlSuffix('home'));
+        $I->haveMlRoutes(function ($router, $language) {
+            $router->get('/services', function () {
+                return'our services';
+            })->name(mlSuffix('our-services', $language));
+
+            $router->get('/info', function() {
+                return route('our-services');
+            })->name(mlSuffix('about-us', $language));
+        });
+
+        $I->amOnPage('/ru/info');
         $I->seeResponseCodeIs(200);
-        $I->see('Home: en');
-        $I->amOnRoute(mlSuffix('home', 'pl'));
-        $I->seeResponseCodeIs(200);
-        $I->see('Home: pl');
+        $I->seeResponseContains('/ru/services');
+        $I->assertEquals(routeMl('our-services'), route('our-services'));
     }
 
     public function itAddsMultiLanguageRoutes(FunctionalTester $I)

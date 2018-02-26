@@ -1,43 +1,48 @@
 <?php
 
-addRoutes([
+addMultiLanguageRoutes([
     'domain'     => config('gzero.domain'),
     'namespace'  => 'Gzero\Core\Http\Controllers',
     'middleware' => ['web', 'auth']
-], function ($router) {
+], function ($router, $language) {
     /** @var \Illuminate\Routing\Router $router */
 
     // ======== Account ========
-    $router->get('account', 'AccountController@index')->name('account');
-    $router->get('account/edit', 'AccountController@edit')->name('account.edit');
-    $router->get('account/welcome', 'AccountController@welcome')->name('account.welcome');
-    $router->get('account/oauth', 'AccountController@oauth')->name('account.oauth');
-
-    //  ======== Auth routes ========
-    $router->get('logout', 'Auth\LoginController@logout')->name('logout');
+    $router->get('account', 'AccountController@index')->name(mlSuffix('account', $language));
+    $router->get('account/edit', 'AccountController@edit')->name(mlSuffix('account.edit', $language));
+    $router->get('account/welcome', 'AccountController@welcome')->name(mlSuffix('account.welcome', $language));
+    $router->get('account/oauth', 'AccountController@oauth')->name(mlSuffix('account.oauth', $language));
 });
 
 addRoutes([
     'domain'     => config('gzero.domain'),
     'namespace'  => 'Gzero\Core\Http\Controllers',
-    'middleware' => ['web']
+    'middleware' => ['web', 'auth']
 ], function ($router) {
+    //  ======== Auth routes ========
+    $router->get('logout', 'Auth\LoginController@logout')->name('logout');
+});
+
+addMultilanguageRoutes([
+    'domain'     => config('gzero.domain'),
+    'namespace'  => 'Gzero\Core\Http\Controllers',
+    'middleware' => ['web']
+], function ($router, $language) {
     /** @var \Illuminate\Routing\Router $router */
 
-    //  ======== Auth routes ========
     // Authentication Routes...
-    $router->get('login', 'Auth\LoginController@showLoginForm')->name('login');
-    $router->post('login', 'Auth\LoginController@login')->name('post.login');
+    $router->get('login', 'Auth\LoginController@showLoginForm')->name(mlSuffix('login', $language));
+    $router->post('login', 'Auth\LoginController@login')->name(mlSuffix('post.login', $language));
 
     // Registration Routes...
-    $router->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-    $router->post('register', 'Auth\RegisterController@register')->name('post.register');
+    $router->get('register', 'Auth\RegisterController@showRegistrationForm')->name(mlSuffix('register', $language));
+    $router->post('register', 'Auth\RegisterController@register')->name(mlSuffix('post.register', $language));
 
     // Password Reset Routes...
-    $router->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-    $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('post.password.email');
-    $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-    $router->post('password/reset', 'Auth\ResetPasswordController@reset')->name('post.password.reset');
+    $router->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name(mlSuffix('password.request', $language));
+    $router->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name(mlSuffix('post.password.email', $language));
+    $router->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name(mlSuffix('password.reset', $language));
+    $router->post('password/reset', 'Auth\ResetPasswordController@reset')->name(mlSuffix('post.password.reset', $language));
 });
 
 setCatchAllRoute([

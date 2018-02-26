@@ -12,7 +12,7 @@
         <a href="{{ route('account') }}" class="btn btn-primary btn-lg btn-block mb20">
             @lang('gzero-core::user.my_account')
         </a>
-        <a href="{{ routeMl('home') }}" class="btn btn-default btn-lg btn-block">
+        <a href="{{ route('home') }}" class="btn btn-default btn-lg btn-block">
             @lang('gzero-core::common.back_to_homepage')
         </a>
     </div>

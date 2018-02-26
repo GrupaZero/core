@@ -28,11 +28,14 @@ class RegisterController extends Controller {
     use RedirectsUsers;
 
     /**
-     * Where to redirect users after login / registration.
+     * Where to redirect users after registration.
      *
-     * @var string
+     * @return string
      */
-    protected $redirectTo = '/';
+    protected function redirectTo()
+    {
+        return route('account.welcome');
+    }
 
     /** @var UserValidator */
     protected $validator;
@@ -78,8 +81,10 @@ class RegisterController extends Controller {
         event(new Registered($user));
 
         $this->guard()->login($user);
+        dispatch(new SendWelcomeEmail($user));
+        session()->put('showWelcomePage', true);
 
-        return $this->registered($request, $user) ?: redirect($this->redirectPath());
+        return redirect($this->redirectPath());
     }
 
     /**
@@ -90,22 +95,5 @@ class RegisterController extends Controller {
     protected function guard()
     {
         return Auth::guard();
-    }
-
-    /**
-     * The user has been registered.
-     *
-     * @param  \Illuminate\Http\Request $request Request
-     * @param  mixed                    $user    User
-     *
-     * @SuppressWarnings(PHPMD)
-     *
-     * @return mixed
-     */
-    protected function registered(Request $request, $user)
-    {
-        dispatch(new SendWelcomeEmail($user));
-        session()->put('showWelcomePage', true);
-        return redirect()->route('account.welcome', ['method' => 'Signup form']);
     }
 }

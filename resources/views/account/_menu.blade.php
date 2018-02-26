@@ -6,7 +6,8 @@
                 <a href="{{route('account')}}" class="nav-link{{ (URL::full() == route('account')) ? ' active' : '' }}">
                     @lang('gzero-core::user.my_account')
                 </a>
-                <a href="{{route('account.oauth')}}" class="nav-link{{ (URL::full() == route('account.oauth')) ? ' active' : '' }}">
+                <a href="{{route('account.oauth')}}"
+                   class="nav-link{{ (URL::full() == route('account.oauth')) ? ' active' :'' }}">
                     @lang('gzero-core::user.oauth')
                 </a>
             </nav>

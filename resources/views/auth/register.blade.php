@@ -56,12 +56,15 @@
                         <div class="invalid-feedback">{{ $errors->first('password') }}</div>
                     @endif
                 </div>
+
+                <input type="hidden" name="language_code" value="{{ app()->getLocale() }}">
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">
                         @lang('gzero-core::common.register')
                     </button>
                 </div>
-                <input id="accountIntent" type="text" name="accountIntent" class="hidden">
+                <input id="accountIntent" type="text" name="accountIntent" hidden>
             </form>
             @if(isProviderLoaded('Gzero\Social\ServiceProvider'))
                 @include('gzero-social::includes.socialLogin')

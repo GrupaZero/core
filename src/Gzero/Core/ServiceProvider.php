@@ -17,6 +17,7 @@ use Gzero\Core\Policies\OptionPolicy;
 use Gzero\Core\Policies\UserPolicy;
 use Gzero\Core\Policies\RoutePolicy;
 use Gzero\Core\Services\RoutesService;
+use Gzero\Core\Services\TimezoneService;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
@@ -43,7 +44,8 @@ class ServiceProvider extends AbstractServiceProvider {
      * @var array
      */
     protected $aliases = [
-        'options' => OptionService::class
+        'options'   => OptionService::class,
+        'timezones' => TimezoneService::class
     ];
 
     /**

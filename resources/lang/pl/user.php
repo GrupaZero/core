@@ -12,4 +12,5 @@ return [
     'invalid_language'          => 'Ten język nie istnieje',
     'invalid_timezone'          => 'Ta strefa czasowa jest niepoprawna',
     'choose_preferred_language' => 'Preferowany język',
+    'choose_preferred_timezone' => 'Preferowana strefa czasowa',
 ];

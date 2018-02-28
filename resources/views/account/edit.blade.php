@@ -96,6 +96,31 @@
                     @endif
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label" for="timezone">
+                        @lang('gzero-core::user.choose_preferred_timezone')
+                    </label>
+                    <select id="timezone" name="timezone"
+                            class="form-control{{ $errors->has('timezone') ? ' is-invalid' : '' }}"
+                    >
+                        <option value="" @if(empty($user->timezone)) selected @endif>
+                            @lang('gzero-core::common.no_option_chosen')
+                        </option>
+                        @foreach($timezones as $timezone)
+                            <option value="{{ $timezone['name'] }}"
+                                    @if($user->timezone() == $timezone['name'])
+                                    selected
+                                    @endif
+                            >
+                                {{ ($timezone['offset'] ? 'GMT ' . $timezone['offset'] . ' ' : 'GMT ') . $timezone['name'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($errors->first('timezone'))
+                        <div class="invalid-feedback">{{ $errors->first('timezone') }}</div>
+                    @endif
+                </div>
+
                 @if($isUserEmailSet)
                     @if($user->password())
                         <div class="separator">

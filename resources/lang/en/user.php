@@ -12,4 +12,5 @@ return [
     'invalid_language'          => 'This language is invalid',
     'invalid_timezone'          => 'This timezone does not exist',
     'choose_preferred_language' => 'Preferred language',
+    'choose_preferred_timezone' => 'Preferred timezone',
 ];

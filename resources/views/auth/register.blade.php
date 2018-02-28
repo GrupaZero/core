@@ -57,7 +57,9 @@
                     >
                         @foreach($languages as $lang)
                             <option value="{{ $lang->code }}"
-                                    @if($language->code === $lang->code)
+                                    @if(empty(old('language_code')) ?
+                                        $language->code === $lang->code :
+                                        old('language_code') === $lang->code)
                                     selected
                                     @endif
                             >
@@ -70,6 +72,30 @@
                     @endif
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label" for="timezone">
+                        @lang('gzero-core::user.choose_preferred_timezone')
+                    </label>
+                    <select id="timezone" name="timezone"
+                            class="form-control{{ $errors->has('timezone') ? ' is-invalid' : '' }}"
+                    >
+                        <option value="" @if(empty(old('timezone'))) selected @endif>
+                            @lang('gzero-core::common.no_option_chosen')
+                        </option>
+                        @foreach($timezones as $timezone)
+                            <option value="{{ $timezone['name'] }}"
+                                    @if(old('$timezone') == $timezone['name'])
+                                    selected
+                                    @endif
+                            >
+                                {{ ($timezone['offset'] ? 'GMT ' . $timezone['offset'] . ' ' : 'GMT ') . $timezone['name'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($errors->first('timezone'))
+                        <div class="invalid-feedback">{{ $errors->first('timezone') }}</div>
+                    @endif
+                </div>
 
                 <div class="form-group">
                     <label class="control-label" for="password">@lang('gzero-core::common.password')</label>

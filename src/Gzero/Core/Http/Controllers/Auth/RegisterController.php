@@ -27,14 +27,9 @@ class RegisterController extends Controller {
 
     use RedirectsUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @return string
-     */
-    protected function redirectTo()
+    protected function getEffectiveLocale()
     {
-        return route('account.welcome');
+        return $this->guard()->user()->language_code ?: app()->getLocale();
     }
 
     /** @var UserValidator */
@@ -81,10 +76,11 @@ class RegisterController extends Controller {
         event(new Registered($user));
 
         $this->guard()->login($user);
+
         dispatch(new SendWelcomeEmail($user));
         session()->put('showWelcomePage', true);
 
-        return redirect($this->redirectPath());
+        return redirect(routeMl('account.welcome', $this->getEffectiveLocale()));
     }
 
     /**

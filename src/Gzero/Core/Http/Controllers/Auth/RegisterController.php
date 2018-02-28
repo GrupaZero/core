@@ -28,6 +28,11 @@ class RegisterController extends Controller {
 
     use RedirectsUsers;
 
+    /**
+     * Where to redirect users after login / registration.
+     *
+     * @return string
+     */
     protected function getEffectiveLocale()
     {
         return $this->guard()->user()->language_code ?: app()->getLocale();

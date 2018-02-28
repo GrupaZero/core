@@ -48,54 +48,8 @@
                     @endif
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label" for="language_code">
-                        @lang('gzero-core::user.choose_preferred_language')
-                    </label>
-                    <select id="language_code" name="language_code"
-                            class="form-control{{ $errors->has('language_code') ? ' is-invalid' : '' }}"
-                    >
-                        @foreach($languages as $lang)
-                            <option value="{{ $lang->code }}"
-                                    @if(empty(old('language_code')) ?
-                                        $language->code === $lang->code :
-                                        old('language_code') === $lang->code)
-                                    selected
-                                    @endif
-                            >
-                                @lang('gzero-core::language_names.' . $lang->code)
-                            </option>
-                        @endforeach
-                    </select>
-                    @if($errors->first('language_code'))
-                        <div class="invalid-feedback">{{ $errors->first('language_code') }}</div>
-                    @endif
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label" for="timezone">
-                        @lang('gzero-core::user.choose_preferred_timezone')
-                    </label>
-                    <select id="timezone" name="timezone"
-                            class="form-control{{ $errors->has('timezone') ? ' is-invalid' : '' }}"
-                    >
-                        <option value="" @if(empty(old('timezone'))) selected @endif>
-                            @lang('gzero-core::common.no_option_chosen')
-                        </option>
-                        @foreach($timezones as $timezone)
-                            <option value="{{ $timezone['name'] }}"
-                                    @if(old('$timezone') == $timezone['name'])
-                                    selected
-                                    @endif
-                            >
-                                {{ ($timezone['offset'] ? 'GMT ' . $timezone['offset'] . ' ' : 'GMT ') . $timezone['name'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @if($errors->first('timezone'))
-                        <div class="invalid-feedback">{{ $errors->first('timezone') }}</div>
-                    @endif
-                </div>
+                <input type="hidden" name="language_code" value="{{ $language->code }}">
+                <input type="hidden" name="timezone" value="">
 
                 <div class="form-group">
                     <label class="control-label" for="password">@lang('gzero-core::common.password')</label>
@@ -120,3 +74,16 @@
         </div>
     </div>
 @endsection
+
+@section('footerScripts')
+    @parent
+    <script type="text/javascript">
+        $(function() {
+            userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if(typeof userTimezone !== undefined) {
+                timezoneField = $('#register-account-form').find('input[name="timezone"]');
+                timezoneField.attr('value', userTimezone);
+            }
+        });
+    </script>
+@stop

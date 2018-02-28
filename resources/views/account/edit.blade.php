@@ -167,10 +167,10 @@
     <script type="text/javascript">
         $(function() {
             $('#edit-account-form').submit(function(event) {
-                event.preventDefault()
-                Loading.start('#main-container')
+                event.preventDefault();
+                Loading.start('#main-container');
 
-                var data = $('#edit-account-form').serializeObject()
+                var data = $('#edit-account-form').serializeObject();
                 if (((!data.hasOwnProperty('password')) || data.password.length === 0) &&
                     ((!data.hasOwnProperty('password_confirmation')) || data.password_confirmation.length === 0)) {
                     delete data.password
@@ -187,23 +187,23 @@
                     type: 'PATCH',
                     success: function(xhr) {
                         @if($isUserEmailSet)
-                        Loading.stop()
+                        Loading.stop();
                         // set success message
-                        setGlobalMessage('success', "@lang('gzero-core::common.changes_saved_message')")
-                        hideMessages()
-                        clearFormValidationErrors()
+                        setGlobalMessage('success', "@lang('gzero-core::common.changes_saved_message')");
+                        hideMessages();
+                        clearFormValidationErrors();
                         @else
-                        location.reload()
+                        location.reload();
                         @endif
                     },
                     error: function(xhr) {
-                        Loading.stop()
+                        Loading.stop();
                         if (typeof xhr.responseJSON !== 'undefined' && xhr.status === 422) {
                             // clear previous errors
-                            clearFormValidationErrors()
+                            clearFormValidationErrors();
                             $.each(xhr.responseJSON.error.errors, function(index, error) {
                                 // set form errors
-                                setFormValidationErrors(index, error)
+                                setFormValidationErrors(index, error);
                             })
                         }
                     }

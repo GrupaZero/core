@@ -4,6 +4,12 @@ use \DateTime;
 use \DateTimeZone;
 
 class TimezoneService {
+
+    /**
+     * Gets all timezones in the world
+     *
+     * @return array
+     */
     public function getAvailableTimezones()
     {
         $timezoneNames = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
@@ -18,13 +24,13 @@ class TimezoneService {
                 'offset' => $offset
             ];
         }, $timezoneNames);
-        usort($timezones, function ($a, $b) {
-            if ($a['offset'] < $b['offset']) {
+        usort($timezones, function ($t1, $t2) {
+            if ($t1['offset'] < $t2['offset']) {
                 return -1;
-            } elseif ($a['offset'] > $b['offset']) {
+            } elseif ($t1['offset'] > $t2['offset']) {
                 return 1;
             } else {
-                return strcmp($a['name'], $b['name']);
+                return strcmp($t1['name'], $t2['name']);
             }
         });
 

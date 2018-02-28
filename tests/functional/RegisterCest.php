@@ -31,7 +31,7 @@ class RegisterCest {
         $I->fillField('name', 'JohnDoe');
         $I->fillField('first_name', 'John');
         $I->fillField('last_name', 'Doe');
-        $I->click(['css' => 'button[type="submit"]']);
+        $I->click('button[type="submit"]');
 
         $I->seeResponseCodeIs(200);
         $I->amLoggedAs(['email' => 'john.doe@example.com', 'password' => 'secret'], 'web');

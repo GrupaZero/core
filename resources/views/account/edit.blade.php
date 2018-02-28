@@ -72,6 +72,30 @@
                         <p class="form-control-static">{{ $user->lastName() }}</p>
                     </div>
                 @endif
+
+                <div class="form-group">
+                    <label class="control-label" for="language_code">
+                        @lang('gzero-core::user.choose_preferred_language')
+                    </label>
+                    <select id="language_code" name="language_code"
+                            class="form-control{{ $errors->first('language_code') ? ' is-invalid' : '' }}">
+                        @if($user->languageCode() === null)
+                            <option value="" selected>
+                                @lang('gzero-core::common.no_option_chosen')
+                            </option>
+                        @endif
+                        @foreach($languages as $language)
+                            <option value="{{ $language->code }}"
+                                    @if($language->code === $user->languageCode())selected @endif>
+                                @lang('gzero-core::language_names.' . $language->code)
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($errors->first('language_code'))
+                        <div class="invalid-feedback">{{ $errors->first('language_code') }}</div>
+                    @endif
+                </div>
+
                 @if($isUserEmailSet)
                     @if($user->password())
                         <div class="separator">
@@ -98,7 +122,8 @@
                         @endif
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="passwordConfirmation">@lang('gzero-core::common.password_repeat')</label>
+                        <label class="control-label"
+                               for="passwordConfirmation">@lang('gzero-core::common.password_repeat')</label>
                         <input type="password" id="passwordConfirmation" name="password_confirmation"
                                class="form-control{{ $errors->first('password_confirmation') ? ' is-invalid' : '' }}"
                                placeholder="@lang('gzero-core::common.password_repeat')">
@@ -117,10 +142,10 @@
     <script type="text/javascript">
         $(function() {
             $('#edit-account-form').submit(function(event) {
-                event.preventDefault();
-                Loading.start('#main-container');
+                event.preventDefault()
+                Loading.start('#main-container')
 
-                var data = $('#edit-account-form').serializeObject();
+                var data = $('#edit-account-form').serializeObject()
                 if (((!data.hasOwnProperty('password')) || data.password.length === 0) &&
                     ((!data.hasOwnProperty('password_confirmation')) || data.password_confirmation.length === 0)) {
                     delete data.password
@@ -137,28 +162,28 @@
                     type: 'PATCH',
                     success: function(xhr) {
                         @if($isUserEmailSet)
-                             Loading.stop();
+                        Loading.stop()
                         // set success message
-                        setGlobalMessage('success', "@lang('gzero-core::common.changes_saved_message')");
-                        hideMessages();
-                        clearFormValidationErrors();
+                        setGlobalMessage('success', "@lang('gzero-core::common.changes_saved_message')")
+                        hideMessages()
+                        clearFormValidationErrors()
                         @else
-                            location.reload();
+                        location.reload()
                         @endif
                     },
                     error: function(xhr) {
-                        Loading.stop();
+                        Loading.stop()
                         if (typeof xhr.responseJSON !== 'undefined' && xhr.status === 422) {
                             // clear previous errors
-                            clearFormValidationErrors();
+                            clearFormValidationErrors()
                             $.each(xhr.responseJSON.error.errors, function(index, error) {
                                 // set form errors
-                                setFormValidationErrors(index, error);
-                            });
+                                setFormValidationErrors(index, error)
+                            })
                         }
                     }
-                });
+                })
             })
-        });
+        })
     </script>
 @stop

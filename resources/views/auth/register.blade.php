@@ -47,6 +47,10 @@
                         <div class="invalid-feedback">{{ $errors->first('last_name') }}</div>
                     @endif
                 </div>
+
+                <input type="hidden" name="language_code" value="{{ $language->code }}">
+                <input type="hidden" name="timezone" value="">
+
                 <div class="form-group">
                     <label class="control-label" for="password">@lang('gzero-core::common.password')</label>
                     <input id="password" type="password" name="password"
@@ -56,8 +60,6 @@
                         <div class="invalid-feedback">{{ $errors->first('password') }}</div>
                     @endif
                 </div>
-
-                <input type="hidden" name="language_code" value="{{ app()->getLocale() }}">
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">
@@ -72,3 +74,16 @@
         </div>
     </div>
 @endsection
+
+@section('footerScripts')
+    @parent
+    <script type="text/javascript">
+        $(function() {
+            userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if(typeof userTimezone !== undefined) {
+                timezoneField = $('#register-account-form').find('input[name="timezone"]');
+                timezoneField.attr('value', userTimezone);
+            }
+        });
+    </script>
+@stop

@@ -88,7 +88,7 @@ class UserViewModel {
     /**
      * @return string
      */
-    public function getLanguageCode()
+    public function languageCode()
     {
         return array_get($this->data, 'language_code');
     }
@@ -96,7 +96,7 @@ class UserViewModel {
     /**
      * @return string
      */
-    public function getTimezone()
+    public function timezone()
     {
         return array_get($this->data, 'timezone');
     }

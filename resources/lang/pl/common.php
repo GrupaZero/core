@@ -38,6 +38,7 @@ return [
     'new_password'                 => 'Nowe hasło',
     'next'                         => 'Następny',
     'nick_name'                    => 'Nick',
+    'no_option_chosen'             => 'Nie wybrano',
     'no_ratings'                   => 'Brak ocen',
     'no_translation'               => 'Brak tłumaczenia',
     'not_a_member'                 => 'Nie masz jeszcze konta?',

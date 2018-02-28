@@ -26,23 +26,14 @@ class RegisterCest {
         $I->seeResponseCodeIs(200);
         $I->seeInTitle(trans('gzero-core::common.register'));
 
-        $I->sendPOST(route('post.register'), [
-            'email'      => 'john.doe@example.com',
-            'password'   => 'secret',
-            //'name'       => '',
-            //'first_name' => 'John',
-            //'last_name'  => 'Doe',
-            '_token'     => csrf_token(),
-            //'language_code' => 'pl',
-            //'timezone'      => 'Aftica/Algiers'
-        ]);
-
-        //$userFromDb = $this->repository->getById(2);
+        $I->fillField('email', 'john.doe@example.com');
+        $I->fillField('password', 'secret');
+        $I->fillField('name', 'JohnDoe');
+        $I->fillField('first_name', 'John');
+        $I->fillField('last_name', 'Doe');
+        $I->click('button[type="submit"]');
 
         $I->seeResponseCodeIs(200);
-        //$I->amLoggedAs(['email' => 'john.doe@example.com', 'password' => 'secret'], 'web');
-        //
-        //
-        //$I->login('john.doe@example.com', 'secret');
+        $I->amLoggedAs(['email' => 'john.doe@example.com', 'password' => 'secret'], 'web');
     }
 }

@@ -38,6 +38,7 @@ return [
     'new_password'                 => 'New password',
     'next'                         => 'Next',
     'nick_name'                    => 'Nick name',
+    'no_option_chosen'             => 'No option chosen',
     'no_ratings'                   => 'No ratings',
     'no_translation'               => 'No translation',
     'not_a_member'                 => 'Not a member yet?',

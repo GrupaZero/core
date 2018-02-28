@@ -47,6 +47,30 @@
                         <div class="invalid-feedback">{{ $errors->first('last_name') }}</div>
                     @endif
                 </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="language_code">
+                        @lang('gzero-core::user.choose_preferred_language')
+                    </label>
+                    <select id="language_code" name="language_code"
+                            class="form-control{{ $errors->has('language_code') ? ' is-invalid' : '' }}"
+                    >
+                        @foreach($languages as $lang)
+                            <option value="{{ $lang->code }}"
+                                    @if($language->code === $lang->code)
+                                    selected
+                                    @endif
+                            >
+                                @lang('gzero-core::language_names.' . $lang->code)
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($errors->first('language_code'))
+                        <div class="invalid-feedback">{{ $errors->first('language_code') }}</div>
+                    @endif
+                </div>
+
+
                 <div class="form-group">
                     <label class="control-label" for="password">@lang('gzero-core::common.password')</label>
                     <input id="password" type="password" name="password"
@@ -56,8 +80,6 @@
                         <div class="invalid-feedback">{{ $errors->first('password') }}</div>
                     @endif
                 </div>
-
-                <input type="hidden" name="language_code" value="{{ app()->getLocale() }}">
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block">

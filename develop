@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+function die () {
+    echo -e >&2 "$@"
+    exit 1
+}
+
+if [ $# -gt 0 ]; then
+  COMMAND="$1"
+  if [ "$COMMAND" == "quality" ]; then
+    echo -e "\e[1mCalling phpcs\e[0m..."
+    ./vendor/bin/phpcs --standard=ruleset.xml src/ -n --colors
+    if [ $? -eq 0 ]; then
+      echo -e "\e[1mphpcs\e[0m finished successfully"
+    else
+      die "\e[91mphpcs found errors\e[0m"
+    fi
+
+    echo -e "\e[1mCalling phpmd\e[0m..."
+    ./vendor/bin/phpmd src/ text phpmd.xml
+    if [ $? -eq 0 ]; then
+      echo -e "\e[1mphpmd\e[0m finished successfully"
+    else
+      die "\e[91mphpmd found errors\e[0m"
+    fi
+  else
+    die "unknown command $COMMAND"
+  fi
+else
+  die "no command given"
+fi

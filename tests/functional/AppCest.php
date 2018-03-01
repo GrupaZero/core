@@ -25,12 +25,9 @@ class AppCest {
             /** @var Router $router */
             $router->get(
                 '/',
-                [
-                    'domain' => config('gzero.domain'),
-                    function () {
-                        return 'Laravel';
-                    }
-                ]
+                function () {
+                    return 'Laravel';
+                }
             );
         });
 
@@ -168,32 +165,23 @@ class AppCest {
 
         $I->haveMlRoutes(function ($router, $language) {
             /** @var Router $router */
-            $router->get('/', [
-                'domain' => config('gzero.domain'),
-                function () {
-                    return 'Home: ' . app()->getLocale();
-                }
-            ])->name(mlSuffix('home', $language));
+            $router->get('/', function () {
+                return 'Home: ' . app()->getLocale();
+            })->name(mlSuffix('home', $language));
         });
 
         $I->haveMlRoutes(function ($router, $language) {
             /** @var Router $router */
-            $router->get('/test', [
-                'domain' => config('gzero.domain'),
-                function () {
-                    return 'Laravel: ' . app()->getLocale();
-                }
-            ])->name(mlSuffix('test', $language));
+            $router->get('/test', function () {
+                return 'Laravel: ' . app()->getLocale();
+            })->name(mlSuffix('test', $language));
         });
 
         $I->haveRoutes(function ($router) {
             /** @var Router $router */
-            $router->get('/contact', [
-                'domain' => config('gzero.domain'),
-                function () {
-                    return 'Contact';
-                }
-            ])->name('contact');
+            $router->get('/contact', function () {
+                return 'Contact';
+            })->name('contact');
         });
 
         $I->amOnPage('/');

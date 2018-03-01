@@ -50,7 +50,9 @@ class Functional extends \Codeception\Module {
     {
         $this->getModule('Laravel5')
             ->haveApplicationHandler(function ($app) use ($closure) {
-                addMultiLanguageRoutes($closure);
+                addMultiLanguageRoutes([
+                    'domain' => config('gzero.domain')
+                ], $closure);
             });
     }
 
@@ -61,7 +63,9 @@ class Functional extends \Codeception\Module {
     {
         $this->getModule('Laravel5')
             ->haveApplicationHandler(function ($app) use ($closure) {
-                addRoutes($closure);
+                addRoutes([
+                    'domain' => config('gzero.domain')
+                ], $closure);
             });
     }
 

@@ -1,9 +1,23 @@
 <?php namespace Gzero\Core\Http\Controllers;
 
+use Gzero\Core\Services\TimezoneService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class AccountController extends Controller {
+
+    /** @var TimezoneService */
+    protected $timezones;
+
+    /**
+     * AccountController constructor.
+     *
+     * @param TimezoneService $timezones timezone service
+     */
+    public function __construct(TimezoneService $timezones)
+    {
+        $this->timezones = $timezones;
+    }
 
     /**
      * Show account main page
@@ -24,7 +38,10 @@ class AccountController extends Controller {
      */
     public function edit(Request $request)
     {
-        return view('gzero-core::account.edit', ['isUserEmailSet' => strpos($request->user()->email, '@')]);
+        return view('gzero-core::account.edit', [
+            'isUserEmailSet' => strpos($request->user()->email, '@'),
+            'timezones'      => $this->timezones->getAvailableTimezones()
+        ]);
     }
 
     /**

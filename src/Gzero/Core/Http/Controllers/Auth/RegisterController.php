@@ -3,6 +3,7 @@
 use Gzero\Core\Http\Controllers\Controller;
 use Gzero\Core\Jobs\CreateUser;
 use Gzero\Core\Jobs\SendWelcomeEmail;
+use Gzero\Core\Services\TimezoneService;
 use Gzero\Core\Services\UserService;
 use Gzero\Core\Validators\BaseUserValidator;
 use Gzero\Core\Validators\UserValidator;
@@ -28,26 +29,31 @@ class RegisterController extends Controller {
     use RedirectsUsers;
 
     /**
-     * Where to redirect users after registration.
+     * Where to redirect users after login / registration.
      *
      * @return string
      */
-    protected function redirectTo()
+    protected function getEffectiveLocale()
     {
-        return route('account.welcome');
+        return $this->guard()->user()->language_code ?: app()->getLocale();
     }
 
     /** @var UserValidator */
     protected $validator;
 
+    /** @var TimezoneService */
+    protected $timezones;
+
     /**
      * Create a new controller instance.
      *
-     * @param BaseUserValidator $validator Validator
+     * @param UserValidator   $validator Validator
+     * @param TimezoneService $timezones timezone service
      */
-    public function __construct(UserValidator $validator)
+    public function __construct(UserValidator $validator, TimezoneService $timezones)
     {
         $this->validator = $validator;
+        $this->timezones = $timezones;
         $this->middleware('guest');
     }
 
@@ -58,7 +64,7 @@ class RegisterController extends Controller {
      */
     public function showRegistrationForm()
     {
-        return view('gzero-core::auth.register');
+        return view('gzero-core::auth.register', ['timezones' => $this->timezones->getAvailableTimezones()]);
     }
 
     /**
@@ -77,14 +83,15 @@ class RegisterController extends Controller {
 
         $this->validator->setData($request->all());
         $input = $this->validator->validate('register');
-        $user = dispatch_now(new CreateUser($input));
+        $user  = dispatch_now(new CreateUser($input));
         event(new Registered($user));
 
         $this->guard()->login($user);
+
         dispatch(new SendWelcomeEmail($user));
         session()->put('showWelcomePage', true);
 
-        return redirect($this->redirectPath());
+        return redirect(routeMl('account.welcome', $this->getEffectiveLocale()));
     }
 
     /**

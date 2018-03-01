@@ -22,6 +22,20 @@
         </p>
     @endif
 
+    <p>
+        <strong>@lang('gzero-core::user.choose_preferred_language'):</strong>
+        @lang('gzero-core::' . ($user->languageCode() ? 'language_names.' . $user->languageCode() : 'common.no_option_chosen'))
+    </p>
+
+    <p>
+        <strong>@lang('gzero-core::user.choose_preferred_timezone'):</strong>
+        @if(empty($user->timezone()))
+            @lang('gzero-core::common.no_option_chosen')
+        @else
+            {{ $timezone = $user->timezone() }}
+        @endif
+    </p>
+
     <a href="{{ route('account.edit') }}" title="@lang('gzero-core::user.edit_account')" class="btn btn-outline-primary">
         @lang('gzero-core::user.edit_account')
     </a>

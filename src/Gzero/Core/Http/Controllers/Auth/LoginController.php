@@ -24,7 +24,17 @@ class LoginController extends Controller {
      */
     protected function redirectTo()
     {
-        return route('home');
+        return routeMl('home', $this->getEffectiveLocale());
+    }
+
+    /**
+     * Returns user's set language or otherwise the application default language
+     *
+     * @return string
+     */
+    protected function getEffectiveLocale()
+    {
+        return $this->guard()->user()->language_code ?: app()->getLocale();
     }
 
     /**

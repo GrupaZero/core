@@ -97,13 +97,13 @@ class HelpersCest {
 
         $I->amOnPage(routeMl('home', 'en'));
         $I->seeResponseCodeIs(200);
-        $I->assertEquals('en', app()->getLocale());
+        $I->see('Home: en');
         $I->amOnPage(routeMl('home', 'pl'));
         $I->seeResponseCodeIs(200);
-        $I->assertEquals('pl', app()->getLocale());
+        $I->see('Home: pl');
         $I->amOnPage(routeMl('home', 'de'));
         $I->seeResponseCodeIs(200);
-        $I->assertEquals('de', app()->getLocale());
+        $I->see('Home: de');
     }
 
     public function itGeneratesDefaultRouteForCurrentLanguage(FunctionalTester $I)

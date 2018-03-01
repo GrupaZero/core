@@ -32,7 +32,8 @@ class AppCest {
         });
 
         $I->amOnPage('/');
-        $I->seeResponseCodeIs(200);
+
+        $I->see('Laravel');
     }
 
     public function itRedirectsRequestsWithIndexPHP(FunctionalTester $I)
@@ -186,7 +187,7 @@ class AppCest {
         $I->amOnPage('/');
 
         $I->seeResponseCodeIs(200);
-        $I->assertEquals('pl', app()->getLocale());
+        $I->see('Home: pl');
 
         $I->amOnPage('/en/test');
 

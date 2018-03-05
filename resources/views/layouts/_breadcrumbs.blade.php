@@ -1,3 +1,24 @@
+@section('head')
+    @parent
+    @if ($breadcrumbs)
+        <script type="application/ld+json">
+            {
+                "@context": "http://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [@foreach ($breadcrumbs as $index => $breadcrumb){
+                    "@type": "ListItem",
+                    "position": {{$index+1}},
+                    "item": {
+                        "@id": "{{ $breadcrumb->url }}",
+                        "@type": "WebPage",
+                        "name": "{{ $breadcrumb->title }}"
+                    }
+            }{{(!$breadcrumb->last)? ',':''}}@endforeach]
+          }
+        </script>
+    @endif
+@stop
+
 @if ($breadcrumbs)
     <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
         @foreach ($breadcrumbs as $index => $breadcrumb)

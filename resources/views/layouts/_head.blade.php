@@ -37,6 +37,6 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     @if (file_exists(public_path('/css/app.css')))
-        <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('/css/app.css') }}" rel="preload" as="style">
     @endif
 @show

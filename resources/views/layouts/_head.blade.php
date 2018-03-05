@@ -7,6 +7,11 @@
 <meta name="version" content="{{ config('gzero.app_version') }}">
 
 <title>@yield('title', option('general', 'site_name'))</title>
+
+@if (file_exists(public_path('/css/app.css')))
+    <link rel="preload" href="{{ mix('/css/app.css') }}" as="style">
+@endif
+
 @yield('metaData')
 
 <script>
@@ -37,7 +42,6 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     @if (file_exists(public_path('/css/app.css')))
-        <link rel="preload" href="{{ mix('/css/app.css') }}" as="style">
         <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     @endif
 @show

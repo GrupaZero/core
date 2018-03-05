@@ -17,7 +17,7 @@
           }
         </script>
     @endif
-@stop
+@endsection
 
 @if ($breadcrumbs)
     <ol class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">

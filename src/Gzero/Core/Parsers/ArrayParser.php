@@ -153,7 +153,7 @@ class ArrayParser implements ConditionParser {
     }
 
     /**
-     * Throws exception if there is no opening and closing brackets in string.
+     * Throws exception if there is no opening or closing brackets in string.
      *
      * @throws InvalidArgumentException
      *

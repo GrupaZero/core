@@ -6,6 +6,7 @@ use Gzero\Core\Http\Resources\UserCollection;
 use Gzero\Core\Jobs\DeleteUser;
 use Gzero\Core\Jobs\UpdateUser;
 use Gzero\Core\Models\User;
+use Gzero\Core\Parsers\ArrayParser;
 use Gzero\Core\Parsers\DateRangeParser;
 use Gzero\Core\UrlParamsProcessor;
 use Gzero\Core\Repositories\UserReadRepository;
@@ -110,6 +111,7 @@ class UserController extends ApiController {
         $this->authorize('readList', User::class);
 
         $processor
+            ->addFilter(new ArrayParser('id'))
             ->addFilter(new StringParser('email'), 'email')
             ->addFilter(new StringParser('name'))
             ->addFilter(new StringParser('first_name'))

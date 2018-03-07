@@ -26,7 +26,7 @@ class Condition {
         '<',
         '<=',
         'in',
-        'notIn',
+        'not in',
         'like',
         'not like',
         'between',
@@ -34,7 +34,7 @@ class Condition {
     ];
 
     /** @var array */
-    public static $negateOperators = ['!=', 'notIn', 'not between', 'not like'];
+    public static $negateOperators = ['!=', 'not in', 'not between', 'not like'];
 
     /**
      * Condition constructor.
@@ -166,7 +166,7 @@ class Condition {
             case 'in':
                 $query->whereIn($name, $this->value);
                 break;
-            case 'notIn':
+            case 'not in':
                 $query->whereNotIn($name, $this->value);
                 break;
             default:
@@ -187,7 +187,8 @@ class Condition {
         if (!in_array($this->operation, self::$allowedOperations, true)) {
             throw new InvalidArgumentException('Unsupported condition operation');
         }
-        if (is_array($this->value) && !$this->isCorrectRangeFormat()) {
+        if (is_array($this->value) && !$this->isCorrectRangeFormat()
+            && !$this->operation === 'in' && !$this->operation === 'not in') {
             throw new InvalidArgumentException('Wrong number of values for range');
         }
     }

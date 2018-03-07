@@ -72,7 +72,7 @@ class ArrayParserTest extends Unit {
     }
 
     /** @test */
-    public function shouldThrowExceptionWithoutAnOpenBracket()
+    public function shouldThrowExceptionWithoutAnOpeningBracket()
     {
         try {
             $parser = new ArrayParser('name');

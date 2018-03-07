@@ -164,7 +164,7 @@ class ArrayParser implements ConditionParser {
     private function checkBrackets(string $array): void
     {
         if (!starts_with($array, '[')) {
-            throw new InvalidArgumentException('ArrayParser: Array has no open bracket ([)');
+            throw new InvalidArgumentException('ArrayParser: Array has no opening bracket ([)');
         }
 
         if (!ends_with($array, ']')) {

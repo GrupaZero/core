@@ -78,7 +78,7 @@ class ArrayParserTest extends Unit {
             $parser = new ArrayParser('name');
             $parser->parse(new Request(['name' => 'notInjane,joe]']));
         } catch (InvalidArgumentException $exception) {
-            $this->assertEquals('ArrayParser: Array has no open bracket ([)', $exception->getMessage());
+            $this->assertEquals('ArrayParser: Array has no opening bracket ([)', $exception->getMessage());
             return;
         }
         $this->fail('Exception should be thrown');

@@ -26,7 +26,7 @@ class Condition {
         '<',
         '<=',
         'in',
-        'not in',
+        'notIn',
         'like',
         'not like',
         'between',
@@ -34,7 +34,7 @@ class Condition {
     ];
 
     /** @var array */
-    public static $negateOperators = ['!=', 'not in', 'not between', 'not like'];
+    public static $negateOperators = ['!=', 'notIn', 'not between', 'not like'];
 
     /**
      * Condition constructor.
@@ -162,6 +162,12 @@ class Condition {
                 break;
             case 'not between':
                 $query->whereNotBetween($name, $this->value);
+                break;
+            case 'in':
+                $query->whereIn($name, $this->value);
+                break;
+            case 'notIn':
+                $query->whereNotIn($name, $this->value);
                 break;
             default:
                 throw new InvalidArgumentException('Unsupported operation');

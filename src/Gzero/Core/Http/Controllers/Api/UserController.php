@@ -50,6 +50,16 @@ class UserController extends ApiController {
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
      *   @SWG\Parameter(
+     *     name="in",
+     *     in="query",
+     *     description="Ids to filter by",
+     *     required=false,
+     *     type="array",
+     *     minItems=1,
+     *     default={"3","5"},
+     *     @SWG\Items(type="string")
+     *   ),
+     *   @SWG\Parameter(
      *     name="email",
      *     in="query",
      *     description="Valid email address to filter by",

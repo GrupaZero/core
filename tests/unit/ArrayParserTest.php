@@ -20,7 +20,7 @@ class ArrayParserTest extends Unit {
     public function itCanParseInMatch()
     {
         $parser = new ArrayParser('name');
-        $parser->parse(new Request(['name' => 'in[jane,joe]']));
+        $parser->parse(new Request(['name' => 'jane,joe']));
         $this->assertEquals('in', $parser->getOperation());
         $this->assertEquals(['jane', 'joe'], $parser->getValue());
     }
@@ -29,8 +29,8 @@ class ArrayParserTest extends Unit {
     public function itCanParseNotInMatch()
     {
         $parser = new ArrayParser('name');
-        $parser->parse(new Request(['name' => 'notIn[jane,joe]']));
-        $this->assertEquals('notIn', $parser->getOperation());
+        $parser->parse(new Request(['name' => '!jane,joe']));
+        $this->assertEquals('not in', $parser->getOperation());
         $this->assertEquals(['jane', 'joe'], $parser->getValue());
     }
 
@@ -38,16 +38,25 @@ class ArrayParserTest extends Unit {
     public function validationRuleShouldPass()
     {
         $parser = new ArrayParser('name');
-        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], 'in[jane,joe]');
-        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], 'notIn[house]');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], 'jane,joe');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '!house');
     }
 
     /** @test */
     public function validationRuleShouldNotPass()
     {
         $parser = new ArrayParser('name');
-        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], 'injane,joe]');
-        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], 'notIn[house ]');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], 'jane, joe]');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '!2017-10-09,2017-10-10');
+    }
+
+    /** @test */
+    public function itShouldConvertCtypeDigitStringsToIntegers()
+    {
+        $parser = new ArrayParser('name');
+        $parser->parse(new Request(['name' => '1,2']));
+        $this->assertEquals('in', $parser->getOperation());
+        $this->assertEquals([1, 2], $parser->getValue());
     }
 
     /** @test */
@@ -66,45 +75,6 @@ class ArrayParserTest extends Unit {
             new ArrayParser('');
         } catch (InvalidArgumentException $exception) {
             $this->assertEquals('ArrayParser: Name must be defined', $exception->getMessage());
-            return;
-        }
-        $this->fail('Exception should be thrown');
-    }
-
-    /** @test */
-    public function shouldThrowExceptionWithoutAnOpeningBracket()
-    {
-        try {
-            $parser = new ArrayParser('name');
-            $parser->parse(new Request(['name' => 'notInjane,joe]']));
-        } catch (InvalidArgumentException $exception) {
-            $this->assertEquals('ArrayParser: Array has no opening bracket ([)', $exception->getMessage());
-            return;
-        }
-        $this->fail('Exception should be thrown');
-    }
-
-    /** @test */
-    public function shouldThrowExceptionWithoutAClosingBracket()
-    {
-        try {
-            $parser = new ArrayParser('name');
-            $parser->parse(new Request(['name' => 'notIn[jane,joe']));
-        } catch (InvalidArgumentException $exception) {
-            $this->assertEquals('ArrayParser: Array has no closing bracket (])', $exception->getMessage());
-            return;
-        }
-        $this->fail('Exception should be thrown');
-    }
-
-    /** @test */
-    public function shouldThrowExceptionWhenLastLetterIsNotAClosingBracket()
-    {
-        try {
-            $parser = new ArrayParser('name');
-            $parser->parse(new Request(['name' => 'notIn[jane,joe]x']));
-        } catch (InvalidArgumentException $exception) {
-            $this->assertEquals('ArrayParser: Array has no closing bracket (])', $exception->getMessage());
             return;
         }
         $this->fail('Exception should be thrown');

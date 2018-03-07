@@ -19,7 +19,7 @@ class ArrayParser implements ConditionParser {
     protected $applied = false;
 
     /** @var array */
-    protected $availableOperations = ['in', 'notIn'];
+    protected $availableOperations = ['in', 'not in'];
 
     /** @var array */
     protected $option;
@@ -95,20 +95,14 @@ class ArrayParser implements ConditionParser {
             $this->applied = true;
             $value         = $request->input($this->name);
 
-            if (substr($value, 0, 5) === 'notIn') {
-                $this->operation = 'notIn';
+            if (substr($value, 0, 1) === '!') {
+                $this->operation = 'not in';
 
-                $stringArray = substr($value, 5);
-                $this->checkBrackets($stringArray);
-
-                $this->value = explode(',', substr($stringArray, 1, -1));
-            } elseif (substr($value, 0, 2) === 'in') {
-                $stringArray = substr($value, 2);
-                $this->checkBrackets($stringArray);
-
-                $this->value = explode(',', substr($stringArray, 1, -1));
-            } else {
+                $this->value = explode(',', substr($value, 1));
+            } elseif (empty($value)) {
                 $this->value = null;
+            } else {
+                $this->value = explode(',', $value);
             }
 
             // Need it because of Cyclomatic Complexity.
@@ -123,7 +117,7 @@ class ArrayParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return 'regex:/^(^(in)?|^(notIn)?)\[((\w)+,?){1,}\]$/';
+        return 'regex:/^!?([a-z]?\d?,?){1,}$/';
     }
 
     /**
@@ -150,25 +144,13 @@ class ArrayParser implements ConditionParser {
         if (!is_array($this->value) && !$this->value === null) {
             throw new InvalidArgumentException('ArrayParser: Value must be of type array');
         }
-    }
 
-    /**
-     * Throws exception if there is no opening or closing brackets in string.
-     *
-     * @throws InvalidArgumentException
-     *
-     * @param string $array String representation of query param.
-     *
-     * @return void
-     */
-    private function checkBrackets(string $array): void
-    {
-        if (!starts_with($array, '[')) {
-            throw new InvalidArgumentException('ArrayParser: Array has no opening bracket ([)');
-        }
-
-        if (!ends_with($array, ']')) {
-            throw new InvalidArgumentException('ArrayParser: Array has no closing bracket (])');
-        }
+        $this->value = collect($this->value)->map(function ($item) {
+            if (ctype_digit($item)) {
+                return intval($item);
+            } else {
+                return $item;
+            }
+        })->toArray();
     }
 }

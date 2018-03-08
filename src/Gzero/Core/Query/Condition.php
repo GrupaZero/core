@@ -187,21 +187,39 @@ class Condition {
         if (!in_array($this->operation, self::$allowedOperations, true)) {
             throw new InvalidArgumentException('Unsupported condition operation');
         }
-        if (is_array($this->value) && !$this->isCorrectRangeFormat()
-            && !$this->operation === 'in' && !$this->operation === 'not in') {
+
+        if ($this->isArrayOperation() && !is_array($this->value)) {
+            throw new InvalidArgumentException('Value is not of type array');
+        }
+
+        if (is_array($this->value) && $this->isNotCorrectRangeFormat()) {
             throw new InvalidArgumentException('Wrong number of values for range');
         }
     }
 
     /**
-     * Checks if it's correct range format
+     * Checks if it is not correct range format
      *
      * @return bool
      */
-    protected function isCorrectRangeFormat(): bool
+    protected function isNotCorrectRangeFormat(): bool
     {
-        return ($this->operation === 'between' || $this->operation === 'not between')
-            && count($this->value) === 2;
+        $isInteger = collect($this->value)->every(function ($value) {
+            return is_int($value);
+        });
+
+        return (!$this->operation === 'between' || !$this->operation === 'not between')
+            && !count($this->value) === 2 && $isInteger;
+    }
+
+    /**
+     * Check if operation is an array operation
+     *
+     * @return bool
+     */
+    protected function isArrayOperation(): bool
+    {
+        return $this->operation === 'in' && $this->operation === 'not in';
     }
 
     /**

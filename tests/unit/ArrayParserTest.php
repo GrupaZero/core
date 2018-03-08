@@ -40,6 +40,7 @@ class ArrayParserTest extends Unit {
         $parser = new ArrayParser('name');
         $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], 'jane,joe');
         $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '!house');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '!123');
     }
 
     /** @test */

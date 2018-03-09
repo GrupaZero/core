@@ -93,16 +93,17 @@ class ArrayParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
-            $this->operation = 'in';
+
             $value         = $request->input($this->name);
+
+            $this->value = explode(',', $value);
+            $this->operation = 'in';
 
             if (substr($value, 0, 1) === '!') {
                 $this->operation = 'not in';
                 $this->value = explode(',', substr($value, 1));
             } elseif (empty($value)) {
                 $this->value = null;
-            } else {
-                $this->value = explode(',', $value);
             }
 
             if (!is_array($this->value) && $this->value !== null) {

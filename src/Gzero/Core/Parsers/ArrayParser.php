@@ -10,7 +10,7 @@ class ArrayParser implements ConditionParser {
     protected $name;
 
     /** @var string */
-    protected $operation;
+    protected $operation = 'in';
 
     /** @var mixed */
     protected $value;
@@ -93,7 +93,6 @@ class ArrayParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
-            $this->operation = 'in';
             $value         = $request->input($this->name);
 
             if (substr($value, 0, 1) === '!') {

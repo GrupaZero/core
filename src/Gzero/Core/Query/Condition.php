@@ -188,28 +188,13 @@ class Condition {
             throw new InvalidArgumentException('Unsupported condition operation');
         }
 
-        if ($this->isArrayOperation() && !is_array($this->value)) {
+        if (!is_array($this->value) && $this->isArrayOperation()) {
             throw new InvalidArgumentException('Value is not of type array');
         }
 
-        if (is_array($this->value) && $this->isNotCorrectRangeFormat()) {
+        if (is_array($this->value) && $this->isDateOperation() && count($this->value) < 2) {
             throw new InvalidArgumentException('Wrong number of values for range');
         }
-    }
-
-    /**
-     * Checks if it is not correct range format
-     *
-     * @return bool
-     */
-    protected function isNotCorrectRangeFormat(): bool
-    {
-        $isInteger = collect($this->value)->every(function ($value) {
-            return is_int($value);
-        });
-
-        return (!$this->operation === 'between' || !$this->operation === 'not between')
-            && !count($this->value) === 2 && $isInteger;
     }
 
     /**
@@ -219,7 +204,17 @@ class Condition {
      */
     protected function isArrayOperation(): bool
     {
-        return $this->operation === 'in' && $this->operation === 'not in';
+        return $this->operation === 'in' || $this->operation === 'not in';
+    }
+
+    /**
+     * Check if operation is a date operation
+     *
+     * @return bool
+     */
+    protected function isDateOperation(): bool
+    {
+        return $this->operation === 'between' || $this->operation === 'not between';
     }
 
     /**

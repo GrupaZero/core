@@ -10,7 +10,7 @@ class ArrayParser implements ConditionParser {
     protected $name;
 
     /** @var string */
-    protected $operation = 'in';
+    protected $operation;
 
     /** @var mixed */
     protected $value;
@@ -93,11 +93,11 @@ class ArrayParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
+            $this->operation = 'in';
             $value         = $request->input($this->name);
 
             if (substr($value, 0, 1) === '!') {
                 $this->operation = 'not in';
-
                 $this->value = explode(',', substr($value, 1));
             } elseif (empty($value)) {
                 $this->value = null;
@@ -105,8 +105,12 @@ class ArrayParser implements ConditionParser {
                 $this->value = explode(',', $value);
             }
 
+            if (!is_array($this->value) && !$this->value === null) {
+                throw new InvalidArgumentException('ArrayParser: Value must be of type array');
+            }
+
             // Need it because of Cyclomatic Complexity.
-            $this->checkValue();
+            $this->postProcessing();
         }
     }
 
@@ -117,7 +121,7 @@ class ArrayParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return 'regex:/^!?([a-z]?\d?,?){1,}$/';
+        return 'regex:/^!?[a-z0-9,]+$/';
     }
 
     /**
@@ -133,24 +137,20 @@ class ArrayParser implements ConditionParser {
     }
 
     /**
-     * Throw exception when value is not array and not null.
-     *
-     * @throws InvalidArgumentException
+     * Post process value, e.g. change its type
      *
      * @return void
      */
-    protected function checkValue(): void
+    protected function postProcessing(): void
     {
-        if (!is_array($this->value) && !$this->value === null) {
-            throw new InvalidArgumentException('ArrayParser: Value must be of type array');
+        if (isset($this->value)) {
+            $this->value = array_map(function ($item) {
+                if (ctype_digit($item)) {
+                    return intval($item);
+                } else {
+                    return $item;
+                }
+            }, $this->value);
         }
-
-        $this->value = collect($this->value)->map(function ($item) {
-            if (ctype_digit($item)) {
-                return intval($item);
-            } else {
-                return $item;
-            }
-        })->toArray();
     }
 }

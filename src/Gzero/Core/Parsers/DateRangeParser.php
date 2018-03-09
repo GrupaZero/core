@@ -129,5 +129,4 @@ class DateRangeParser implements ConditionParser {
     {
         $builder->where($this->name, $this->operation, $this->value);
     }
-
 }

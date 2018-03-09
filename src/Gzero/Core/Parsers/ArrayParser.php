@@ -93,17 +93,18 @@ class ArrayParser implements ConditionParser {
     {
         if ($request->has($this->name)) {
             $this->applied = true;
-
             $value         = $request->input($this->name);
 
-            $this->value = explode(',', $value);
-            $this->operation = 'in';
+            if (empty($value)) {
+                throw new InvalidArgumentException('ArrayParser: Value can\'t be empty');
+            }
 
             if (substr($value, 0, 1) === '!') {
                 $this->operation = 'not in';
-                $this->value = explode(',', substr($value, 1));
-            } elseif (empty($value)) {
-                $this->value = null;
+                $this->value     = explode(',', substr($value, 1));
+            } else {
+                $this->operation = 'in';
+                $this->value     = explode(',', $value);
             }
 
             if (!is_array($this->value) && $this->value !== null) {

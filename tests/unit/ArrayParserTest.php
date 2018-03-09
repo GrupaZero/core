@@ -61,12 +61,16 @@ class ArrayParserTest extends Unit {
     }
 
     /** @test */
-    public function shouldWorkWithEmptyValue()
+    public function shouldThrowExceptionForEmptyValue()
     {
-        $parser = new ArrayParser('name');
-        $parser->parse(new Request(['name' => '']));
-        $this->assertEquals('in', $parser->getOperation());
-        $this->assertNull($parser->getValue());
+        try {
+            $parser = new ArrayParser('name');
+            $parser->parse(new Request(['name' => '']));
+        } catch (InvalidArgumentException $exception) {
+            $this->assertEquals('ArrayParser: Value can\'t be empty', $exception->getMessage());
+            return;
+        }
+        $this->fail('Exception should be thrown');
     }
 
     /** @test */

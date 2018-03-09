@@ -140,6 +140,69 @@ class UserCest {
         );
     }
 
+    public function adminShouldBeAbleToGetSomeUsersByTheirId(FunctionalTester $I)
+    {
+        $I->loginAsAdmin();
+        $john = $I->haveUser([
+            'email'      => 'john.doe@example.com',
+            'name'       => 'JohnDoe',
+            'first_name' => 'John',
+            'last_name'  => 'Doe',
+        ]);
+        $jane = $I->haveUser([
+            'email'      => 'jane.doe@example.com',
+            'name'       => 'JaneDoe',
+            'first_name' => 'Jane',
+            'last_name'  => 'Doe',
+        ]);
+        $joe = $I->haveUser([
+            'email'      => 'joe.doe@example.com',
+            'name'       => 'JoeDoe',
+            'first_name' => 'Joe',
+            'last_name'  => 'Doe',
+        ]);
+
+        $I->sendGET(apiUrl('users?id='.$john->id.','.$jane->id));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                'data' => [
+                    [
+                        'email'      => 'john.doe@example.com',
+                        'name'       => 'JohnDoe',
+                        'first_name' => 'John',
+                        'last_name'  => 'Doe'
+                    ],
+                    [
+                        'email'      => 'jane.doe@example.com',
+                        'name'       => 'JaneDoe',
+                        'first_name' => 'Jane',
+                        'last_name'  => 'Doe',
+                    ]
+                ]
+            ]
+        );
+
+        $I->sendGET(apiUrl('users?id=!'.$joe->id));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->dontSeeResponseContainsJson(
+            [
+                'data' => [
+                    'email'      => 'joe.doe@example.com',
+                    'name'       => 'JoeDoe',
+                    'first_name' => 'Joe',
+                    'last_name'  => 'Doe',
+                ]
+            ]
+        );
+    }
+
     public function adminShouldBeAbleToSortListOfUsers(FunctionalTester $I)
     {
         $I->loginAsAdmin();

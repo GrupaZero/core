@@ -6,6 +6,7 @@ use Gzero\Core\Http\Resources\UserCollection;
 use Gzero\Core\Jobs\DeleteUser;
 use Gzero\Core\Jobs\UpdateUser;
 use Gzero\Core\Models\User;
+use Gzero\Core\Parsers\ArrayParser;
 use Gzero\Core\Parsers\DateRangeParser;
 use Gzero\Core\UrlParamsProcessor;
 use Gzero\Core\Repositories\UserReadRepository;
@@ -48,6 +49,16 @@ class UserController extends ApiController {
      *   description="List of all available users, <b>'admin-access'</b> policy is required.",
      *   produces={"application/json"},
      *   security={{"AdminAccess": {}}},
+     *   @SWG\Parameter(
+     *     name="in",
+     *     in="query",
+     *     description="Ids to filter by",
+     *     required=false,
+     *     type="array",
+     *     minItems=1,
+     *     default={"3","5"},
+     *     @SWG\Items(type="string")
+     *   ),
      *   @SWG\Parameter(
      *     name="email",
      *     in="query",
@@ -110,6 +121,7 @@ class UserController extends ApiController {
         $this->authorize('readList', User::class);
 
         $processor
+            ->addFilter(new ArrayParser('id'))
             ->addFilter(new StringParser('email'), 'email')
             ->addFilter(new StringParser('name'))
             ->addFilter(new StringParser('first_name'))

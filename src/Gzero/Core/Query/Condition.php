@@ -163,6 +163,12 @@ class Condition {
             case 'not between':
                 $query->whereNotBetween($name, $this->value);
                 break;
+            case 'in':
+                $query->whereIn($name, $this->value);
+                break;
+            case 'not in':
+                $query->whereNotIn($name, $this->value);
+                break;
             default:
                 throw new InvalidArgumentException('Unsupported operation');
         }
@@ -181,20 +187,34 @@ class Condition {
         if (!in_array($this->operation, self::$allowedOperations, true)) {
             throw new InvalidArgumentException('Unsupported condition operation');
         }
-        if (is_array($this->value) && !$this->isCorrectRangeFormat()) {
+
+        if (!is_array($this->value) && $this->isArrayOperation()) {
+            throw new InvalidArgumentException('Value is not of type array');
+        }
+
+        if (is_array($this->value) && $this->isRangeOperation() && count($this->value) < 2) {
             throw new InvalidArgumentException('Wrong number of values for range');
         }
     }
 
     /**
-     * Checks if it's correct range format
+     * Check if operation is an array operation
      *
      * @return bool
      */
-    protected function isCorrectRangeFormat(): bool
+    protected function isArrayOperation(): bool
     {
-        return ($this->operation === 'between' || $this->operation === 'not between')
-            && count($this->value) === 2;
+        return $this->operation === 'in' || $this->operation === 'not in';
+    }
+
+    /**
+     * Check if operation is a date operation
+     *
+     * @return bool
+     */
+    protected function isRangeOperation(): bool
+    {
+        return $this->operation === 'between' || $this->operation === 'not between';
     }
 
     /**

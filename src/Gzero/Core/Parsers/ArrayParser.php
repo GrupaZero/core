@@ -4,28 +4,22 @@ use Gzero\Core\Query\QueryBuilder;
 use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
-/**
- * @TODO write custom Laravel validator
- * @TODO parse date format to DB format
- * @TODO we should always have two dates
- * @TODO human readable? e.g. -7days,+2days
- */
-class DateRangeParser implements ConditionParser {
+class ArrayParser implements ConditionParser {
 
     /** @var string */
     protected $name;
 
     /** @var string */
-    protected $operation = 'between';
+    protected $operation;
 
-    /** @var array */
+    /** @var mixed */
     protected $value;
 
     /** @var bool */
     protected $applied = false;
 
     /** @var array */
-    protected $availableOperations = ['!'];
+    protected $availableOperations = ['in', 'not in'];
 
     /** @var array */
     protected $option;
@@ -40,7 +34,7 @@ class DateRangeParser implements ConditionParser {
     public function __construct(string $name, $options = [])
     {
         if (empty($name)) {
-            throw new InvalidArgumentException('DataRangeParser: Name must be defined');
+            throw new InvalidArgumentException('ArrayParser: Name must be defined');
         }
         $this->name   = $name;
         $this->option = $options;
@@ -92,19 +86,33 @@ class DateRangeParser implements ConditionParser {
      * @param Request $request Request object
      *
      * @return void
+     *
+     * @throws InvalidArgumentException
      */
     public function parse(Request $request)
     {
         if ($request->has($this->name)) {
             $this->applied = true;
             $value         = $request->input($this->name);
-            $operation     = substr($value, 0, 1);
-            if ($operation === '!') {
-                $this->operation = 'not between';
+
+            if (empty($value)) {
+                throw new InvalidArgumentException('ArrayParser: Value can\'t be empty');
+            }
+
+            if (substr($value, 0, 1) === '!') {
+                $this->operation = 'not in';
                 $this->value     = explode(',', substr($value, 1));
             } else {
-                $this->value = explode(',', $value);
+                $this->operation = 'in';
+                $this->value     = explode(',', $value);
             }
+
+            if (!is_array($this->value) && $this->value !== null) {
+                throw new InvalidArgumentException('ArrayParser: Value must be of type array');
+            }
+
+            // Need it because of Cyclomatic Complexity.
+            $this->postProcessing();
         }
     }
 
@@ -115,7 +123,7 @@ class DateRangeParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return "regex:/^[!]?\d{4}-\d{2}-\d{2},\d{4}-\d{2}-\d{2}$/";
+        return 'regex:/^!?[a-z0-9,]+$/';
     }
 
     /**
@@ -128,5 +136,23 @@ class DateRangeParser implements ConditionParser {
     public function apply(QueryBuilder $builder)
     {
         $builder->where($this->name, $this->operation, $this->value);
+    }
+
+    /**
+     * Post process value, e.g. change its type
+     *
+     * @return void
+     */
+    protected function postProcessing(): void
+    {
+        if (isset($this->value)) {
+            $this->value = array_map(function ($item) {
+                if (ctype_digit($item)) {
+                    return intval($item);
+                } else {
+                    return $item;
+                }
+            }, $this->value);
+        }
     }
 }

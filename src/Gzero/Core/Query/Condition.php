@@ -192,7 +192,7 @@ class Condition {
             throw new InvalidArgumentException('Value is not of type array');
         }
 
-        if (is_array($this->value) && $this->isDateOperation() && count($this->value) < 2) {
+        if (is_array($this->value) && $this->isRangeOperation() && count($this->value) < 2) {
             throw new InvalidArgumentException('Wrong number of values for range');
         }
     }
@@ -212,7 +212,7 @@ class Condition {
      *
      * @return bool
      */
-    protected function isDateOperation(): bool
+    protected function isRangeOperation(): bool
     {
         return $this->operation === 'between' || $this->operation === 'not between';
     }

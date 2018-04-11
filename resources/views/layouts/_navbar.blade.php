@@ -23,7 +23,7 @@
                     @lang('gzero-core::language_names.' . app()->getLocale())
                 </a>
                 <div class="dropdown-menu" aria-labelledby="languageDropdown">
-                    @foreach($languages as $language)
+                    @foreach($availableLanguages as $language)
                         <a href="{{ routeMl('home', $language->code) }}"
                            class="dropdown-item {{ (app()->getLocale() == $language->code) ? 'active' : '' }}"
                            title="{{$language->code}}">

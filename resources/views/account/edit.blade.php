@@ -84,7 +84,7 @@
                                 @lang('gzero-core::common.no_option_chosen')
                             </option>
                         @endif
-                        @foreach($languages as $language)
+                        @foreach($availableLanguages as $language)
                             <option value="{{ $language->code }}"
                                     @if($language->code === $user->languageCode())selected @endif>
                                 @lang('gzero-core::language_names.' . $language->code)

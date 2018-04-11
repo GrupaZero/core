@@ -21,36 +21,36 @@ class MultiLanguage {
     public function handle($request, Closure $next)
     {
         /** @var LanguageService $languageService */
-        $languageService = resolve(LanguageService::class);
-        $languages       = $languageService->getAllEnabled();
-        $language        = null;
+        $languageService    = resolve(LanguageService::class);
+        $availableLanguages = $languageService->getAllEnabled();
+        $requestLanguage    = null;
 
         if (str_is('api.*', $request->getHost())) {
-            $language = $languages->first(function ($language) use ($request) {
+            $requestLanguage = $availableLanguages->first(function ($language) use ($request) {
                 return $language->code === $request->header('Accept-Language');
             });
         } else {
-            $language = $languages->first(function ($language) use ($request) {
+            $requestLanguage = $availableLanguages->first(function ($language) use ($request) {
                 return $language->code === $request->segment(1);
             });
         }
 
-        if (empty($language)) {
-            $language = $languageService->getDefault();
+        if (empty($requestLanguage)) {
+            $requestLanguage = $languageService->getDefault();
         }
 
-        if (empty($language)) {
+        if (empty($requestLanguage)) {
             throw new DomainException('No default language found');
         }
 
-        app()->setLocale($language->code);
+        app()->setLocale($requestLanguage->code);
 
         // We need it to make carbon's diffForHumans work correctly
         Carbon::setLocale(app()->getLocale());
 
         if (!str_is('api.*', $request->getHost())) {
-            view()->share('language', $language);
-            view()->share('languages', $languages);
+            view()->share('requestLanguage', $requestLanguage);
+            view()->share('availableLanguages', $availableLanguages);
         }
 
         resolve(RoutesService::class)->registerAll();

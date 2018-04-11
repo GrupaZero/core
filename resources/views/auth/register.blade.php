@@ -48,7 +48,7 @@
                     @endif
                 </div>
 
-                <input type="hidden" name="language_code" value="{{ $language->code }}">
+                <input type="hidden" name="language_code" value="{{ $requestLanguage->code }}">
                 <input type="hidden" name="timezone" value="">
 
                 <div class="form-group">

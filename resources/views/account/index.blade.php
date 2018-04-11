@@ -7,6 +7,10 @@
 
 @component('gzero-core::account._menu')@endcomponent
 
+@section('breadcrumbs')
+    {!! Breadcrumbs::render() !!}
+@stop
+
 @component('gzero-core::layouts._contentSection', ['class' => 'col-sm-8'])
     <h1 class="mt-4">@lang('gzero-core::user.my_account')</h1>
 

@@ -108,5 +108,19 @@ class AccountCest {
         $I->seeLink('My Account', route('account'));
         $I->seeLink('Return to the homepage', routeMl('home'));
     }
+
+    public function canSeeBreadcrumbs(FunctionalTester $I)
+    {
+        $user = $I->haveUser();
+
+        $I->login($user->email, 'secret');
+
+        $I->amOnPage(route('account.edit'));
+        $I->seeResponseCodeIs(200);
+
+        $I->seeLink('Home', routeMl('home'), ['css' => '.breadcrumb li']);
+        $I->seeLink('My Account', routeMl('account'), ['css' => '.breadcrumb li']);
+        $I->see('Edit Account', ['css' => '.breadcrumb li.active']);
+    }
 }
 

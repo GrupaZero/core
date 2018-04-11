@@ -26,6 +26,8 @@ use Illuminate\Routing\Router;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use Laravel\Passport\Passport;
 use Robbo\Presenter\PresenterServiceProvider;
+use DaveJamesMiller\Breadcrumbs\Facade as BreadcrumbsFacade;
+use DaveJamesMiller\Breadcrumbs\ServiceProvider as BreadcrumbServiceProvider;
 
 class ServiceProvider extends AbstractServiceProvider {
 
@@ -35,7 +37,8 @@ class ServiceProvider extends AbstractServiceProvider {
      * @var array
      */
     protected $providers = [
-        PresenterServiceProvider::class
+        PresenterServiceProvider::class,
+        BreadcrumbServiceProvider::class,
     ];
 
     /**
@@ -45,7 +48,8 @@ class ServiceProvider extends AbstractServiceProvider {
      */
     protected $aliases = [
         'options'   => OptionService::class,
-        'timezones' => TimezoneService::class
+        'timezones' => TimezoneService::class,
+        'Breadcrumbs' => BreadcrumbsFacade::class
     ];
 
     /**
@@ -107,6 +111,10 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerViews();
         $this->registerPublishes();
         $this->registerTranslations();
+
+        if (class_exists('Breadcrumbs')) {
+            require __DIR__ . '/../../../routes/breadcrumbs.php';
+        }
     }
 
     /**

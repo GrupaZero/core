@@ -296,6 +296,8 @@ if (!function_exists('getTimezone')) {
 
     /**
      * It returns current request timezone
+     *
+     * @return string
      */
     function getTimezone()
     {

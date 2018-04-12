@@ -7,6 +7,7 @@ use Gzero\Core\Jobs\DeleteUser;
 use Gzero\Core\Jobs\UpdateUser;
 use Gzero\Core\Models\User;
 use Gzero\Core\Parsers\ArrayParser;
+use Gzero\Core\Parsers\DateParser;
 use Gzero\Core\Parsers\DateRangeParser;
 use Gzero\Core\UrlParamsProcessor;
 use Gzero\Core\Repositories\UserReadRepository;
@@ -127,6 +128,7 @@ class UserController extends ApiController {
             ->addFilter(new StringParser('first_name'))
             ->addFilter(new StringParser('last_name'))
             ->addFilter(new DateRangeParser('created_at'))
+            ->addFilter(new DateParser('updated_at'))
             ->process($this->request);
 
         $results = $this->repository->getMany($processor->buildQueryBuilder());

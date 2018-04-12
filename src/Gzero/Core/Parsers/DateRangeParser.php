@@ -92,6 +92,7 @@ class DateRangeParser implements ConditionParser {
      * @param Request $request Request object
      *
      * @return void
+     * @throws InvalidArgumentException
      */
     public function parse(Request $request)
     {
@@ -99,6 +100,11 @@ class DateRangeParser implements ConditionParser {
             $this->applied = true;
             $value         = $request->input($this->name);
             $operation     = substr($value, 0, 1);
+
+            if (empty($value)) {
+                throw new InvalidArgumentException('DateRangeParser: Value can\'t be empty');
+            }
+
             if ($operation === '!') {
                 $this->operation = 'not between';
                 $this->value     = explode(',', substr($value, 1));

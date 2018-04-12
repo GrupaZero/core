@@ -124,7 +124,7 @@ class DateParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return 'regex:/^(^(!)?|^(<=)?|^(>=)?|^(=)?|^(<)?|^(>)?)?\d{4}-\d{2}-\d{2}$/';
+        return 'regex:/^(!|<=|>=|=|<|>)?\d{4}-\d{2}-\d{2}$/';
     }
 
     /**

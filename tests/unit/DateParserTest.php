@@ -71,6 +71,32 @@ class DateParserTest extends Unit {
     }
 
     /** @test */
+    public function validationRuleShouldPass()
+    {
+        $parser = new DateParser('date');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '2017-10-09');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '!2017-10-09');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '>=2017-10-09');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '<=2017-10-09');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '>2017-10-09');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '<2017-10-09');
+    }
+
+    /** @test */
+    public function validationRuleShouldNotPass()
+    {
+        $parser = new DateParser('date');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], 'text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '!text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '>=text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '<=text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '>text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '<text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '2017-10-09,2017-10-10');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '!2017-10-09,2017-10-10');
+    }
+
+    /** @test */
     public function shouldThrowExceptionForInvalidDate()
     {
         try {

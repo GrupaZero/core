@@ -83,6 +83,33 @@ class NumericParserTest extends Unit {
         $this->fail('Exception should be thrown');
     }
 
+
+    /** @test */
+    public function validationRuleShouldPass()
+    {
+        $parser = new NumericParser('date');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '123');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '!123');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '>=123');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '<=123');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '>123');
+        $this->assertRegExp(explode('regex:', $parser->getValidationRule())[1], '<123');
+    }
+
+    /** @test */
+    public function validationRuleShouldNotPass()
+    {
+        $parser = new NumericParser('date');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], 'text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '!text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '>=text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '<=text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '>text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '<text');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '2017-10-09,2017-10-10');
+        $this->assertNotRegExp(explode('regex:', $parser->getValidationRule())[1], '!2017-10-09,2017-10-10');
+    }
+
     /** @test */
     public function shouldWorkWithEmptyValue()
     {

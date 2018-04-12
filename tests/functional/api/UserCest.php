@@ -1,6 +1,7 @@
 <?php namespace Core\api;
 
 use Core\FunctionalTester;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class UserCest {
@@ -124,6 +125,43 @@ class UserCest {
         $I->assertEmpty($I->grabDataFromResponseByJsonPath('data[*]'));
 
         $I->sendGET(apiUrl('users?created_at=!2017-10-09,2017-10-10'));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseJsonMatchesJsonPath('data[*]');
+        $I->seeResponseContainsJson(
+            [
+                'data' => [
+                    'email'      => 'john.doe@example.com',
+                    'name'       => 'JohnDoe',
+                    'first_name' => 'John',
+                    'last_name'  => 'Doe'
+                ]
+            ]
+        );
+    }
+
+    public function adminShouldBeAbleToFilterListOfUsersByUpdatedAt(FunctionalTester $I)
+    {
+        $fourDaysAgo = Carbon::now()->subDays(4);
+        $today       = Carbon::now()->format('Y-m-d');
+
+        $I->loginAsAdmin();
+        $I->haveUser([
+            'email'      => 'john.doe@example.com',
+            'name'       => 'JohnDoe',
+            'first_name' => 'John',
+            'last_name'  => 'Doe',
+            'updated_at'    => $fourDaysAgo
+        ]);
+
+        $I->sendGET(apiUrl("users?updated_at=>$today"));
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->assertEmpty($I->grabDataFromResponseByJsonPath('data[*]'));
+
+        $I->sendGET(apiUrl("users?updated_at=<$today"));
 
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();

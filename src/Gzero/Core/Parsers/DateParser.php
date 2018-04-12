@@ -4,28 +4,19 @@ use Gzero\Core\Query\QueryBuilder;
 use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
-/**
- * @TODO write custom Laravel validator
- * @TODO parse date format to DB format
- * @TODO we should always have two dates
- * @TODO human readable? e.g. -7days,+2days
- */
-class DateRangeParser implements ConditionParser {
+class DateParser implements ConditionParser {
 
     /** @var string */
     protected $name;
 
-    /** @var string */
-    protected $operation = 'between';
-
-    /** @var array */
+    /** @var mixed */
     protected $value;
 
     /** @var bool */
     protected $applied = false;
 
     /** @var array */
-    protected $availableOperations = ['!'];
+    protected $availableOperations = ['!', '>=', '<=', '<', '>'];
 
     /** @var array */
     protected $option;
@@ -40,7 +31,7 @@ class DateRangeParser implements ConditionParser {
     public function __construct(string $name, $options = [])
     {
         if (empty($name)) {
-            throw new InvalidArgumentException('DateRangeParser: Name must be defined');
+            throw new InvalidArgumentException('DateParser: Name must be defined');
         }
         $this->name   = $name;
         $this->option = $options;
@@ -92,6 +83,7 @@ class DateRangeParser implements ConditionParser {
      * @param Request $request Request object
      *
      * @return void
+     *
      * @throws InvalidArgumentException
      */
     public function parse(Request $request)
@@ -99,18 +91,29 @@ class DateRangeParser implements ConditionParser {
         if ($request->has($this->name)) {
             $this->applied = true;
             $value         = $request->input($this->name);
-            $operation     = substr($value, 0, 1);
 
-            if (empty($value)) {
-                throw new InvalidArgumentException('DateRangeParser: Value can\'t be empty');
-            }
-
-            if ($operation === '!') {
-                $this->operation = 'not between';
-                $this->value     = explode(',', substr($value, 1));
+            // do not reorder this
+            if (substr($value, 0, 1) === '!') {
+                $this->operation = '!=';
+                $this->value = substr($value, 1);
+            } elseif (substr($value, 0, 2) === '>=') {
+                $this->operation = '>=';
+                $this->value     = substr($value, 2);
+            } elseif (substr($value, 0, 2) === '<=') {
+                $this->operation = '<=';
+                $this->value     = substr($value, 2);
+            } elseif (substr($value, 0, 1) === '>') {
+                $this->operation = '>';
+                $this->value     = substr($value, 1);
+            } elseif (substr($value, 0, 1) === '<') {
+                $this->operation = '<';
+                $this->value     = substr($value, 1);
             } else {
-                $this->value = explode(',', $value);
+                $this->operation = '=';
+                $this->value = $value;
             }
+
+            $this->checkValue();
         }
     }
 
@@ -121,7 +124,7 @@ class DateRangeParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return "regex:/^[!]?\d{4}-\d{2}-\d{2},\d{4}-\d{2}-\d{2}$/";
+        return 'regex:/^(!|<=|>=|=|<|>)?\d{4}-\d{2}-\d{2}$/';
     }
 
     /**
@@ -134,5 +137,19 @@ class DateRangeParser implements ConditionParser {
     public function apply(QueryBuilder $builder)
     {
         $builder->where($this->name, $this->operation, $this->value);
+    }
+
+    /**
+     * Check if value is a valid date.
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return void
+     */
+    protected function checkValue(): void
+    {
+        if ((!is_string($this->value) && !is_numeric($this->value)) || strtotime($this->value) === false) {
+            throw new InvalidArgumentException('DateParser: Value must be a valid date');
+        }
     }
 }

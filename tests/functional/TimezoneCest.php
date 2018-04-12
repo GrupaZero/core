@@ -60,7 +60,7 @@ class TimezoneCest {
 
     public function apiCallFromLoggedGetsTimezoneFromConfigByDefault(FunctionalTester $I)
     {
-        $user = $I->haveUser();
+        $user = $I->haveUser(['timezone' => 'America/Los_Angeles']);
         config(['app.timezone' => 'Europe/Warsaw']);
 
         $I->login($user->email, 'secret');
@@ -70,7 +70,7 @@ class TimezoneCest {
         $I->assertEquals('Europe/Warsaw', getTimezone());
     }
 
-    public function apiCallFromNonLoggedGetsTimezoneFromHeaderIfPresent(FunctionalTester $I)
+    public function apiCallFromNonLoggedGetsTimezoneFromHeaderWhenPresent(FunctionalTester $I)
     {
         config(['app.timezone' => 'Europe/Warsaw']);
         $I->haveHttpHeader('Accept-Timezone', 'America/NewYork');
@@ -81,12 +81,12 @@ class TimezoneCest {
         $I->assertEquals('America/NewYork', getTimezone());
     }
 
-    public function apiCallFromLoggedGetsTimezoneFromHeaderIfPresent(FunctionalTester $I)
+    public function apiCallFromLoggedGetsTimezoneFromHeaderWhenPresent(FunctionalTester $I)
     {
         config(['app.timezone' => 'Europe/Warsaw']);
         $I->haveHttpHeader('Accept-Timezone', 'America/NewYork');
 
-        $user = $I->haveUser();
+        $user = $I->haveUser(['timezone' => 'America/Los_Angeles']);
         $I->login($user->email, 'secret');
         $I->sendGet(apiUrl('languages'));
         $I->seeResponseCodeIs(200);

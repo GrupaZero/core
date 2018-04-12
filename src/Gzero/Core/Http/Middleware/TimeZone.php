@@ -24,11 +24,13 @@ class TimeZone {
         $requestTimezone = null;
         if (str_is('api.*', $request->getHost())) {
             $requestTimezone = $request->header('Accept-Timezone');
-        } else if($user = Auth::guard()->user()) {
-            $requestTimezone = $user->timezone;
+        } else {
+            if ($user = Auth::guard()->user()) {
+                $requestTimezone = $user->timezone;
+            }
         }
 
-        if(empty($requestTimezone)) {
+        if (empty($requestTimezone)) {
             $requestTimezone = config('app.timezone', 'UTC');
         }
 

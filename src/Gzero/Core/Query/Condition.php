@@ -208,7 +208,7 @@ class Condition {
     }
 
     /**
-     * Check if operation is a date operation
+     * Check if operation is a range operation
      *
      * @return bool
      */

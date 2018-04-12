@@ -4,19 +4,10 @@ use Gzero\Core\Query\QueryBuilder;
 use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
-/**
- * @TODO write custom Laravel validator
- * @TODO parse date format to DB format
- * @TODO we should always have two dates
- * @TODO human readable? e.g. -7days,+2days
- */
-class DateRangeParser implements ConditionParser {
+class RangeParser implements ConditionParser {
 
     /** @var string */
     protected $name;
-
-    /** @var string */
-    protected $operation = 'between';
 
     /** @var array */
     protected $value;
@@ -40,7 +31,7 @@ class DateRangeParser implements ConditionParser {
     public function __construct(string $name, $options = [])
     {
         if (empty($name)) {
-            throw new InvalidArgumentException('DateRangeParser: Name must be defined');
+            throw new InvalidArgumentException('RangeParser: Name must be defined');
         }
         $this->name   = $name;
         $this->option = $options;
@@ -92,6 +83,7 @@ class DateRangeParser implements ConditionParser {
      * @param Request $request Request object
      *
      * @return void
+     * @throws InvalidArgumentException
      */
     public function parse(Request $request)
     {
@@ -99,11 +91,17 @@ class DateRangeParser implements ConditionParser {
             $this->applied = true;
             $value         = $request->input($this->name);
             $operation     = substr($value, 0, 1);
+
+            if (empty($value)) {
+                throw new InvalidArgumentException('RangeParser: Value can\'t be empty');
+            }
+
             if ($operation === '!') {
                 $this->operation = 'not between';
                 $this->value     = explode(',', substr($value, 1));
             } else {
-                $this->value = explode(',', $value);
+                $this->operation = 'between';
+                $this->value     = explode(',', $value);
             }
         }
     }
@@ -115,7 +113,7 @@ class DateRangeParser implements ConditionParser {
      */
     public function getValidationRule()
     {
-        return "regex:/^[!]?\d{4}-\d{2}-\d{2},\d{4}-\d{2}-\d{2}$/";
+        return "regex:/^[!]?\d{1,},\d{1,}$/";
     }
 
     /**

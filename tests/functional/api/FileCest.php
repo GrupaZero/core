@@ -1164,7 +1164,6 @@ class FileCest {
         $I->seeResponseCodeIs(204);
     }
 
-
     public function cantDeleteNotExistingFileTranslation(FunctionalTester $I)
     {
         $file = $I->haveFile([

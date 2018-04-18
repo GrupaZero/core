@@ -1,6 +1,8 @@
 <?php
 
+use Carbon\Carbon;
 use Gzero\Core\Services\LanguageService;
+use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('setMultiLanguageRouting')) {
 
@@ -292,15 +294,55 @@ if (!function_exists('array_camel_case_keys')) {
     }
 }
 
-if (!function_exists('getTimezone')) {
+if (!function_exists('getUserTimezone')) {
 
     /**
      * It returns current request timezone
      *
      * @return string
      */
-    function getTimezone()
+    function getUserTimezone()
     {
-        return config('app.timezone');
+        return Auth::user()->timezone;
+    }
+}
+
+if (!function_exists('getRequestTimezone')) {
+    function getRequestTimezone()
+    {
+        return config('request.timezone');
+    }
+}
+
+if (!function_exists('dateTimeToOtherTimezone')) {
+    function dateTimeToOtherTimezone($dateTime, $timezone = 'UTC')
+    {
+        if ($dateTime === null) {
+            return null;
+        }
+
+        if (is_string($dateTime)) {
+            $dateTime = Carbon::parse($dateTime)->setTimezone($timezone);
+        } elseif ($dateTime instanceof \DateTime) {
+            $dateTime = $dateTime->copy()->setTimezone($timezone);
+        } else {
+            throw new Exception();
+        }
+
+        return $dateTime;
+
+    }
+}
+
+if (!function_exists('dateTimeToUTC')) {
+    function dateTimeToUTC($dateTime)
+    {
+        return dateTimeToOtherTimezone($dateTime, 'UTC');
+    }
+}
+
+if (!function_exists('dateTimeToRequestTimezone')) {
+    function dateTimeToRequestTimezone($dateTime) {
+        return dateTimeToOtherTimezone($dateTime, getRequestTimezone());
     }
 }

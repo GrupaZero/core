@@ -1,5 +1,6 @@
 <?php namespace Core;
 
+use Carbon\Carbon;
 use Gzero\Core\Models\Language;
 use Gzero\Core\Services\LanguageService;
 use Gzero\Core\Services\RoutesService;
@@ -214,5 +215,63 @@ class HelpersCest {
         $I->assertEquals($route->uri, '/');
         $I->assertEquals($route->getDomain(), 'test.pl');
         $I->assertEquals($route->getPrefix(), null);
+    }
+
+    public function itSetsRequestTimezoneOnApiHttpHeader(FunctionalTester $I)
+    {
+        // 1st case: no header set
+        $I->sendGet(apiUrl('someapi'));
+
+        $I->assertEquals('UTC', getRequestTimezone());
+
+        // 2nd case: the http header is set
+        $I->haveHttpHeader('Accept-Timezone', 'America/New_York');
+        $I->sendGet(apiUrl('someapi'));
+
+        $I->assertEquals('America/New_York', getRequestTimezone());
+    }
+
+    public function itConvertsDateTimeObjectToRequestTimezone(FunctionalTester $I)
+    {
+        // 1st case: no header set
+        $I->sendGet(apiUrl('someapi'));
+
+        $dateTime = Carbon::parse('2021-05-02 12:43:31', 'America/New_York');
+        $dateTimeInRequestTimezone = dateTimeToRequestTimezone($dateTime);
+
+        $I->assertEquals($dateTime, $dateTimeInRequestTimezone);
+        $I->assertEquals('UTC', $dateTimeInRequestTimezone->getTimezone()->getName());
+
+        // 2nd case: the http header is set
+        $I->haveHttpHeader('Accept-Timezone', 'Australia/Adelaide');
+        $I->sendGet(apiUrl('someapi'));
+
+        $dateTime = Carbon::parse('2021-05-02 12:43:31', 'America/New_York');
+        $dateTimeInRequestTimezone = dateTimeToRequestTimezone($dateTime);
+
+        $I->assertEquals($dateTime, $dateTimeInRequestTimezone);
+        $I->assertEquals('Australia/Adelaide', $dateTimeInRequestTimezone->getTimezone()->getName());
+    }
+
+    public function itConvertsDateTimeStringToRequestTimezone(FunctionalTester $I)
+    {
+        // 1st case: no header set
+        $I->sendGet(apiUrl('someapi'));
+
+        $dateTime = Carbon::parse('2021-05-02 12:43:31', 'America/New_York');
+        $dateTimeInRequestTimezone = dateTimeToRequestTimezone($dateTime->toIso8601String());
+
+        $I->assertEquals($dateTime, $dateTimeInRequestTimezone);
+        $I->assertEquals('UTC', $dateTimeInRequestTimezone->getTimezone()->getName());
+
+        // 2nd case: the http header is set
+        $I->haveHttpHeader('Accept-Timezone', 'Australia/Adelaide');
+        $I->sendGet(apiUrl('someapi'));
+
+        $dateTime = Carbon::parse('2021-05-02 12:43:31', 'America/New_York');
+        $dateTimeInRequestTimezone = dateTimeToRequestTimezone($dateTime->toIso8601String());
+
+        $I->assertEquals($dateTime, $dateTimeInRequestTimezone);
+        $I->assertEquals('Australia/Adelaide', $dateTimeInRequestTimezone->getTimezone()->getName());
     }
 }

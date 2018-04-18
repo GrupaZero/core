@@ -19,6 +19,12 @@ class DateTimeRangeParser implements ConditionParser {
     /** @var string */
     protected $operation = 'between';
 
+    /** @var string */
+    protected $from;
+
+    /** @var string */
+    protected $to;
+
     /** @var array */
     protected $value;
 
@@ -111,9 +117,15 @@ class DateTimeRangeParser implements ConditionParser {
         ];
     }
 
-    protected $from;
-    protected $to;
-
+    /**
+     * It extracts following tokens from the string: operator, left dateTime, right dateTime
+     *
+     * @param string $value value of the parameter
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     */
     protected function extractTokens($value)
     {
         if (empty($value)) {

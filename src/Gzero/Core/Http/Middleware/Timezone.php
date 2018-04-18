@@ -27,6 +27,15 @@ class Timezone {
         return $next($request);
     }
 
+    /**
+     * Determine timezone for this api request.
+     * It takes the value from the Accept-Timezone header.
+     * If that is not present it returns the default value: UTC.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return string
+     */
     protected function determineRequestTimezone(Request $request)
     {
         $requestTimezone = 'UTC';

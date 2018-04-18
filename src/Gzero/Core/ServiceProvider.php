@@ -1,6 +1,7 @@
 <?php namespace Gzero\Core;
 
 use Carbon\Carbon;
+use Gzero\Core\Http\Middleware\TimeZone;
 use Gzero\Core\Http\Middleware\ViewComposer;
 use Gzero\Core\Policies\FilePolicy;
 use Gzero\Core\Http\Middleware\Init;
@@ -224,6 +225,7 @@ class ServiceProvider extends AbstractServiceProvider {
     {
         resolve(Kernel::class)->prependMiddleware(Init::class);
         resolve(Kernel::class)->prependMiddleware(MultiLanguage::class);
+        resolve(Kernel::class)->prependMiddleware(TimeZone::class);
         /** @var Router $router */
         $router = resolve(Router::class);
         $router->pushMiddlewareToGroup('web', CreateFreshApiToken::class);

@@ -291,3 +291,16 @@ if (!function_exists('array_camel_case_keys')) {
         return $results;
     }
 }
+
+if (!function_exists('getTimezone')) {
+
+    /**
+     * It returns current request timezone
+     *
+     * @return string
+     */
+    function getTimezone()
+    {
+        return config('app.timezone');
+    }
+}

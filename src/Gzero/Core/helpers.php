@@ -1,6 +1,8 @@
 <?php
 
+use Carbon\Carbon;
 use Gzero\Core\Services\LanguageService;
+use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('setMultiLanguageRouting')) {
 
@@ -289,5 +291,97 @@ if (!function_exists('array_camel_case_keys')) {
             }
         }
         return $results;
+    }
+}
+
+if (!function_exists('getUserTimezone')) {
+
+    /**
+     * It returns logged user's preferred timezone or null if not set
+     *
+     * @return string
+     */
+    function getUserTimezone()
+    {
+        return Auth::user()->timezone;
+    }
+}
+
+if (!function_exists('getRequestTimezone')) {
+
+    /**
+     * It returns a timezone set for this api request
+     *
+     * @return string
+     */
+    function getRequestTimezone()
+    {
+        return config('request.timezone');
+    }
+}
+
+if (!function_exists('dateTimeToOtherTimezone')) {
+
+    /**
+     * It returns given $dateTime converted to a DateTime in given timezone
+     *
+     * @param string|DateTime $dateTime dateTime
+     * @param string          $timezone timezone
+     *
+     * @return null|DateTime
+     * @throws Exception
+     */
+    function dateTimeToOtherTimezone($dateTime, $timezone = 'UTC')
+    {
+        if ($dateTime === null) {
+            return null;
+        }
+
+        if (is_string($dateTime)) {
+            $dateTime = Carbon::parse($dateTime)->setTimezone($timezone);
+        } elseif ($dateTime instanceof \DateTime) {
+            $dateTime = $dateTime->copy()->setTimezone($timezone);
+        } else {
+            throw new Exception();
+        }
+
+        return $dateTime;
+    }
+}
+
+if (!function_exists('dateTimeToUTC')) {
+
+    /**
+     * It returns given $dateTime converted to a DateTime in UTC.
+     * It calls dateTimeToOtherTimezone underneath.
+     *
+     * @param DateTime|string $dateTime dateTime
+     *
+     * @return DateTime|null
+     * @throws Exception
+     *
+     * @see dateTimeToOtherTimezone()
+     */
+    function dateTimeToUTC($dateTime)
+    {
+        return dateTimeToOtherTimezone($dateTime, 'UTC');
+    }
+}
+
+if (!function_exists('dateTimeToRequestTimezone')) {
+
+    /**
+     * It returns given $dateTime converted to the request timezone.
+     * It calls dateTimeToOtherTimezone underneath.
+     * It calls getRequestTimezone to get the timezone.
+     *
+     * @param DateTime|string $dateTime dateTime
+     *
+     * @return DateTime|null
+     * @throws Exception
+     */
+    function dateTimeToRequestTimezone($dateTime)
+    {
+        return dateTimeToOtherTimezone($dateTime, getRequestTimezone());
     }
 }

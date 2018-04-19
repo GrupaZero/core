@@ -5,7 +5,7 @@ use Gzero\Core\Parsers\DateRangeParser;
 use Gzero\InvalidArgumentException;
 use Illuminate\Http\Request;
 
-class DateDateRangeParserTest extends Unit {
+class DateRangeParserTest extends Unit {
 
     /** @var UnitTester */
     protected $tester;

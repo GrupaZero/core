@@ -310,6 +310,11 @@ class ServiceProvider extends AbstractServiceProvider {
         $router->pattern('id', '[0-9]+');
     }
 
+    /**
+     * It registers custom validators
+     *
+     * @return void
+     */
     protected function registerValidators()
     {
         Validator::extend('iso8601', 'Gzero\Core\Validators\Rules\Iso8601@passes');

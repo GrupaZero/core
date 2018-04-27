@@ -15,19 +15,20 @@ class BunnyController extends Controller {
 
 class Iso8601ValidatorCest {
 
-    public function canValidateValidCaseAgainstIso8601(FunctionalTester $I)
+    public function _before(FunctionalTester $I)
     {
         Route::post('/save-bunny', "Core\BunnyController@save");
+    }
 
-        $I->sendPOST('/save-bunny', ['bunny_date' => '2019-07-04T12:32:12-0300']);
+    public function canValidateValidCaseAgainstIso8601(FunctionalTester $I)
+    {
+        $I->sendPOST('/save-bunny', ['bunny_date' => '2019-07-04T12:32:12-03:00']);
 
         $I->seeResponseCodeIs(200);
     }
 
     public function canValidateInvalidCaseAgainstIso8601(FunctionalTester $I)
     {
-        Route::post('/save-bunny', "Core\BunnyController@save");
-
         $I->sendPOST('/save-bunny', ['bunny_date' => '2019-07-04T12:32:12']);
 
         $I->seeResponseCodeIs(404);

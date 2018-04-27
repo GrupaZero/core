@@ -396,6 +396,8 @@ if (!function_exists('debugValue')) {
      *
      * @param mixed  $value value
      * @param string $label descriptive label
+     *
+     * @return void
      */
     function debugValue($value, $label = null)
     {

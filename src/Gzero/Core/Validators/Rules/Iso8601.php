@@ -1,6 +1,7 @@
 <?php namespace Gzero\Core\Validators\Rules;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Validation\Validator;
 use InvalidArgumentException;
 
@@ -40,11 +41,11 @@ class Iso8601 {
                 '([1-9][0-9]{0,4})\-(1[012]|0[1-9])\-(3[01]|[12][0-9]|0[1-9]) \
                 T(2[0-3]|[01][0-9])\:([0-5][0-9])\:([0-5][0-9]) \
                 ([\+\-](1[012]|0[0-9])[0134][05])';
-            return (bool) preg_match('/^' . $regex . '$/', $value);
-        } catch (InvalidArgumentException $ex) {
-            info('could not create dateTime instance from format');
-        }
+            $result = (bool) preg_match('/^' . $regex . '$/', $value);
 
-        return false;
+            return $result;
+        } catch (Exception $ex) {
+            return false;
+        }
     }
 }

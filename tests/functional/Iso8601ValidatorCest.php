@@ -22,7 +22,7 @@ class Iso8601ValidatorCest {
 
     public function canValidateValidCaseAgainstIso8601(FunctionalTester $I)
     {
-        $I->sendPOST('/save-bunny', ['bunny_date' => '2019-07-04T12:32:12-03:00']);
+        $I->sendPOST('/save-bunny', ['bunny_date' => '2019-07-04T12:32:12-0300']);
 
         $I->seeResponseCodeIs(200);
     }

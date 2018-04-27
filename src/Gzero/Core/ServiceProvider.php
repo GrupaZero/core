@@ -24,6 +24,8 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Validator;
+use InvalidArgumentException;
 use Laravel\Passport\Http\Middleware\CreateFreshApiToken;
 use Laravel\Passport\Passport;
 use Robbo\Presenter\PresenterServiceProvider;
@@ -112,6 +114,7 @@ class ServiceProvider extends AbstractServiceProvider {
         $this->registerViews();
         $this->registerPublishes();
         $this->registerTranslations();
+        $this->registerValidators();
 
         if (class_exists('Breadcrumbs')) {
             require __DIR__ . '/../../../routes/breadcrumbs.php';
@@ -307,4 +310,13 @@ class ServiceProvider extends AbstractServiceProvider {
         $router->pattern('id', '[0-9]+');
     }
 
+    /**
+     * It registers custom validators
+     *
+     * @return void
+     */
+    protected function registerValidators()
+    {
+        Validator::extend('iso8601', 'Gzero\Core\Validators\Rules\Iso8601@passes');
+    }
 }

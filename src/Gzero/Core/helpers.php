@@ -385,3 +385,24 @@ if (!function_exists('dateTimeToRequestTimezone')) {
         return dateTimeToOtherTimezone($dateTime, getRequestTimezone());
     }
 }
+
+if (!function_exists('debugValue')) {
+
+    /**
+     * It uses print_r to turn value into string and prints it.
+     * Optionally prints the given label.
+     *
+     * Purely for debugging purposes.
+     *
+     * @param mixed  $value value
+     * @param string $label descriptive label
+     *
+     * @return void
+     */
+    function debugValue($value, $label = null)
+    {
+        $message = ($label ? $label . ": " : "") . print_r($value, true);
+
+        logger($message);
+    }
+}

@@ -21,7 +21,4 @@ To run tests you can use one of those commands:
 `composer test tests/unit/jobs/UserJobsTest:canDeleteUser`
 
 ###Quality
-```
-./vendor/bin/phpmd src/ text phpmd.xml
-./vendor/bin/phpcs --standard=ruleset.xml src/ -n --colors
-```
+`composer test-static`

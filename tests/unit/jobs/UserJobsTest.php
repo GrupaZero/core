@@ -6,6 +6,7 @@ use Gzero\Core\Jobs\DeleteUser;
 use Gzero\Core\Jobs\UpdateUser;
 use Gzero\Core\Models\User;
 use Gzero\Core\Repositories\UserReadRepository;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use function array_only;
 use function dispatch_now;
@@ -243,6 +244,32 @@ class UserJobsTest extends Unit {
             array_only($afterUser->attributesToArray(), $testedAttributes),
             array_only($userFromDb->attributesToArray(), $testedAttributes)
         );
+    }
+
+    /**
+     * @test
+     */
+    public function cannotCreateUserTwiceWithSameEmail()
+    {
+        $user = dispatch_now(new CreateUser([
+            'email'         => 'john.doe@example.com',
+            'password'      => 'secret',
+            'first_name'    => 'John',
+            'last_name'     => 'Doe',
+        ]));
+
+        try {
+            $user = dispatch_now(new CreateUser([
+                'email'         => 'john.doe@example.com',
+                'password'      => 'secret2',
+                'first_name'    => 'John2',
+                'last_name'     => 'Doe2',
+            ]));
+        } catch (QueryException $e) {
+
+        }
+
+        $this->assertEquals(1, \App\Models\User::query()->where('email', '=', 'john.doe@example.com')->count());
     }
 }
 

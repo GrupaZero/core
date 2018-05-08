@@ -64,7 +64,7 @@ class UserViewModel {
     /**
      * @return bool
      */
-    public function hasValidPassword()
+    public function password()
     {
         return array_get($this->data, 'hasValidPassword');
     }

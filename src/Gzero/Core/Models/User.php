@@ -3,6 +3,7 @@
 use Gzero\Core\ViewModels\UserViewModel;
 use Gzero\Core\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -138,7 +139,24 @@ class User extends Model implements
      */
     public function getPresenter()
     {
-        return new UserViewModel($this->toArray());
+        // It is bad idea to allow to serialize user's password hash, so there is hasValidPassword method.
+        return new UserViewModel(array_merge($this->toArray(), [
+            'hasValidPassword' => $this->hasValidPassword()
+        ]));
+    }
+
+    /**
+     * Check if password is valid.
+     *
+     * @return bool
+     */
+    public function hasValidPassword()
+    {
+        if (!$this->password || Hash::needsRehash($this->password)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

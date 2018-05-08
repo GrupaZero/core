@@ -126,7 +126,7 @@
                 </div>
 
                 @if($isUserEmailSet)
-                    @if($user->password())
+                    @if($user->hasValidPassword())
                         <div class="separator">
                             <span>@lang('gzero-core::common.password_change')</span>
                         </div>

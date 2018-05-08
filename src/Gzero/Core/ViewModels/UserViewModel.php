@@ -10,7 +10,7 @@ class UserViewModel {
         'id',
         'name',
         'email',
-        'password',
+        'hasValidPassword',
         'first_name',
         'last_name',
         'has_social_integrations',
@@ -64,9 +64,9 @@ class UserViewModel {
     /**
      * @return bool
      */
-    public function password()
+    public function hasValidPassword()
     {
-        return !!array_get($this->data, 'password');
+        return !!array_get($this->data, 'hasValidPassword');
     }
 
     /**

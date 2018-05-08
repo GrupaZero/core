@@ -66,7 +66,7 @@ class UserViewModel {
      */
     public function hasValidPassword()
     {
-        return !!array_get($this->data, 'hasValidPassword');
+        return array_get($this->data, 'hasValidPassword');
     }
 
     /**

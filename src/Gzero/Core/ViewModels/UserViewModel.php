@@ -30,6 +30,14 @@ class UserViewModel {
     }
 
     /**
+     * @return integer
+     */
+    public function id()
+    {
+        return array_get($this->data, 'id');
+    }
+
+    /**
      * @return string
      */
     public function name()

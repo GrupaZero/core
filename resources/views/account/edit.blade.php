@@ -205,7 +205,7 @@
                         if (typeof xhr.responseJSON !== 'undefined' && xhr.status === 422) {
                             // clear previous errors
                             clearFormValidationErrors();
-                            $.each(xhr.responseJSON.error.errors, function(index, error) {
+                            $.each(xhr.responseJSON.errors, function(index, error) {
                                 // set form errors
                                 setFormValidationErrors(index, error);
                             })

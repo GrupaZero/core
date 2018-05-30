@@ -1,6 +1,7 @@
 <?php namespace Core;
 
 use Codeception\Test\Unit;
+use Exception;
 use Gzero\Core\Jobs\CreateUser;
 use Gzero\Core\Jobs\DeleteUser;
 use Gzero\Core\Jobs\UpdateUser;
@@ -265,8 +266,8 @@ class UserJobsTest extends Unit {
                 'first_name'    => 'John2',
                 'last_name'     => 'Doe2',
             ]));
-        } catch (QueryException $e) {
-
+        } catch (Exception $e) {
+            $this->assertEquals(QueryException::class, get_class($e));
         }
 
         $this->assertEquals(1, \App\Models\User::query()->where('email', '=', 'john.doe@example.com')->count());

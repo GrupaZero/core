@@ -49,6 +49,7 @@ class CreateUser {
             $user = new User();
             $user->fill($this->attributes);
             $user->save();
+
             event('user.created', [$user]);
             return $user;
         });

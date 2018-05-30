@@ -10,7 +10,7 @@ class UserViewModel {
         'id',
         'name',
         'email',
-        'password',
+        'hasValidPassword',
         'first_name',
         'last_name',
         'has_social_integrations',
@@ -27,6 +27,14 @@ class UserViewModel {
     public function __construct(array $data)
     {
         $this->data = array_only($data, $this->allowedAttributes);
+    }
+
+    /**
+     * @return integer
+     */
+    public function id()
+    {
+        return array_get($this->data, 'id');
     }
 
     /**
@@ -66,7 +74,7 @@ class UserViewModel {
      */
     public function password()
     {
-        return !!array_get($this->data, 'password');
+        return array_get($this->data, 'hasValidPassword');
     }
 
     /**

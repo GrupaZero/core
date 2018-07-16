@@ -8,6 +8,6 @@
         </div>
     </div>
 
-    <privacy-info privacy-policy-url="{{ url(option('general', 'cookies_policy_url') || '') }}"></privacy-info>
+    <privacy-info privacy-policy-url="{{ url(option('general', 'cookies_policy_url', '')) }}"></privacy-info>
     <div class="loading"><!-- loading container --></div>
 @show

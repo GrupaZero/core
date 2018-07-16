@@ -7,6 +7,7 @@
             </div>
         </div>
     </div>
-    <cookie-law policy-url=""></cookie-law>
+
+    <privacy-info privacy-policy-url="{{ url(option('general', 'cookies_policy_url', '')) }}"></privacy-info>
     <div class="loading"><!-- loading container --></div>
 @show

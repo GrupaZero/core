@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use Gzero\Core\Models\Language;
 use Gzero\Core\Services\LanguageService;
+use Gzero\Core\Services\OptionService;
 use Gzero\Core\Services\RoutesService;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\RouteCollection;
@@ -273,5 +274,20 @@ class HelpersCest {
 
         $I->assertEquals($dateTime, $dateTimeInRequestTimezone);
         $I->assertEquals('Australia/Adelaide', $dateTimeInRequestTimezone->getTimezone()->getName());
+    }
+
+    public function optionFallbackToDefaultInAllNullCases(FunctionalTester $I)
+    {
+        $option = $I->haveOption([
+            'category_key' => 'general',
+            'key' => 'someoption',
+            'value' => ["en" => "english value", "pl" => null]
+        ]);
+
+        $I->assertEquals("english value", option('general', 'someoption', 'xxx'));
+        $I->assertEquals("english value", option('general', 'someoption', 'xxx', 'en'));
+
+        $I->assertEquals("xxx", option('general', 'someoption', 'xxx', 'pl'));
+        $I->assertEquals("xxx", option('general', 'someoption', 'xxx', 'fr'));
     }
 }

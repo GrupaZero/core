@@ -1,6 +1,7 @@
 <?php namespace Core;
 
 use Core\_generated\FunctionalTesterActions;
+use Gzero\Core\Models\Option;
 use Gzero\Core\Models\User;
 
 /**
@@ -84,5 +85,10 @@ class FunctionalTester extends \Codeception\Actor {
         $height = config('gzero.image.thumb.height');
 
         return '/images\/' . $fileName . '-' . $width . 'x' . $height . '\.' . $extension . '\?token=.+$/';
+    }
+
+    public function haveOption($attributes = [])
+    {
+        return factory(Option::class)->create($attributes);
     }
 }

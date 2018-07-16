@@ -238,11 +238,12 @@ if (!function_exists('option')) {
         $option   = app('options')->getOption($categoryKey, $optionKey);
         $language = $language ? $language : app()->getLocale();
 
-        if (array_key_exists($language, $option)) {
-            return $option[$language];
-        } else {
-            return $fallback ? $fallback : false;
+        if ($option == null) {
+            return $fallback;
         }
+
+        $value = array_get($option, $language, $fallback);
+        return $value ? $value : $fallback;
     }
 }
 

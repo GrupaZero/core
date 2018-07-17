@@ -7,7 +7,7 @@
             </div>
         </div>
     </div>
-
-    <privacy-info privacy-policy-url="{{ url(option('general', 'cookies_policy_url', '')) }}"></privacy-info>
+    @php($policyUrl = option('general', 'cookies_policy_url'))
+    <privacy-info privacy-policy-url="{{ ($policyUrl) ? urlMl($policyUrl, app()->getLocale()) : null}}"></privacy-info>
     <div class="loading"><!-- loading container --></div>
 @show
